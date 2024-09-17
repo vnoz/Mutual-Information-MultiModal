@@ -129,6 +129,6 @@ def populate_dataset(imgAmount):
 
 
     
-populate_dataset(3)
+populate_dataset(100)
     
 
