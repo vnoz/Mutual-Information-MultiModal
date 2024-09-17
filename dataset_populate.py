@@ -5,6 +5,8 @@ import json
 import requests
 import csv
 import sys
+import gzip
+from pathlib import Path
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 print(current_dir)
@@ -26,47 +28,107 @@ args = parser.parse_args()
 
 print(f"Initial args: {args}")
 
-def download(url, output_dir):
-    # open in binary mode
-    # user, password = 'tuanle', '@A1thebest'
-    with open(output_dir+'text.txt', "wb") as file:
-    #     # get request
-        # response = requests.get(url,auth=(user, password))
-        response = requests.get(url,data={'user': 'tuanle', 'password': 'A1thebest'}, verify=False)
-    #     # write to file
-        file.write(response.content)
 
-def get_filenames_list(fileList, save_location):
+def get_filename_url(base, file, save_location):
     wget_cmd = 'wget -r -N -c -np -nH --cut-dirs 10 --user tuanle --password A1thebest '
-    host_url=  'https://physionet.org/files/mimic-cxr-jpg/2.1.0/'
-    return wget_cmd + host_url + fileList + ' -P ' + save_location
+    host_url=  os.path.join('https://physionet.org/files/',base)
+    return wget_cmd + host_url + file + ' -P ' + save_location 
+
+
+def get_filename_new_location_url(base,file, new_filename):
+    wget_cmd = 'wget -r -N -c -np -nH --cut-dirs 10 --user tuanle --password A1thebest '
+    host_url=  os.path.join('https://physionet.org/files/',base)
+    return wget_cmd + host_url + file + ' -O '+new_filename
 
 def wget_download(cmd):
     os.system(cmd)
 
-def populate_dataset():
-    # Download IMAGE_FILENAMES from MIMIC-CXR JPG for all files
-    filenames = 'IMAGE_FILENAMES'
+def populate_dataset(imgAmount):
+
+    # Download mimic-cxr-2.0.0-metadata.csv.gz from MIMIC-CXR JPG for all files metadata
+    filenames = 'mimic-cxr-2.0.0-metadata.csv.gz'
+    jpg_cxr_base_url = 'mimic-cxr-jpg/2.1.0/'
+    mimic_cxr_base_url = 'mimic-cxr/2.1.0/'
+
+    if not os.path.exists(os.path.join(args.data_dir,filenames)):
+        filenames_url = get_filename_url(jpg_cxr_base_url,filenames,args.data_dir)
+
+        wget_download(filenames_url)
+
+    # Read content of file list, and loop through each item to get free-text report from MIMIC-CXR
+    text_files = []
     
-    filenames_url = get_filenames_list(filenames,args.data_dir)
+    count = 0
 
-    wget_download(filenames_url)
-
-    # Read content of IMAGE_FILENAMES for file list, and loop through each item to get free-text report from MIMIC-CXR
-    lines = []
-    with open(args.data_dir+filenames, "r", encoding="utf-8") as f:
-            reader = csv.reader(f, delimiter="\t", quotechar=None)
+    with gzip.open(os.path.join(args.data_dir,filenames), "rt") as f:
             
-            for line in reader:
-                if sys.version_info[0] == 2:
-                    line = list(unicode(cell, 'utf-8') for cell in line)
-                lines.append(line)
+            for line in f:
+                #ignore first line for column labels
+                if count == 0:
+                    count = count+1
+                    continue
 
-    print(lines)
+                split_items = line.split(',')
 
-    # TODO: Write to example_data\text\all_data.tsv for pairs of studyID and Findings in free-text report for Mutual Information training
-    # download_top10_cmd = 'head -n 10 IMAGE_FILENAMES | wget -r -N -c -np -nH --cut-dirs=1 --user tuanle --password A1thebest -i - --base=https://physionet.org/files/mimic-cxr-jpg/2.1.0/ -P '+ args.image_dir
+                dicom_id= split_items[0]
+                subject_id = split_items[1]
+                study_id = split_items[2]
+                view_position = split_items[4]
+                if(view_position == 'PA'):
 
-populate_dataset()
+                    img_filename = os.path.join('files','p'+subject_id[:2],'p'+subject_id,'s'+ study_id, dicom_id+'.jpg')
+                    new_img_filename = os.path.join(args.image_dir,'p'+subject_id+'_'+'s'+ study_id+'_'+dicom_id+'.jpg')
+                    img_url = get_filename_new_location_url(jpg_cxr_base_url,img_filename,new_img_filename)
+                    wget_download(img_url)
+                    
+                    text_filename = os.path.join('files','p'+subject_id[:2],'p'+subject_id,'s'+ study_id+'.txt')
+                    text_files.append(text_filename)
+                    
+                    count = count+1
+
+                    if(count > imgAmount):
+                        break
+
+    for i in range(len(text_files)):
+        text_file_url = get_filename_url(mimic_cxr_base_url,text_files[i],args.text_data_dir)
+        wget_download(text_file_url)
+
+
+    contents_list=[]
+    study_list=[]
+
+    for i in range(len(text_files)):
+        findings_content=[]
+        start_getting_content=False
+        
+        single_text_file =text_files[i].split('/')[-1]
+
+        with open(os.path.join(args.text_data_dir,single_text_file),"rt") as f:
+            for line in f:
+                if(line.strip() == 'FINDINGS:'):
+                    start_getting_content = True
+                    continue
+                if(line.strip() == 'IMPRESSION:' and start_getting_content==True):
+                    start_getting_content = False
+                    break
+                if(start_getting_content == True and line.strip() != ''):
+                    findings_content.append(line.strip())
+        
+        contents_list.append(''.join(map(str,findings_content)))
+        study_list.append( Path(text_files[i]).stem)
+    
+    assert len(study_list) == len(contents_list), "Mismatch number of studies and free-text reports"
+
+    # Write to example_data\text\all_data.tsv for pairs of studyID and Findings in free-text report for Mutual Information training
+
+    with open(os.path.join(args.text_data_dir,'all_data.tsv'), 'w', encoding='utf8', newline='') as tsv_file:
+        tsv_writer = csv.writer(tsv_file, delimiter='\t', lineterminator='\n')
+        
+        for i in range(len(contents_list)):
+            tsv_writer.writerow([i,0, study_list[i][1:],'a',contents_list[i]])
+
+
+    
+populate_dataset(3)
     
 
