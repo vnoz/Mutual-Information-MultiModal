@@ -31,7 +31,7 @@ parser.add_argument('--download_password', type=str,
                     default='A1thebest',
                     help='The password to download MIMIC dataset')
 parser.add_argument('--sample_amount', type=str,
-                    default=100,
+                    default=10000,
                     help='Total amount of samples to download from MIMIC dataset')
 
 args = parser.parse_args()
@@ -44,6 +44,40 @@ def get_filename_url(base, file, save_location):
     host_url=  os.path.join('https://physionet.org/files/',base)
     return wget_cmd + host_url + file + ' -P ' + save_location 
 
+def process_file(base, filename):
+    url = get_filename_url(base, filename, args.data_dir)
+    wget_download(url)
+
+    with open(os.path.join(args.data_dir,filename),"rt") as f:
+        findings_content=[]
+        start_getting_content=False
+        
+        content_without_findings_keyword=[]
+        new_line_for_findings_content = False
+
+        for line in f:
+            if('FINDINGS:' in line.strip()):
+                findings_content.append(line.strip())
+                start_getting_content = True
+                continue
+            elif('IMPRESSION:' in line.strip() and start_getting_content==True):
+                start_getting_content = False
+                break
+
+            if(start_getting_content == True and line.strip() != ''):
+                findings_content.append(line.strip())
+            
+            if(line.strip() == ''):
+                new_line_for_findings_content = True
+                content_without_findings_keyword = []
+                
+            elif(new_line_for_findings_content == True and 'FINDINGS:' not in line.strip() and 'IMPRESSION:' not in line.strip()):
+                content_without_findings_keyword.append(line.strip())
+
+        if(len(findings_content)==0 and len(content_without_findings_keyword) > 0):
+            findings_content = content_without_findings_keyword
+        
+        print(findings_content)
 
 def get_filename_new_location_url(base,file, new_filename):
     wget_cmd = 'wget -r -N -c -np -nH --cut-dirs 10 --user '+ args.download_user + ' --password '+ args.download_password + ' '
@@ -69,7 +103,7 @@ def populate_dataset(imgAmount):
 
     if not os.path.exists(os.path.join(args.data_dir,filenames)):
         filenames_url = get_filename_url(jpg_cxr_base_url,filenames,args.data_dir)
-        print('start download ' + filenames_url)
+        print('Start downloading meta data file' + filenames_url)
         wget_download(filenames_url)
 
     # Read content of file list, and loop through each item to get free-text report from MIMIC-CXR
@@ -77,8 +111,8 @@ def populate_dataset(imgAmount):
     
     count = 0
 
-    print('open gzip file '+ filenames)
-
+    # print('Open gzip file '+ filenames)
+    # print('Downloading images from MIMIC-CXR-JPG')
     with gzip.open(os.path.join(args.data_dir,filenames), "rt") as f:
             
             for line in f:
@@ -107,7 +141,8 @@ def populate_dataset(imgAmount):
 
                     if(count > imgAmount):
                         break
-
+    
+    # print('Downloading text files in MIMIC-CXR')
     for i in range(len(text_files)):
         text_file_url = get_filename_url(mimic_cxr_base_url,text_files[i],args.text_data_dir)
         wget_download(text_file_url)
@@ -122,17 +157,36 @@ def populate_dataset(imgAmount):
         
         single_text_file =text_files[i].split('/')[-1]
 
+        content_without_findings_keyword=[]
+        new_line_for_findings_content = False
+
+        # NOTE: if content has Findings keyword, then return the text between Findings and Impression keywords, 
+        #           otherwise return the text after the last empty line break
         with open(os.path.join(args.text_data_dir,single_text_file),"rt") as f:
             for line in f:
-                if('FINDINGS:' in line.strip()):
-                    findings_content.append(line.strip())
+                line_content= line.strip()
+                if('FINDINGS:' in line_content):
+                    if(line_content != 'FINDINGS:' and line_content.startswith('FINDINGS:')):
+                        findings_content.append(line_content[line_content.index('FINDINGS:')+9:].strip())
+                        
                     start_getting_content = True
                     continue
-                if('IMPRESSION:' in line.strip() and start_getting_content==True):
+                elif('IMPRESSION:' in line_content and start_getting_content==True):
                     start_getting_content = False
                     break
-                if(start_getting_content == True and line.strip() != ''):
-                    findings_content.append(line.strip())
+            
+                if(start_getting_content == True and line_content != ''):
+                    findings_content.append(line_content)
+                
+                if(line_content == ''):
+                    new_line_for_findings_content = True
+                    content_without_findings_keyword = []
+                    
+                elif(new_line_for_findings_content == True and 'FINDINGS:' not in line_content and 'IMPRESSION:' not in line_content):
+                    content_without_findings_keyword.append(line_content)
+            
+            if(len(findings_content)==0 and len(content_without_findings_keyword) > 0):
+                findings_content = content_without_findings_keyword
         
         contents_list.append(''.join(map(str,findings_content)))
         study_list.append( Path(text_files[i]).stem)
@@ -141,6 +195,7 @@ def populate_dataset(imgAmount):
 
     # Write to example_data\text\all_data.tsv for pairs of studyID and Findings in free-text report for Mutual Information training
 
+    # print('Start adding study_id and findings in all_data.tsv')
     with open(os.path.join(args.text_data_dir,'all_data.tsv'), 'w', encoding='utf8', newline='') as tsv_file:
         tsv_writer = csv.writer(tsv_file, delimiter='\t', lineterminator='\n')
         
