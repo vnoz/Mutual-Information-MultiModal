@@ -23,6 +23,16 @@ parser.add_argument('--data_dir', type=str,
                     default=os.path.join(current_dir, 'example_data/'),
                     help='The parent data directory')
 
+parser.add_argument('--download_user', type=str,
+                    default='tuanle',
+                    help='The user to download MIMIC dataset')
+
+parser.add_argument('--download_password', type=str,
+                    default='A1thebest',
+                    help='The password to download MIMIC dataset')
+parser.add_argument('--sample_amount', type=str,
+                    default=100,
+                    help='Total amount of samples to download from MIMIC dataset')
 
 args = parser.parse_args()
 
@@ -30,13 +40,13 @@ print(f"Initial args: {args}")
 
 
 def get_filename_url(base, file, save_location):
-    wget_cmd = 'wget -r -N -c -np -nH --cut-dirs 10 --user tuanle --password A1thebest '
+    wget_cmd = 'wget -r -N -c -np -nH --cut-dirs 10 --user '+ args.download_user + ' --password '+ args.download_password + ' '
     host_url=  os.path.join('https://physionet.org/files/',base)
     return wget_cmd + host_url + file + ' -P ' + save_location 
 
 
 def get_filename_new_location_url(base,file, new_filename):
-    wget_cmd = 'wget -r -N -c -np -nH --cut-dirs 10 --user tuanle --password A1thebest '
+    wget_cmd = 'wget -r -N -c -np -nH --cut-dirs 10 --user '+ args.download_user + ' --password '+ args.download_password + ' '
     host_url=  os.path.join('https://physionet.org/files/',base)
     return wget_cmd + host_url + file + ' -O '+new_filename
 
@@ -45,6 +55,13 @@ def wget_download(cmd):
 
 def populate_dataset(imgAmount):
 
+    if not os.path.exists(args.data_dir):
+        os.makedirs(args.data_dir)
+    if not os.path.exists(args.image_dir):
+        os.makedirs(args.image_dir)
+    if not os.path.exists(args.text_data_dir):
+        os.makedirs(args.text_data_dir)
+
     # Download mimic-cxr-2.0.0-metadata.csv.gz from MIMIC-CXR JPG for all files metadata
     filenames = 'mimic-cxr-2.0.0-metadata.csv.gz'
     jpg_cxr_base_url = 'mimic-cxr-jpg/2.1.0/'
@@ -52,13 +69,15 @@ def populate_dataset(imgAmount):
 
     if not os.path.exists(os.path.join(args.data_dir,filenames)):
         filenames_url = get_filename_url(jpg_cxr_base_url,filenames,args.data_dir)
-
+        print('start download ' + filenames_url)
         wget_download(filenames_url)
 
     # Read content of file list, and loop through each item to get free-text report from MIMIC-CXR
     text_files = []
     
     count = 0
+
+    print('open gzip file '+ filenames)
 
     with gzip.open(os.path.join(args.data_dir,filenames), "rt") as f:
             
@@ -105,10 +124,11 @@ def populate_dataset(imgAmount):
 
         with open(os.path.join(args.text_data_dir,single_text_file),"rt") as f:
             for line in f:
-                if(line.strip() == 'FINDINGS:'):
+                if('FINDINGS:' in line.strip()):
+                    findings_content.append(line.strip())
                     start_getting_content = True
                     continue
-                if(line.strip() == 'IMPRESSION:' and start_getting_content==True):
+                if('IMPRESSION:' in line.strip() and start_getting_content==True):
                     start_getting_content = False
                     break
                 if(start_getting_content == True and line.strip() != ''):
@@ -129,6 +149,6 @@ def populate_dataset(imgAmount):
 
 
     
-populate_dataset(100)
+populate_dataset(args.sample_amount)
     
 
