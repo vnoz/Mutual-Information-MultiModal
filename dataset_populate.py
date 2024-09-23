@@ -13,15 +13,17 @@ print(current_dir)
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument('--image_dir', type=str,
-                    default=os.path.join(current_dir, 'example_data/images/'),
-                    help='The image data directory')
-parser.add_argument('--text_data_dir', type=str,
-                    default=os.path.join(current_dir, 'example_data/text/'),
-                    help='The text data directory')
 parser.add_argument('--data_dir', type=str,
-                    default=os.path.join(current_dir, 'example_data/'),
+                    default=os.path.join(current_dir, 'data_storage/'),
                     help='The parent data directory')
+
+parser.add_argument('--image_dir', type=str,
+                    default=os.path.join(current_dir, 'data_storage/images/'),
+                    help='The image data directory')
+
+parser.add_argument('--text_data_dir', type=str,
+                    default=os.path.join(current_dir, 'data_storage/text/'),
+                    help='The text data directory')
 
 parser.add_argument('--download_user', type=str,
                     default='tuanle',
@@ -30,9 +32,21 @@ parser.add_argument('--download_user', type=str,
 parser.add_argument('--download_password', type=str,
                     default='A1thebest',
                     help='The password to download MIMIC dataset')
-parser.add_argument('--sample_amount', type=str,
+
+parser.add_argument('--total_amount', type=str,
                     default=10000,
                     help='Total amount of samples to download from MIMIC dataset')
+
+parser.add_argument('--amount_for_training', type=str,
+                    default=1000,
+                    help='Total amount of samples for training')
+
+
+parser.add_argument('--amount_for_testing', type=str,
+                    default=100,
+                    help='Total amount of samples for testing')
+
+
 
 args = parser.parse_args()
 
@@ -87,7 +101,7 @@ def get_filename_new_location_url(base,file, new_filename):
 def wget_download(cmd):
     os.system(cmd)
 
-def populate_dataset(imgAmount):
+def download_full_dataset(imgAmount):
 
     if not os.path.exists(args.data_dir):
         os.makedirs(args.data_dir)
@@ -201,9 +215,12 @@ def populate_dataset(imgAmount):
         
         for i in range(len(contents_list)):
             tsv_writer.writerow([i,0, study_list[i][1:],'a',contents_list[i]])
+ 
+# download_full_dataset(args.total_amount)
 
-
+def populate_training_and_testing_dataset(amount_for_training, amount_for_testing):
+    #TODO: read data_storage/text/all_data.tsv, select amount of studies having Findings content in data_storage folder, and assign to training and testing
+    print('Total amount for training: '+ str(amount_for_training)+', testing: ' + str(amount_for_testing))
     
-populate_dataset(args.sample_amount)
-    
 
+populate_training_and_testing_dataset(args.amount_for_training, args.amount_for_testing)
