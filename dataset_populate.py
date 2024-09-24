@@ -14,15 +14,15 @@ print(current_dir)
 parser = argparse.ArgumentParser()
 
 parser.add_argument('--data_dir', type=str,
-                    default=os.path.join(current_dir, 'data_storage/'),
+                    default=os.path.join(current_dir, 'full_data_set/'),
                     help='The parent data directory')
 
 parser.add_argument('--image_storage_dir', type=str,
-                    default=os.path.join(current_dir, 'data_storage/images/'),
+                    default=os.path.join(current_dir, 'full_data_set/images/'),
                     help='The image data directory')
 
 parser.add_argument('--text_storage_dir', type=str,
-                    default=os.path.join(current_dir, 'data_storage/text/'),
+                    default=os.path.join(current_dir, 'full_data_set/text/'),
                     help='The text data directory')
 
 parser.add_argument('--download_user', type=str,
