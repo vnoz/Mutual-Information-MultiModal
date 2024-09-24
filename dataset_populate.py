@@ -17,11 +17,11 @@ parser.add_argument('--data_dir', type=str,
                     default=os.path.join(current_dir, 'data_storage/'),
                     help='The parent data directory')
 
-parser.add_argument('--image_dir', type=str,
+parser.add_argument('--image_storage_dir', type=str,
                     default=os.path.join(current_dir, 'data_storage/images/'),
                     help='The image data directory')
 
-parser.add_argument('--text_data_dir', type=str,
+parser.add_argument('--text_storage_dir', type=str,
                     default=os.path.join(current_dir, 'data_storage/text/'),
                     help='The text data directory')
 
@@ -46,7 +46,12 @@ parser.add_argument('--amount_for_testing', type=str,
                     default=100,
                     help='Total amount of samples for testing')
 
-
+parser.add_argument('--training_image_dir', type=str,
+                    default=os.path.join(current_dir, 'example_data/images/'),
+                    help='The training image data directory')
+parser.add_argument('--training_text_data_dir', type=str,
+                    default=os.path.join(current_dir, 'example_data/text/'),
+                    help='The training text data directory')
 
 args = parser.parse_args()
 
@@ -60,7 +65,7 @@ def get_filename_url(base, file, save_location):
 
 def process_file(base, filename):
     url = get_filename_url(base, filename, args.data_dir)
-    wget_download(url)
+    execute_command(url)
 
     with open(os.path.join(args.data_dir,filename),"rt") as f:
         findings_content=[]
@@ -98,36 +103,52 @@ def get_filename_new_location_url(base,file, new_filename):
     host_url=  os.path.join('https://physionet.org/files/',base)
     return wget_cmd + host_url + file + ' -O '+new_filename
 
-def wget_download(cmd):
+def execute_command(cmd):
     os.system(cmd)
+
+study_dictionary={}
 
 def download_full_dataset(imgAmount):
 
     if not os.path.exists(args.data_dir):
         os.makedirs(args.data_dir)
-    if not os.path.exists(args.image_dir):
-        os.makedirs(args.image_dir)
-    if not os.path.exists(args.text_data_dir):
-        os.makedirs(args.text_data_dir)
+    if not os.path.exists(args.image_storage_dir):
+        os.makedirs(args.image_storage_dir)
+    if not os.path.exists(args.text_storage_dir):
+        os.makedirs(args.text_storage_dir)
+
+    if not os.path.exists(args.training_image_dir):
+        os.makedirs(args.training_image_dir)
+    if not os.path.exists(args.training_text_data_dir):
+        os.makedirs(args.training_text_data_dir)
+
 
     # Download mimic-cxr-2.0.0-metadata.csv.gz from MIMIC-CXR JPG for all files metadata
-    filenames = 'mimic-cxr-2.0.0-metadata.csv.gz'
+    meta_filename = 'mimic-cxr-2.0.0-metadata.csv.gz'   #metadata for mapping between image and associate text file
+    label_filename = 'mimic-cxr-2.0.0-negbio.csv.gz'  #mapping of study and labels from 14 diseases
+    
     jpg_cxr_base_url = 'mimic-cxr-jpg/2.1.0/'
     mimic_cxr_base_url = 'mimic-cxr/2.1.0/'
 
-    if not os.path.exists(os.path.join(args.data_dir,filenames)):
-        filenames_url = get_filename_url(jpg_cxr_base_url,filenames,args.data_dir)
-        print('Start downloading meta data file' + filenames_url)
-        wget_download(filenames_url)
+    if not os.path.exists(os.path.join(args.data_dir,meta_filename)):
+        metadata_file_url = get_filename_url(jpg_cxr_base_url,meta_filename,args.data_dir)
+        print('Start downloading meta data file' + metadata_file_url)
+        execute_command(metadata_file_url)
 
-    # Read content of file list, and loop through each item to get free-text report from MIMIC-CXR
+    if not os.path.exists(os.path.join(args.data_dir,label_filename)):
+        label_file_url = get_filename_url(jpg_cxr_base_url,label_filename,args.data_dir)
+        print('Start downloading label file' + label_file_url)
+        execute_command(label_file_url)
+
+
+    # Read content of meta data file, and loop through each item 
+    #     to download images from MIMIC-CXR-JPG and free-text report from MIMIC-CXR
     text_files = []
     
     count = 0
 
-    # print('Open gzip file '+ filenames)
-    # print('Downloading images from MIMIC-CXR-JPG')
-    with gzip.open(os.path.join(args.data_dir,filenames), "rt") as f:
+    # Download cxr-jpg file and create associate free-text file list
+    with gzip.open(os.path.join(args.data_dir,meta_filename), "rt") as f:
             
             for line in f:
                 #ignore first line for column labels
@@ -144,9 +165,10 @@ def download_full_dataset(imgAmount):
                 if(view_position == 'PA'):
 
                     img_filename = os.path.join('files','p'+subject_id[:2],'p'+subject_id,'s'+ study_id, dicom_id+'.jpg')
-                    new_img_filename = os.path.join(args.image_dir,'p'+subject_id+'_'+'s'+ study_id+'_'+dicom_id+'.jpg')
+                    new_img_filename = os.path.join(args.image_storage_dir,'p'+subject_id+'_'+'s'+ study_id+'_'+dicom_id+'.jpg')
+                    study_dictionary[study_id] = new_img_filename   
                     img_url = get_filename_new_location_url(jpg_cxr_base_url,img_filename,new_img_filename)
-                    wget_download(img_url)
+                    execute_command(img_url)
                     
                     text_filename = os.path.join('files','p'+subject_id[:2],'p'+subject_id,'s'+ study_id+'.txt')
                     text_files.append(text_filename)
@@ -156,15 +178,16 @@ def download_full_dataset(imgAmount):
                     if(count > imgAmount):
                         break
     
-    # print('Downloading text files in MIMIC-CXR')
+    # Downloading text files in MIMIC-CXR
     for i in range(len(text_files)):
-        text_file_url = get_filename_url(mimic_cxr_base_url,text_files[i],args.text_data_dir)
-        wget_download(text_file_url)
+        text_file_url = get_filename_url(mimic_cxr_base_url,text_files[i],args.text_storage_dir)
+        execute_command(text_file_url)
 
 
     contents_list=[]
     study_list=[]
 
+    # Parse text file and construct content from FINDINGS keyword in free-text report
     for i in range(len(text_files)):
         findings_content=[]
         start_getting_content=False
@@ -176,7 +199,7 @@ def download_full_dataset(imgAmount):
 
         # NOTE: if content has Findings keyword, then return the text between Findings and Impression keywords, 
         #           otherwise return the text after the last empty line break
-        with open(os.path.join(args.text_data_dir,single_text_file),"rt") as f:
+        with open(os.path.join(args.text_storage_dir,single_text_file),"rt") as f:
             for line in f:
                 line_content= line.strip()
                 if('FINDINGS:' in line_content):
@@ -210,17 +233,49 @@ def download_full_dataset(imgAmount):
     # Write to example_data\text\all_data.tsv for pairs of studyID and Findings in free-text report for Mutual Information training
 
     # print('Start adding study_id and findings in all_data.tsv')
-    with open(os.path.join(args.text_data_dir,'all_data.tsv'), 'w', encoding='utf8', newline='') as tsv_file:
+    with open(os.path.join(args.text_storage_dir,'all_data.tsv'), 'w', encoding='utf8', newline='') as tsv_file:
         tsv_writer = csv.writer(tsv_file, delimiter='\t', lineterminator='\n')
         
         for i in range(len(contents_list)):
             tsv_writer.writerow([i,0, study_list[i][1:],'a',contents_list[i]])
  
-# download_full_dataset(args.total_amount)
+download_full_dataset(args.total_amount)
 
 def populate_training_and_testing_dataset(amount_for_training, amount_for_testing):
     #TODO: read data_storage/text/all_data.tsv, select amount of studies having Findings content in data_storage folder, and assign to training and testing
     print('Total amount for training: '+ str(amount_for_training)+', testing: ' + str(amount_for_testing))
     
+    current_study_count=0
+    contents_list={}
+
+    
+    with open(os.path.join(args.text_storage_dir,'all_data.tsv'), "r", encoding="utf-8") as f:
+        reader = csv.reader(f, delimiter="\t", lineterminator='\n')
+        lines = []
+        for line in reader:
+            text = line[-1]
+            # labels = line[1]
+            study_id = line[2]
+            image_file = study_dictionary.get(study_id,'')
+            if(text != '' and image_file != ''):
+                current_study_count=current_study_count+1
+                # copy image file to args.training_image_dir folder example_data/images
+                copy_cmd = 'cp ' + image_file + ' '+ args.training_image_dir
+               
+                execute_command(copy_cmd)
+                # append FINDINGs content to the list and write to file training_data.tsv in args.training_text_data_dir
+                contents_list[study_id]=text
+            if(current_study_count >= amount_for_training):
+                break
+    
+    training_data_file = os.path.join(args.training_text_data_dir,'training_data.tsv')
+    
+    with open(training_data_file, 'w', encoding='utf8', newline='') as tsv_file:
+        tsv_writer = csv.writer(tsv_file, delimiter='\t', lineterminator='\n')
+        
+        i=0
+        for study_id in contents_list:
+            tsv_writer.writerow([i,0, study_id,'a',contents_list[study_id]])
+            i=i+1
 
 populate_training_and_testing_dataset(args.amount_for_training, args.amount_for_testing)
