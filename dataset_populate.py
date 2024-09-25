@@ -46,10 +46,14 @@ parser.add_argument('--amount_for_testing', type=str,
                     default=10,
                     help='Total amount of samples for testing')
 
+parser.add_argument('--training_data_dir', type=str,
+                    default=os.path.join(current_dir, 'example_data/'),
+                    help='The parent data directory')
+
 parser.add_argument('--training_image_dir', type=str,
                     default=os.path.join(current_dir, 'example_data/images/'),
                     help='The training image data directory')
-parser.add_argument('--training_text_data_dir', type=str,
+parser.add_argument('--training_text_dir', type=str,
                     default=os.path.join(current_dir, 'example_data/text/'),
                     help='The training text data directory')
 
@@ -117,10 +121,12 @@ def download_full_dataset(imgAmount):
     if not os.path.exists(args.text_storage_dir):
         os.makedirs(args.text_storage_dir)
 
+    if not os.path.exists(args.training_data_dir):
+        os.makedirs(args.training_data_dir)
     if not os.path.exists(args.training_image_dir):
         os.makedirs(args.training_image_dir)
-    if not os.path.exists(args.training_text_data_dir):
-        os.makedirs(args.training_text_data_dir)
+    if not os.path.exists(args.training_text_dir):
+        os.makedirs(args.training_text_dir)
 
 
     # Download mimic-cxr-2.0.0-metadata.csv.gz from MIMIC-CXR JPG for all files metadata
@@ -268,7 +274,7 @@ def populate_training_and_testing_dataset(amount_for_training, amount_for_testin
             if(current_study_count >= amount_for_training):
                 break
     
-    training_data_file = os.path.join(args.training_text_data_dir,'training_data.tsv')
+    training_data_file = os.path.join(args.training_text_dir,'training_data.tsv')
     
     with open(training_data_file, 'w', encoding='utf8', newline='') as tsv_file:
         tsv_writer = csv.writer(tsv_file, delimiter='\t', lineterminator='\n')
