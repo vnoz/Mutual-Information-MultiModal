@@ -38,7 +38,7 @@ parser.add_argument('--total_amount', type=str,
                     help='Total amount of samples to download from MIMIC dataset')
 
 parser.add_argument('--amount_for_training', type=str,
-                    default=80,
+                    default=84,
                     help='Total amount of samples for training')
 
 
