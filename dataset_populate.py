@@ -34,16 +34,16 @@ parser.add_argument('--download_password', type=str,
                     help='The password to download MIMIC dataset')
 
 parser.add_argument('--total_amount', type=str,
-                    default=10000,
+                    default=100,
                     help='Total amount of samples to download from MIMIC dataset')
 
 parser.add_argument('--amount_for_training', type=str,
-                    default=1000,
+                    default=80,
                     help='Total amount of samples for training')
 
 
 parser.add_argument('--amount_for_testing', type=str,
-                    default=100,
+                    default=10,
                     help='Total amount of samples for testing')
 
 parser.add_argument('--training_image_dir', type=str,
