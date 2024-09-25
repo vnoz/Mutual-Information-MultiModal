@@ -34,11 +34,11 @@ parser.add_argument('--download_password', type=str,
                     help='The password to download MIMIC dataset')
 
 parser.add_argument('--total_amount', type=str,
-                    default=1000,
+                    default=100,
                     help='Total amount of samples to download from MIMIC dataset')
 
 parser.add_argument('--amount_for_training', type=str,
-                    default=800,
+                    default=80,
                     help='Total amount of samples for training')
 
 
@@ -177,10 +177,12 @@ def download_full_dataset(imgAmount):
                 if(view_position == 'PA'):
 
                     img_filename = os.path.join('files','p'+subject_id[:2],'p'+subject_id,'s'+ study_id, dicom_id+'.jpg')
-                    new_img_filename = 'p'+subject_id+'_'+'s'+ study_id+'_'+dicom_id
-                    study_dictionary[study_id] = os.path.join(args.image_storage_dir,new_img_filename)   
-                    image_file_dictionary[study_id] = new_img_filename
-                    img_url = get_filename_new_location_url(jpg_cxr_base_url,img_filename,new_img_filename)
+                    new_img_filename_without_extension = 'p'+subject_id+'_'+'s'+ study_id+'_'+dicom_id
+                    
+                    new_img_filename_full_path = os.path.join(args.image_storage_dir,new_img_filename_without_extension+'.jpg')  
+                    study_dictionary[study_id] =  new_img_filename_full_path
+                    image_file_dictionary[study_id] = new_img_filename_without_extension
+                    img_url = get_filename_new_location_url(jpg_cxr_base_url,img_filename,new_img_filename_full_path)
                     execute_command(img_url)
                     
                     text_filename = os.path.join('files','p'+subject_id[:2],'p'+subject_id,'s'+ study_id+'.txt')
@@ -245,7 +247,6 @@ def download_full_dataset(imgAmount):
 
     # Write to example_data\text\all_data.tsv for pairs of studyID and Findings in free-text report for Mutual Information training
 
-    # print('Start adding study_id and findings in all_data.tsv')
     with open(os.path.join(args.text_storage_dir,'all_data.tsv'), 'w', encoding='utf8', newline='') as tsv_file:
         tsv_writer = csv.writer(tsv_file, delimiter='\t', lineterminator='\n')
         
@@ -255,8 +256,6 @@ def download_full_dataset(imgAmount):
 download_full_dataset(args.total_amount)
 
 def populate_training_and_testing_dataset(amount_for_training, amount_for_testing):
-    #TODO: read data_storage/text/all_data.tsv, select amount of studies having Findings content in data_storage folder, and assign to training and testing
-    print('Total amount for training: '+ str(amount_for_training)+', testing: ' + str(amount_for_testing))
     
     current_study_count=0
     contents_list={}
@@ -264,7 +263,7 @@ def populate_training_and_testing_dataset(amount_for_training, amount_for_testin
     # Move file from full dataset to training dataset folder
     with open(os.path.join(args.text_storage_dir,'all_data.tsv'), "r", encoding="utf-8") as f:
         reader = csv.reader(f, delimiter="\t", lineterminator='\n')
-        lines = []
+        
         for line in reader:
             text = line[-1]
             # labels = line[1]
@@ -273,7 +272,7 @@ def populate_training_and_testing_dataset(amount_for_training, amount_for_testin
             if(text != '' and image_file != ''):
                 current_study_count=current_study_count+1
                 # copy image file to args.training_image_dir folder example_data/images
-                copy_cmd = 'cp ' + image_file + '.jpg '+ args.training_image_dir
+                copy_cmd = 'cp ' + image_file + ' ' + args.training_image_dir
                
                 execute_command(copy_cmd)
                 # append FINDINGs content to the list and write to file training_data.tsv in args.training_text_data_dir
