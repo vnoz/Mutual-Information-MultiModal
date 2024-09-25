@@ -28,9 +28,9 @@ parser.add_argument('--bert_pretrained_dir', type=str,
 parser.add_argument('--bert_config_name',
                     default='bert_config.json', help='Bert model config file')
 parser.add_argument('--save_dir', type=str,
-                    default=os.path.join(current_dir, '/home/anhle/data/save_dir'))
+                    default=os.path.join(current_dir, 'save_dir'))
 parser.add_argument('--dataset_metadata', type=str,
-                    default=os.path.join(current_dir, 'example_data/training_chexpert_mini.csv'),
+                    default=os.path.join(current_dir, 'example_data/training_text_label_negbio.csv'),
                     help='The metadata for the model training ')
 
 parser.add_argument('--batch_size', default=8, type=int,

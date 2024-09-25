@@ -34,16 +34,16 @@ parser.add_argument('--download_password', type=str,
                     help='The password to download MIMIC dataset')
 
 parser.add_argument('--total_amount', type=str,
-                    default=100,
+                    default=1000,
                     help='Total amount of samples to download from MIMIC dataset')
 
 parser.add_argument('--amount_for_training', type=str,
-                    default=80,
+                    default=800,
                     help='Total amount of samples for training')
 
 
 parser.add_argument('--amount_for_testing', type=str,
-                    default=10,
+                    default=100,
                     help='Total amount of samples for testing')
 
 parser.add_argument('--training_data_dir', type=str,
@@ -56,6 +56,10 @@ parser.add_argument('--training_image_dir', type=str,
 parser.add_argument('--training_text_dir', type=str,
                     default=os.path.join(current_dir, 'example_data/text/'),
                     help='The training text data directory')
+parser.add_argument('--training_dataset_metadata', type=str,
+                    default=os.path.join(current_dir, 'example_data/training_text_label_negbio.csv'),
+                    help='The metadata for the model training ')
+
 
 args = parser.parse_args()
 
@@ -111,6 +115,11 @@ def execute_command(cmd):
     os.system(cmd)
 
 study_dictionary={}
+image_file_dictionary={}
+ # Download mimic-cxr-2.0.0-metadata.csv.gz from MIMIC-CXR JPG for all files metadata
+meta_filename = 'mimic-cxr-2.0.0-metadata.csv.gz'   #metadata for mapping between image and associate text file
+label_filename = 'mimic-cxr-2.0.0-negbio.csv.gz'  #mapping of study and labels from 14 diseases
+
 
 def download_full_dataset(imgAmount):
 
@@ -129,10 +138,7 @@ def download_full_dataset(imgAmount):
         os.makedirs(args.training_text_dir)
 
 
-    # Download mimic-cxr-2.0.0-metadata.csv.gz from MIMIC-CXR JPG for all files metadata
-    meta_filename = 'mimic-cxr-2.0.0-metadata.csv.gz'   #metadata for mapping between image and associate text file
-    label_filename = 'mimic-cxr-2.0.0-negbio.csv.gz'  #mapping of study and labels from 14 diseases
-    
+   
     jpg_cxr_base_url = 'mimic-cxr-jpg/2.1.0/'
     mimic_cxr_base_url = 'mimic-cxr/2.1.0/'
 
@@ -171,8 +177,9 @@ def download_full_dataset(imgAmount):
                 if(view_position == 'PA'):
 
                     img_filename = os.path.join('files','p'+subject_id[:2],'p'+subject_id,'s'+ study_id, dicom_id+'.jpg')
-                    new_img_filename = os.path.join(args.image_storage_dir,'p'+subject_id+'_'+'s'+ study_id+'_'+dicom_id+'.jpg')
-                    study_dictionary[study_id] = new_img_filename   
+                    new_img_filename = 'p'+subject_id+'_'+'s'+ study_id+'_'+dicom_id
+                    study_dictionary[study_id] = os.path.join(args.image_storage_dir,new_img_filename)   
+                    image_file_dictionary[study_id] = new_img_filename
                     img_url = get_filename_new_location_url(jpg_cxr_base_url,img_filename,new_img_filename)
                     execute_command(img_url)
                     
@@ -254,7 +261,7 @@ def populate_training_and_testing_dataset(amount_for_training, amount_for_testin
     current_study_count=0
     contents_list={}
 
-    
+    # Move file from full dataset to training dataset folder
     with open(os.path.join(args.text_storage_dir,'all_data.tsv'), "r", encoding="utf-8") as f:
         reader = csv.reader(f, delimiter="\t", lineterminator='\n')
         lines = []
@@ -266,7 +273,7 @@ def populate_training_and_testing_dataset(amount_for_training, amount_for_testin
             if(text != '' and image_file != ''):
                 current_study_count=current_study_count+1
                 # copy image file to args.training_image_dir folder example_data/images
-                copy_cmd = 'cp ' + image_file + ' '+ args.training_image_dir
+                copy_cmd = 'cp ' + image_file + '.jpg '+ args.training_image_dir
                
                 execute_command(copy_cmd)
                 # append FINDINGs content to the list and write to file training_data.tsv in args.training_text_data_dir
@@ -274,7 +281,8 @@ def populate_training_and_testing_dataset(amount_for_training, amount_for_testin
             if(current_study_count >= amount_for_training):
                 break
     
-    training_data_file = os.path.join(args.training_text_dir,'training_data.tsv')
+    # Write FINDINGS in free text reports of training images to training_data.tsv
+    training_data_file = os.path.join(args.training_text_dir,'all_data.tsv')
     
     with open(training_data_file, 'w', encoding='utf8', newline='') as tsv_file:
         tsv_writer = csv.writer(tsv_file, delimiter='\t', lineterminator='\n')
@@ -284,4 +292,32 @@ def populate_training_and_testing_dataset(amount_for_training, amount_for_testin
             tsv_writer.writerow([i,0, study_id,'a',contents_list[study_id]])
             i=i+1
 
+    # Read label_filename and find study_id to add into args.training_dataset_metadata
+    label_report_lines=[]
+    line_count = 0
+    with gzip.open(os.path.join(args.data_dir,label_filename), "rt") as f:
+            for line in f:
+                if(line_count > amount_for_training):
+                    break
+                if (line_count == 0):
+                    new_line=[]
+                    new_line.append('mimic_id')
+                    new_line.extend(line.strip('\n').split(',')[2:])
+                    label_report_lines.append(new_line)
+                    line_count = line_count + 1
+
+                else:
+                    current_study_id = line.split(',')[1]
+                    if (contents_list.get(current_study_id,'') != ''):
+                        image_file = image_file_dictionary.get(current_study_id)
+                        new_line=[]
+                        new_line.append(image_file)
+                        new_line.extend(line.strip('\n').split(',')[2:])
+                        label_report_lines.append(new_line)                
+                        line_count = line_count + 1
+
+    with open(args.training_dataset_metadata, 'w') as tsv_file:
+        tsv_writer = csv.writer(tsv_file)
+        tsv_writer.writerows(label_report_lines)
+ 
 populate_training_and_testing_dataset(args.amount_for_training, args.amount_for_testing)
