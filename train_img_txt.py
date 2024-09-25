@@ -87,6 +87,9 @@ def train_image_text():
     '''
     Tokenize text
     '''
+    if not os.path.exists(args.bert_pretrained_dir):
+        os.makedirs(args.bert_pretrained_dir)
+    
     tokenizer = BertTokenizer.from_pretrained(args.bert_pretrained_dir)
     text_token_features = model_utils.load_and_cache_examples(args, tokenizer)
 
