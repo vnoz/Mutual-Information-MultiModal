@@ -120,9 +120,7 @@ image_file_dictionary={}
 meta_filename = 'mimic-cxr-2.0.0-metadata.csv.gz'   #metadata for mapping between image and associate text file
 label_filename = 'mimic-cxr-2.0.0-negbio.csv.gz'  #mapping of study and labels from 14 diseases
 
-
-def download_full_dataset(imgAmount):
-
+def create_data_folder():
     if not os.path.exists(args.data_dir):
         os.makedirs(args.data_dir)
     if not os.path.exists(args.image_storage_dir):
@@ -137,8 +135,10 @@ def download_full_dataset(imgAmount):
     if not os.path.exists(args.training_text_dir):
         os.makedirs(args.training_text_dir)
 
+def download_full_dataset(imgAmount):
 
-   
+    create_data_folder()
+
     jpg_cxr_base_url = 'mimic-cxr-jpg/2.1.0/'
     mimic_cxr_base_url = 'mimic-cxr/2.1.0/'
 
@@ -256,6 +256,8 @@ def download_full_dataset(imgAmount):
 # download_full_dataset(args.total_amount)
 
 def populate_training_and_testing_dataset(amount_for_training, amount_for_testing):
+    
+    create_data_folder()
     
     current_study_count=0
     contents_list={}
