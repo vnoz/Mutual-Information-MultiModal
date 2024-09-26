@@ -34,11 +34,11 @@ parser.add_argument('--download_password', type=str,
                     help='The password to download MIMIC dataset')
 
 parser.add_argument('--total_amount', type=str,
-                    default=100,
+                    default=10000,
                     help='Total amount of samples to download from MIMIC dataset')
 
 parser.add_argument('--amount_for_training', type=str,
-                    default=84,
+                    default=1000,
                     help='Total amount of samples for training')
 
 
@@ -253,7 +253,7 @@ def download_full_dataset(imgAmount):
         for i in range(len(contents_list)):
             tsv_writer.writerow([i,0, study_list[i][1:],'a',contents_list[i]])
  
-download_full_dataset(args.total_amount)
+# download_full_dataset(args.total_amount)
 
 def populate_training_and_testing_dataset(amount_for_training, amount_for_testing):
     
