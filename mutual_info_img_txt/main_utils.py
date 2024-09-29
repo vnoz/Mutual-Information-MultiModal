@@ -304,12 +304,13 @@ class ExplainableImageModelManager:
 			avg_cost = 0
 
 			for image, label in data_loader:
-				image_embeddings = pre_trained_img_model(image)
-				image_embeddings = image_embeddings.to(device)
+				# image_embeddings = pre_trained_img_model(image)
+				# image_embeddings = image_embeddings.to(device)
+				image = image.to(device)
 				label = label.to(device)
 
 				optimizer.zero_grad()
-				hypothesis = image_classifier(image_embeddings)
+				hypothesis = image_classifier(image)
 				cost = criterion(hypothesis, label)
 				cost.backward()
 				optimizer.step()
