@@ -113,7 +113,7 @@ def train_image_text():
 
 def load_pre_trained_model():
     args = parser.parse_args()
-    output_model_file = os.path.join(args.save_directory, 
+    output_model_file = os.path.join(args.save_dir, 
                                              'pytorch_model_epoch'+str(args.num_train_epochs)+'.bin')
     
     image_model = build_resnet_model(model_name=args.image_model_name, checkpoint_path=output_model_file,
