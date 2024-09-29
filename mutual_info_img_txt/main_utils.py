@@ -283,7 +283,7 @@ class ExplainableImageModelManager:
 									dataset_metadata=args.dataset_metadata, 
 									disease='Pleural Effusion',
 									#transform=None)
-									 transform=transform)
+									transform=pre_trained_img_model)
 		
 		data_loader = torch.utils.data.DataLoader(dataset=dataset,
                                           batch_size=1,
