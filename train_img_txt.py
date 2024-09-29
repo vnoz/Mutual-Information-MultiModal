@@ -10,6 +10,7 @@ from pytorch_transformers import BertTokenizer
 
 from mutual_info_img_txt import model_utils
 from mutual_info_img_txt.main_utils import ImageTextModelManager
+from mutual_info_img_txt.model import build_resnet_model
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 print(current_dir)
@@ -109,3 +110,12 @@ def train_image_text():
                         args=args)
 
 train_image_text()
+
+def load_pre_trained_model():
+    args = parser.parse_args()
+    output_model_file = os.path.join(args.save_directory, 
+                                             'pytorch_model_epoch'+str(args.num_train_epochs)+'.bin')
+    
+    image_model = build_resnet_model(model_name=args.image_model_name, checkpoint_path=output_model_file,
+											  output_channels=args.output_channels)
+    return image_model
