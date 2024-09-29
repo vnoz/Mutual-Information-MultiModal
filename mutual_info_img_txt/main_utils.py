@@ -248,7 +248,7 @@ class ExplainableImageModelManager:
 		# self.classifier_metric_name = classifier_metric_name
 		# self.classifier_explanation_metric_name = classifier_explanation_metric_name
 
-	def train(self, device, args):
+	def train(self, pre_trained_img_model ,device, args):
 		'''
 		Train the model
 		'''
@@ -303,12 +303,12 @@ class ExplainableImageModelManager:
 			avg_cost = 0
 
 			for image, label in data_loader:
-				
-				image = image.to(device)
+				image_embeddings = pre_trained_img_model(image)
+				image_embeddings = image_embeddings.to(device)
 				label = label.to(device)
 
 				optimizer.zero_grad()
-				hypothesis = image_classifier(image)
+				hypothesis = image_classifier(image_embeddings)
 				cost = criterion(hypothesis, label)
 				cost.backward()
 				optimizer.step()

@@ -9,7 +9,7 @@ import torch
 from pytorch_transformers import BertTokenizer
 
 from mutual_info_img_txt import model_utils
-from mutual_info_img_txt.main_utils import ImageTextModelManager
+from mutual_info_img_txt.main_utils import ExplainableImageModelManager, ImageTextModelManager
 from mutual_info_img_txt.model import build_resnet_model
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -119,3 +119,20 @@ def load_pre_trained_model():
     image_model = build_resnet_model(model_name=args.image_model_name, checkpoint_path=output_model_file,
 											  output_channels=args.output_channels)
     return image_model
+
+
+def train_image_classifier():
+    
+    args = parser.parse_args()
+    
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+    print(f"Start training Image Model: {args}")
+
+    model_manager = ExplainableImageModelManager(
+                                             'ImageCNNModel')
+
+    model_manager.train( pre_trained_img_model=load_pre_trained_model() , device=device,
+                        args=args)
+    
+train_image_classifier()
