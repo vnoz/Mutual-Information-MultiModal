@@ -282,7 +282,8 @@ class ExplainableImageModelManager:
 		dataset = CXRImageDataset(img_dir=args.image_dir, 
 									dataset_metadata=args.dataset_metadata, 
 									disease='Pleural Effusion',
-									transform=transform)
+									transform=None)
+									# transform=transform)
 		
 		data_loader = torch.utils.data.DataLoader(dataset=dataset,
                                           batch_size=1,
