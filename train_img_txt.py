@@ -109,7 +109,7 @@ def train_image_text():
                         device=device,
                         args=args)
 
-train_image_text()
+#train_image_text()
 
 def load_pre_trained_model():
     args = parser.parse_args()
