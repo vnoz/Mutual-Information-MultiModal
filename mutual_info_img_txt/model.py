@@ -136,7 +136,7 @@ class BasicBlock(nn.Module):
 class Basic_MLP(nn.Module):
     def __init__(self, input_dim, hidden_dims: list, output_dim=1, activation='relu'):
         super(Basic_MLP, self).__init__()
-        
+
         self.layer1 = nn.Linear(input_dim, hidden_dims[0])
 
         self.layer2 = nn.Linear(hidden_dims[0], hidden_dims[1])
@@ -149,8 +149,8 @@ class Basic_MLP(nn.Module):
         x = self.layer1(x)
         x = self.layer2(x)
         z = torch.flatten(x, 1)
-        y_logits = self.layer3(z)
-        y = self.softmax(y_logits)
+        y = self.layer3(z)
+        # y = self.softmax(y_logits)
         return y
 
 class ResNet256_6_2_1(nn.Module):
