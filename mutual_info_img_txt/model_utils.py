@@ -139,9 +139,9 @@ class CXRImageDataset(torchvision.datasets.VisionDataset):
         img_id, study_id = self.dataset_metadata.loc[idx, \
             [self.data_key, 'study_id']]
         if self.dataset_metadata.loc[idx,self.disease_label] > 0:
-            labelDisease = 1
+            labelDisease = 1.0
         else:
-            labelDisease=0
+            labelDisease=0.0
 
         if self.cache_images:
             img = self.images[str(idx)]
