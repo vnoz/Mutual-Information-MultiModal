@@ -288,7 +288,7 @@ class ExplainableImageModelManager:
 									disease='Pleural Effusion',
 									transform=transform)
 		
-		data_loader = DataLoader(dataset, batch_size=8,
+		data_loader = DataLoader(dataset, batch_size=1,
 								 shuffle=True, num_workers=8,
 								 pin_memory=True, drop_last=True)
 
@@ -318,8 +318,8 @@ class ExplainableImageModelManager:
 
 				optimizer.zero_grad()
 				expectedLabel = image_classifier_model(image_embeddings)
-				# print('***label: ' + str(label.item()))
-				# print('expectedLabel: '+str(expectedLabel.item()))
+				print('***label: ' + str(label.item()))
+				print('expectedLabel: '+str(expectedLabel.item()))
 
 				loss = criterion(expectedLabel,label)
 				
