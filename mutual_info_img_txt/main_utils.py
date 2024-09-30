@@ -296,10 +296,9 @@ class ExplainableImageModelManager:
 									disease='Pleural Effusion',
 									transform=transform)
 		
-		data_loader = torch.utils.data.DataLoader(dataset=dataset,
-                                          batch_size=1,
-                                          shuffle=True,
-                                          drop_last=True)
+		data_loader = DataLoader(dataset, batch_size=args.batch_size,
+								 shuffle=True, num_workers=8,
+								 pin_memory=True, drop_last=True)
 
 		'''
 		Define Loss function and optimizer
@@ -310,6 +309,9 @@ class ExplainableImageModelManager:
 		optimizer = torch.optim.Adam(self.image_classifier_model.parameters(), lr=args.init_lr)
 
 		total_batch = len(data_loader)
+
+		start_time = time.time()
+
 		for epoch in range(args.num_train_epochs):
     		
 			avg_cost = 0
@@ -329,6 +331,12 @@ class ExplainableImageModelManager:
 				avg_cost += cost / total_batch
 
 			print('[Epoch: {:>4}] cost = {:>.9}'.format(epoch + 1, avg_cost))
+		
+		checkpoint_path = self.image_classifier_model.save_pretrained(args.save_dir, epoch=epoch + 1)
+		interval = time.time() - start_time
+
+		print(f"  Epoch {epoch+1} took {interval:.3f} s")
+		print(f'Epoch checkpoint saved in {checkpoint_path}')
 
 	def generate_heatmap():
 		

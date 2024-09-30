@@ -113,7 +113,7 @@ def train_image_text():
                         args=args)
     print(f"Finish training for ImageTextModelManager")
 
-train_image_text()
+# train_image_text()
 
 def load_pre_trained_model():
     args = parser.parse_args()
