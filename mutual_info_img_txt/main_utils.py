@@ -297,7 +297,7 @@ class ExplainableImageModelManager:
 		'''
 		self.image_classifier_model = self.image_classifier_model.to(device)
 		
-		criterion = torch.nn.CrossEntropyLoss().to(device)    # Softmax is internally computed.
+		criterion = torch.nn.CrossEntropyLoss()    # Softmax is internally computed.
 		optimizer = torch.optim.Adam(self.image_classifier_model.parameters(), lr=args.init_lr)
 
 		total_batch = len(data_loader)
