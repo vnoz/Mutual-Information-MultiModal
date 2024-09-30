@@ -297,7 +297,7 @@ class ExplainableImageModelManager:
 		'''
 		image_classifier_model = Basic_MLP(768,[512,256,128]).to(device)
 		
-		criterion = torch.nn.CrossEntropyLoss(ignore_index=-1)    # Softmax is internally computed.
+		criterion = torch.nn.CrossEntropyLoss(ignore_index=-1).to(device)    # Softmax is internally computed.
 		optimizer = torch.optim.Adam(image_classifier_model.parameters(), lr=args.init_lr)
 
 		total_batch = len(data_loader)
@@ -321,9 +321,9 @@ class ExplainableImageModelManager:
 				print('***label: ' + str(label.item()))
 				print('expectedLabel: '+str(expectedLabel.item()))
 
-				cost = criterion(expectedLabel,label)
+				loss = criterion(expectedLabel,label)
 				
-				cost.backward()
+				loss.backward()
 				
 				optimizer.step()
 
