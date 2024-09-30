@@ -154,7 +154,7 @@ class CXRImageDataset(torchvision.datasets.VisionDataset):
 
         img = np.expand_dims(img, axis=0)
 
-        return img, labelDisease.type(torch.LongTensor)
+        return img, labelDisease
 
 # adapted from
 # https://towardsdatascience.com/https-medium-com-chaturangarajapakshe-text-classification-with-transformer-models-d370944b50ca
