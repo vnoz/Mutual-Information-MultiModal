@@ -317,10 +317,10 @@ class ExplainableImageModelManager:
 				label = label.to(device)
 
 				optimizer.zero_grad()
-				hypothesis = image_classifier_model(image_embeddings)
-				print('hypothesis: '+str(hypothesis))
+				expectedLabel = image_classifier_model(image_embeddings)
+				print('expectedLabel: '+str(expectedLabel.item()))
 
-				cost = criterion(hypothesis,label)
+				cost = criterion(expectedLabel,label)
 				# print('cost: '+ str(cost))
 				
 				cost.backward()
