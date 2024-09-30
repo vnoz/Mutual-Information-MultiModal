@@ -237,13 +237,13 @@ class ExplainableImageModelManager:
 			and metrics for classifier and heatmap generation
 	"""
 
-	def __init__(self):
+	# def __init__(self):
 				#   ,classifier_explanation_name, classifier_metric_name, classifier_explanation_metric_name):
 		# self.training_data_set= training_data_set
 		# self.validate_data_set = validate_data_set
 		# self.output_channels = output_channels
 		# self.image_classifier_name = image_classifier_name
-		self.image_classifier_model = Basic_MLP(768,[512,256])
+		# self.image_classifier_model = Basic_MLP(768,[512,256])
 		# self.classifier_explanation = classifier_explanation_name
 		# self.classifier_metric_name = classifier_metric_name
 		# self.classifier_explanation_metric_name = classifier_explanation_metric_name
@@ -295,10 +295,10 @@ class ExplainableImageModelManager:
 		'''
 		Define Loss function and optimizer
 		'''
-		self.image_classifier_model = self.image_classifier_model.to(device)
+		image_classifier_model = Basic_MLP(768,[512,256]).to(device)
 		
-		criterion = torch.nn.CrossEntropyLoss()    # Softmax is internally computed.
-		optimizer = torch.optim.Adam(self.image_classifier_model.parameters(), lr=args.init_lr)
+		criterion = torch.nn.CrossEntropyLoss().to(device)    # Softmax is internally computed.
+		optimizer = torch.optim.Adam(image_classifier_model.parameters(), lr=args.init_lr)
 
 		total_batch = len(data_loader)
 
@@ -309,7 +309,7 @@ class ExplainableImageModelManager:
 			avg_cost = 0
 
 			for image, label in data_loader:
-				print('label: ' + str(label))
+				print('label: ' + label)
 				output_image = self.pre_trained_img_model.forward(image)
 				image_embeddings=output_image[1]
 				image_embeddings= image_embeddings.to(device)
@@ -317,7 +317,7 @@ class ExplainableImageModelManager:
 				label = label.to(device)
 
 				optimizer.zero_grad()
-				hypothesis = self.image_classifier_model(image_embeddings)
+				hypothesis = image_classifier_model(image_embeddings)
 				print('hypothesis: '+str(hypothesis))
 
 				cost = criterion(hypothesis,label)

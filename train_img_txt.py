@@ -123,7 +123,7 @@ def train_image_classifier():
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    print(f"Start training Image Model: {args}")
+    print(f"Start training Image Model: ***************")
 
     model_manager = ExplainableImageModelManager()
 
