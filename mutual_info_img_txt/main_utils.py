@@ -237,13 +237,12 @@ class ExplainableImageModelManager:
 			and metrics for classifier and heatmap generation
 	"""
 
-	def __init__(self, 
-				  image_classifier_name):
+	def __init__(self):
 				#   ,classifier_explanation_name, classifier_metric_name, classifier_explanation_metric_name):
 		# self.training_data_set= training_data_set
 		# self.validate_data_set = validate_data_set
 		# self.output_channels = output_channels
-		self.image_classifier_name = image_classifier_name
+		# self.image_classifier_name = image_classifier_name
 		self.image_classifier_model = make_mlp(768,[512,256])
 		# self.classifier_explanation = classifier_explanation_name
 		# self.classifier_metric_name = classifier_metric_name
@@ -294,10 +293,10 @@ class ExplainableImageModelManager:
 		'''
 		Define Loss function and optimizer
 		'''
-		image_classifier_model = image_classifier_model.to(device)
+		self.image_classifier_model = self.image_classifier_model.to(device)
 
 		criterion = torch.nn.CrossEntropyLoss().to(device)    # Softmax is internally computed.
-		optimizer = torch.optim.Adam(image_classifier_model.parameters(), lr=args.init_lr)
+		optimizer = torch.optim.Adam(self.image_classifier_model.parameters(), lr=args.init_lr)
 
 		total_batch = len(data_loader)
 		for epoch in range(args.num_train_epochs):
@@ -311,7 +310,7 @@ class ExplainableImageModelManager:
 				label = label.to(device)
 
 				optimizer.zero_grad()
-				hypothesis = image_classifier_model(image_embeddings)
+				hypothesis = self.image_classifier_model(image_embeddings)
 				cost = criterion(hypothesis, label)
 				cost.backward()
 				optimizer.step()
