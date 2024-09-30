@@ -135,6 +135,7 @@ class BasicBlock(nn.Module):
 
 class Basic_MLP(nn.Module):
     def __init__(self, input_dim, hidden_dims: list, output_dim=1, activation='relu'):
+        super(Basic_MLP, self).__init__()
         
         self.layer1 = nn.Linear(input_dim, hidden_dims[0])
 
