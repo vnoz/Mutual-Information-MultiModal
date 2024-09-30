@@ -309,6 +309,7 @@ class ExplainableImageModelManager:
 			avg_cost = 0
 
 			for image, label in data_loader:
+				print('label: ' + str(label))
 				output_image = self.pre_trained_img_model.forward(image)
 				image_embeddings=output_image[1]
 				image_embeddings= image_embeddings.to(device)
