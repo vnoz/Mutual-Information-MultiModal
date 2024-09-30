@@ -255,6 +255,16 @@ class ExplainableImageModelManager:
 		Train the model
 		'''
 
+		
+		#NOTE: Load pre_trained image model from MI training
+		save_dir = os.path.join(args.save_dir,
+                                 f'{args.mi_estimator}_total_epochs{args.num_train_epochs}')
+		output_model_file = os.path.join(save_dir, 
+													'pytorch_model_epoch'+str(args.num_train_epochs)+'.bin')
+
+		self.pre_trained_img_model = build_resnet_model(model_name=args.image_model_name, checkpoint_path=output_model_file,
+													output_channels=args.output_channels)
+		
 		'''
 		Create an instance of traning data loader
 		'''
@@ -273,16 +283,6 @@ class ExplainableImageModelManager:
 		torchvision.transforms.Lambda(
 			lambda img: img / max(1e-3, img.max()))
 		])
-
-		#NOTE: Load pre_trained image model from MI training
-		save_dir = os.path.join(args.save_dir,
-                                 f'{args.mi_estimator}_total_epochs{args.num_train_epochs}')
-		output_model_file = os.path.join(save_dir, 
-													'pytorch_model_epoch'+str(args.num_train_epochs)+'.bin')
-
-		self.pre_trained_img_model = build_resnet_model(model_name=args.image_model_name, checkpoint_path=output_model_file,
-													output_channels=args.output_channels)
-		
 
 
 		dataset = CXRImageDataset(img_dir=args.image_dir, 
