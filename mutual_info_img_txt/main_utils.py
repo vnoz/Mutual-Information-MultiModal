@@ -279,7 +279,7 @@ class ExplainableImageModelManager:
 		# 	# transforms.Resize(128)
 		# ])
 
-		transform = torchvision.transforms.Compose([
+		transform = transforms.Compose([
 		torchvision.transforms.Lambda(lambda img: img.astype(np.int16)),
 		torchvision.transforms.ToPILImage(),
 		torchvision.transforms.RandomAffine(degrees=random_degrees, translate=random_translate),
@@ -317,7 +317,7 @@ class ExplainableImageModelManager:
 			for image, label in data_loader:
 				image_embeddings = pre_trained_img_model(image)
 				image_embeddings= image_embeddings.to(device)
-				
+
 				label = label.to(device)
 
 				optimizer.zero_grad()

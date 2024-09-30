@@ -18,10 +18,10 @@ print(current_dir)
 parser = argparse.ArgumentParser()
 
 parser.add_argument('--image_dir', type=str,
-                    default=os.path.join(current_dir, 'example_data/images/'),
+                    default=os.path.join(current_dir, 'example_data_png/images/'),
                     help='The image data directory')
 parser.add_argument('--text_data_dir', type=str,
-                    default=os.path.join(current_dir, 'example_data/text/'),
+                    default=os.path.join(current_dir, 'example_data_png/text/'),
                     help='The text data directory')
 parser.add_argument('--bert_pretrained_dir', type=str,
                     default=os.path.join(current_dir, 'bert_pretrain_all_notes_150000'),
@@ -31,7 +31,7 @@ parser.add_argument('--bert_config_name',
 parser.add_argument('--save_dir', type=str,
                     default=os.path.join(current_dir, 'save_dir'))
 parser.add_argument('--dataset_metadata', type=str,
-                    default=os.path.join(current_dir, 'example_data/training_text_label_negbio.csv'),
+                    default=os.path.join(current_dir, 'example_data_png/training_text_label_negbio.csv'),
                     help='The metadata for the model training ')
 
 parser.add_argument('--batch_size', default=8, type=int,
@@ -108,8 +108,7 @@ def train_image_text():
     model_manager.train(text_token_features=text_token_features,
                         device=device,
                         args=args)
-
-#train_image_text()
+train_image_text()
 
 def load_pre_trained_model():
     args = parser.parse_args()
