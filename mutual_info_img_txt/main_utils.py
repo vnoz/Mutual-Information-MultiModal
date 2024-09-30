@@ -313,8 +313,6 @@ class ExplainableImageModelManager:
 				image_embeddings=output_image[1]
 				image_embeddings= image_embeddings.to(device)
 				
-				print(image_embeddings.size())
-				
 				label = label.to(device)
 
 				optimizer.zero_grad()
