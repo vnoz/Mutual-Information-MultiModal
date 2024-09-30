@@ -156,7 +156,7 @@ class Basic_MLP(nn.Module):
         
         y = self.layer4(x)    
         y = self.relu(y)
-        # x = x.view(x.size(0), -1)
+        y = y.view(y.size(0), -1)
         # y = self.layer3(z)
         # y = self.softmax(y_logits)
         return y
