@@ -146,8 +146,8 @@ class CXRImageDataset(torchvision.datasets.VisionDataset):
         if self.cache_images:
             img = self.images[str(idx)]
         else:
-            png_path = os.path.join(self.img_dir, f'{img_id}.png')
-            img = cv2.imread(png_path, cv2.IMREAD_ANYDEPTH)
+            jpg_path = os.path.join(self.img_dir, f'{img_id}.jpg')
+            img = cv2.imread(jpg_path, cv2.IMREAD_ANYDEPTH)
 
         if self.transform is not None:
             img = self.transform(img)
