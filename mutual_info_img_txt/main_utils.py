@@ -299,7 +299,7 @@ class ExplainableImageModelManager:
 			avg_cost = 0
 
 			for image, label in data_loader:
-				image_embeddings = pre_trained_img_model.forward(image)[1]
+				image_embeddings = pre_trained_img_model(image)[1]
 				image_embeddings= image_embeddings.to(device)
 
 				label = label.to(device)
