@@ -13,9 +13,7 @@ import torchvision.transforms as transforms
 from pytorch_transformers.optimization import AdamW, WarmupLinearSchedule
 import torch.nn as nn
 
-from train_img_txt import load_pre_trained_model
-
-from .model import ImageCNNModel, build_bert_model, build_resnet_model
+from .model import build_bert_model, build_resnet_model
 from .model import ImageReportModel
 from .model import make_mlp
 from .utils import MimicID
