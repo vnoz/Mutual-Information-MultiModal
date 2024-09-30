@@ -13,6 +13,8 @@ import torchvision.transforms as transforms
 from pytorch_transformers.optimization import AdamW, WarmupLinearSchedule
 import torch.nn as nn
 
+from train_img_txt import load_pre_trained_model
+
 from .model import ImageCNNModel, build_bert_model, build_resnet_model
 from .model import ImageReportModel
 from .model import make_mlp
@@ -248,7 +250,7 @@ class ExplainableImageModelManager:
 		# self.classifier_metric_name = classifier_metric_name
 		# self.classifier_explanation_metric_name = classifier_explanation_metric_name
 
-	def train(self, pre_trained_img_model ,device, args):
+	def train(self, device, args):
 		'''
 		Train the model
 		'''
@@ -286,6 +288,7 @@ class ExplainableImageModelManager:
 		Define Loss function and optimizer
 		'''
 		self.image_classifier_model = self.image_classifier_model.to(device)
+		self.pre_trained_img_model = load_pre_trained_model()
 
 		criterion = torch.nn.CrossEntropyLoss().to(device)    # Softmax is internally computed.
 		optimizer = torch.optim.Adam(self.image_classifier_model.parameters(), lr=args.init_lr)
@@ -299,7 +302,8 @@ class ExplainableImageModelManager:
 			avg_cost = 0
 
 			for image, label in data_loader:
-				image_embeddings = pre_trained_img_model(image)[1]
+				output_image = self.pre_trained_img_model.forward(image)
+				image_embeddings=output_image[1]
 				image_embeddings= image_embeddings.to(device)
 
 				label = label.to(device)
