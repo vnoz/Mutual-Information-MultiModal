@@ -152,8 +152,9 @@ class Basic_MLP(nn.Module):
         x = self.layer2(x)
         x = self.layer3(x)
         # z = torch.flatten(x, 1)
-        x = x.view(x.size(0), -1)
+       
         y = self.layer4(x)    
+        # x = x.view(x.size(0), -1)
         # y = self.layer3(z)
         # y = self.softmax(y_logits)
         return y
