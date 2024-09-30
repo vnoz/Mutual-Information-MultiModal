@@ -145,7 +145,7 @@ class Basic_MLP(nn.Module):
 
         self.layer4 = nn.Linear(hidden_dims[2], output_dim)
         
-        self.softmax = nn.Softmax(dim=1)
+        # self.softmax = nn.Softmax(dim=1)
 
         self.relu = nn.ReLU(inplace=True)
         
@@ -154,12 +154,11 @@ class Basic_MLP(nn.Module):
         x = self.layer2(x)
         x = self.layer3(x)
         
-        y = self.layer4(x)    
-        y = self.relu(y)
-        y = y.view(y.size(0), -1)
-        # y = self.layer3(z)
+        x = self.layer4(x)    
+        x = self.relu(x)
+        # y = y.view(y.size(0), -1)
         # y = self.softmax(y_logits)
-        return y
+        return x
 
 class ResNet256_6_2_1(nn.Module):
     """ A residual network 6_2_1 
