@@ -134,7 +134,7 @@ def train_image_classifier():
 
     model_manager = ExplainableImageModelManager()
 
-    model_manager.train( pre_trained_img_model=load_pre_trained_model() , device=device,
+    model_manager.train( pre_trained_img_model=load_pre_trained_model , device=device,
                         args=args)
     
 train_image_classifier()
