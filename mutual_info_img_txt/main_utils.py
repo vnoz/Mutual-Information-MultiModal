@@ -244,6 +244,7 @@ class ExplainableImageModelManager:
 		# self.validate_data_set = validate_data_set
 		# self.output_channels = output_channels
 		self.image_classifier_name = image_classifier_name
+		self.image_classifier_model = make_mlp(768,[512,256])
 		# self.classifier_explanation = classifier_explanation_name
 		# self.classifier_metric_name = classifier_metric_name
 		# self.classifier_explanation_metric_name = classifier_explanation_metric_name
@@ -293,10 +294,10 @@ class ExplainableImageModelManager:
 		'''
 		Define Loss function and optimizer
 		'''
-		image_classifier = ImageCNNModel().to(device)
+		image_classifier_model = image_classifier_model.to(device)
 
 		criterion = torch.nn.CrossEntropyLoss().to(device)    # Softmax is internally computed.
-		optimizer = torch.optim.Adam(image_classifier.parameters(), lr=args.init_lr)
+		optimizer = torch.optim.Adam(image_classifier_model.parameters(), lr=args.init_lr)
 
 		total_batch = len(data_loader)
 		for epoch in range(args.num_train_epochs):
@@ -304,13 +305,13 @@ class ExplainableImageModelManager:
 			avg_cost = 0
 
 			for image, label in data_loader:
-				# image_embeddings = pre_trained_img_model(image)
-				# image_embeddings = image_embeddings.to(device)
-				image = image.to(device)
+				image_embeddings = pre_trained_img_model(image)
+				image_embeddings = image_embeddings.to(device)
+				# image = image.to(device)
 				label = label.to(device)
 
 				optimizer.zero_grad()
-				hypothesis = image_classifier(image)
+				hypothesis = image_classifier_model(image_embeddings)
 				cost = criterion(hypothesis, label)
 				cost.backward()
 				optimizer.step()
