@@ -133,6 +133,24 @@ class BasicBlock(nn.Module):
 
         return out
 
+class Basic_MLP(nn.Module):
+    def __init__(self, input_dim, hidden_dims: list, output_dim=1, activation='relu'):
+        
+        self.layer1 = nn.Linear(input_dim, hidden_dims[0])
+
+        self.layer2 = nn.Linear(hidden_dims[0], hidden_dims[1])
+        
+        self.layer3 = nn.Linear(hidden_dims[1], output_dim)
+
+        self.softmax = nn.Softmax(dim=1)
+        
+    def forward(self, x):
+        x = self.layer1(x)
+        x = self.layer2(x)
+        z = torch.flatten(x, 1)
+        y_logits = self.layer3(z)
+        y = self.softmax(y_logits)
+        return y
 
 class ResNet256_6_2_1(nn.Module):
     """ A residual network 6_2_1 

@@ -13,7 +13,7 @@ import torchvision.transforms as transforms
 from pytorch_transformers.optimization import AdamW, WarmupLinearSchedule
 import torch.nn as nn
 
-from .model import build_bert_model, build_resnet_model
+from .model import Basic_MLP, build_bert_model, build_resnet_model
 from .model import ImageReportModel
 from .model import make_mlp
 from .utils import MimicID
@@ -243,7 +243,7 @@ class ExplainableImageModelManager:
 		# self.validate_data_set = validate_data_set
 		# self.output_channels = output_channels
 		# self.image_classifier_name = image_classifier_name
-		self.image_classifier_model = make_mlp(768,[512,256])
+		self.image_classifier_model = Basic_MLP(768,[512,256])
 		# self.classifier_explanation = classifier_explanation_name
 		# self.classifier_metric_name = classifier_metric_name
 		# self.classifier_explanation_metric_name = classifier_explanation_metric_name
@@ -321,7 +321,7 @@ class ExplainableImageModelManager:
 				hypothesis = self.image_classifier_model(image_embeddings)
 				print('hypothesis: '+str(hypothesis))
 
-				cost = criterion(hypothesis, label)
+				cost = criterion(hypothesis,label)
 				print('cost: '+ str(cost))
 				
 				cost.backward()
