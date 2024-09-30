@@ -312,13 +312,19 @@ class ExplainableImageModelManager:
 				output_image = self.pre_trained_img_model.forward(image)
 				image_embeddings=output_image[1]
 				image_embeddings= image_embeddings.to(device)
-
+				
+				print(image_embeddings.size())
+				
 				label = label.to(device)
 
 				optimizer.zero_grad()
 				hypothesis = self.image_classifier_model(image_embeddings)
+				
 				cost = criterion(hypothesis, label)
+				print(cost)
+				
 				cost.backward()
+				
 				optimizer.step()
 
 				avg_cost += cost / total_batch
