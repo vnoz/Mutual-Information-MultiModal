@@ -288,7 +288,7 @@ class ExplainableImageModelManager:
 									disease='Pleural Effusion',
 									transform=transform)
 		
-		data_loader = DataLoader(dataset, batch_size=args.batch_size,
+		data_loader = DataLoader(dataset, batch_size=1,
 								 shuffle=True, num_workers=8,
 								 pin_memory=True, drop_last=True)
 
