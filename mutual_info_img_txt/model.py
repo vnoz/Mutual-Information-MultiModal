@@ -141,16 +141,19 @@ class Basic_MLP(nn.Module):
 
         self.layer2 = nn.Linear(hidden_dims[0], hidden_dims[1])
         
-        self.layer3 = nn.Linear(hidden_dims[1], output_dim)
+        self.layer3 = nn.Linear(hidden_dims[1], hidden_dims[2])
 
+        self.layer4 = nn.Linear(hidden_dims[2], output_dim)
+        
         self.softmax = nn.Softmax(dim=1)
         
     def forward(self, x):
         x = self.layer1(x)
         x = self.layer2(x)
+        x = self.layer3(x)
         # z = torch.flatten(x, 1)
         x = x.view(x.size(0), -1)
-        y = self.layer3(x)    
+        y = self.layer4(x)    
         # y = self.layer3(z)
         # y = self.softmax(y_logits)
         return y

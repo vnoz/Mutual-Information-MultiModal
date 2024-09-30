@@ -295,7 +295,7 @@ class ExplainableImageModelManager:
 		'''
 		Define Loss function and optimizer
 		'''
-		image_classifier_model = Basic_MLP(768,[512,256]).to(device)
+		image_classifier_model = Basic_MLP(768,[512,256,128]).to(device)
 		
 		criterion = torch.nn.CrossEntropyLoss(ignore_index=-1).to(device)    # Softmax is internally computed.
 		optimizer = torch.optim.Adam(image_classifier_model.parameters(), lr=args.init_lr)
