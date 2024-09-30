@@ -327,9 +327,9 @@ class ExplainableImageModelManager:
 				
 				optimizer.step()
 
-				avg_cost += cost / total_batch
+				# avg_cost += cost / total_batch
 
-			print('[Epoch: {:>4}] cost = {:>.9}'.format(epoch + 1, avg_cost))
+			# print('[Epoch: {:>4}] cost = {:>.9}'.format(epoch + 1, avg_cost))
 		
 		checkpoint_path = self.image_classifier_model.save_pretrained(args.save_dir, epoch=epoch + 1)
 		interval = time.time() - start_time
