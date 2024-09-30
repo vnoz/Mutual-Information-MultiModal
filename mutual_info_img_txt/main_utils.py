@@ -323,8 +323,6 @@ class ExplainableImageModelManager:
 
 				cost = criterion(expectedLabel,label)
 				
-				print('cost: '+ str(cost))
-				
 				cost.backward()
 				
 				optimizer.step()
