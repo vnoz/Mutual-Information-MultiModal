@@ -319,10 +319,10 @@ class ExplainableImageModelManager:
 
 				optimizer.zero_grad()
 				hypothesis = self.image_classifier_model(image_embeddings)
-				print('hypothesis: '+str(hypothesis.size()))
+				print('hypothesis: '+str(hypothesis))
 
 				cost = criterion(hypothesis, label)
-				print(cost)
+				print('cost: '+ str(cost))
 				
 				cost.backward()
 				
