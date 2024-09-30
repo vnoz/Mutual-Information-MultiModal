@@ -260,24 +260,6 @@ class ExplainableImageModelManager:
 		random_degrees = [-20,20]
 		random_translate = [0.1,0.1]
 		img_size = args.img_size
-		
-		# transform =transforms.Compose([
-		# 	# transforms.Resize(256),
-		# 	# transforms.ColorJitter(),
-		# 	# transforms.RandomCrop(224),
-		# 	# transforms.RandomHorizontalFlip(),
-		# 	# transforms.Resize(128),
-		# 	# transforms.ToTensor()
-		# 	torchvision.transforms.Lambda(lambda img: img.astype(np.int16)),
-		# 	torchvision.transforms.ToPILImage(),
-		# 	torchvision.transforms.RandomAffine(degrees=random_degrees, translate=random_translate),
-		# 	torchvision.transforms.CenterCrop(img_size),
-		# 	torchvision.transforms.Lambda(
-		# 		lambda img: np.array(img).astype(np.float32)),
-		# 	torchvision.transforms.Lambda(
-		# 		lambda img: img / max(1e-3, img.max())),
-		# 	# transforms.Resize(128)
-		# ])
 
 		transform = transforms.Compose([
 		torchvision.transforms.Lambda(lambda img: img.astype(np.int16)),
@@ -317,7 +299,7 @@ class ExplainableImageModelManager:
 			avg_cost = 0
 
 			for image, label in data_loader:
-				image_embeddings = pre_trained_img_model(image)
+				image_embeddings = pre_trained_img_model.forward(image)[1]
 				image_embeddings= image_embeddings.to(device)
 
 				label = label.to(device)
