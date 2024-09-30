@@ -148,8 +148,10 @@ class Basic_MLP(nn.Module):
     def forward(self, x):
         x = self.layer1(x)
         x = self.layer2(x)
-        z = torch.flatten(x, 1)
-        y = self.layer3(z)
+        # z = torch.flatten(x, 1)
+        x = x.view(x.size(0), -1)
+        y = self.layer3(x)    
+        # y = self.layer3(z)
         # y = self.softmax(y_logits)
         return y
 
