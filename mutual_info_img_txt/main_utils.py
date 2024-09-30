@@ -318,7 +318,7 @@ class ExplainableImageModelManager:
 
 				optimizer.zero_grad()
 				expectedLabel = image_classifier_model(image_embeddings)
-				print('***label: ' + str(label.item()))
+				print('***label: ' + label.item())
 				print('expectedLabel: '+str(expectedLabel.item()))
 
 				loss = criterion(expectedLabel,label)
