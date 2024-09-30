@@ -105,9 +105,14 @@ def train_image_text():
     '''
     Train the joint model
     '''
+
+    print(f"Start training for ImageTextModelManager")
+
     model_manager.train(text_token_features=text_token_features,
                         device=device,
                         args=args)
+    print(f"Finish training for ImageTextModelManager")
+
 train_image_text()
 
 def load_pre_trained_model():
