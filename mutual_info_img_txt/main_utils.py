@@ -322,7 +322,8 @@ class ExplainableImageModelManager:
 				print('expectedLabel: '+str(expectedLabel.item()))
 
 				cost = criterion(expectedLabel,label)
-				# print('cost: '+ str(cost))
+				
+				print('cost: '+ str(cost.item()))
 				
 				cost.backward()
 				
