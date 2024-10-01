@@ -314,7 +314,7 @@ class ExplainableImageModelManager:
 				image_embeddings=output_image[1]
 				image_embeddings= image_embeddings.to(device)
 				
-				label = label.to(device)
+				label = label.unsqueeze(1).to(device)
 
 				optimizer.zero_grad()
 				expectedLabel = image_classifier_model(image_embeddings)
