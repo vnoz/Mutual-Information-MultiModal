@@ -37,7 +37,7 @@ def train_image_text():
     '''
     Configure the log file
     '''
-    log_path = os.path.join(args.save_dir, 'training.log')
+    log_path = os.path.join(args.save_dir, 'training_MI.log')
     logging.basicConfig(filename=log_path, level=logging.INFO, filemode='w',
                                         format='%(asctime)s - %(name)s %(message)s',
                                         datefmt='%m-%d %H:%M')
@@ -70,12 +70,12 @@ def train_image_text():
 
     print(f"Start training for ImageTextModelManager")
 
-    # model_manager.train(text_token_features=text_token_features,
-    #                     device=device,
-    #                     args=args)
+    model_manager.train(text_token_features=text_token_features,
+                        device=device,
+                        args=args)
     print(f"Finish training for ImageTextModelManager")
 
-train_image_text()
+#train_image_text()
 
 
 
@@ -84,13 +84,22 @@ def train_image_classifier():
     args =  construct_training_parameters()
 
     print(f"Train_image_classifier args: {args}")
-    
+
+    log_path = os.path.join(args.save_dir, 'training_classifier.log')
+    logging.basicConfig(filename=log_path, level=logging.INFO, filemode='w',
+                                        format='%(asctime)s - %(name)s %(message)s',
+                                        datefmt='%m-%d %H:%M')
+
+    logger = logging.getLogger(__name__)
+    logger.info(f"args: {args}")
+
+
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     print(f"Start training Image Model: ***************")
 
-    # model_manager = ExplainableImageModelManager()
+    model_manager = ExplainableImageModelManager()
 
-    # model_manager.train(device=device, args=args)
+    model_manager.train(device=device, args=args)
     
 train_image_classifier()

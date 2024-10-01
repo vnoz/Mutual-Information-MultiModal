@@ -249,6 +249,10 @@ class ExplainableImageModelManager:
 		# self.classifier_explanation_metric_name = classifier_explanation_metric_name
 
 	def train(self, device, args):
+		
+		logger = logging.getLogger(__name__)
+		logger.info(f"ExplainableImageModelManager training start, args = {args}")
+
 		'''
 		Train the model
 		'''
@@ -308,6 +312,8 @@ class ExplainableImageModelManager:
     		
 			avg_cost = 0
 			print('[Start Epoch: {:>4}]'.format(epoch + 1))
+			start_time_epoch = time.time()
+
 			for image, label in data_loader:
 			
 				output_image = self.pre_trained_img_model.forward(image)
@@ -328,12 +334,16 @@ class ExplainableImageModelManager:
 				avg_cost += loss.item() / total_batch
 
 			print('[Epoch: {:>4}] cost = {:>.9}'.format(epoch + 1, avg_cost))
-		
+			logger.info(f"  Epoch {epoch+1} loss = {avg_cost:.5f}")
+			interval_epoch = time.time() - start_time_epoch
+			logger.info(f"  Epoch {epoch+1} took {interval_epoch:.3f} s")
+			
+
 		checkpoint_path = image_classifier_model.save_pretrained(args.save_dir, epoch=epoch + 1)
 		interval = time.time() - start_time
 
-		print(f"  Epoch {epoch+1} took {interval:.3f} s")
-		print(f'Epoch checkpoint saved in {checkpoint_path}')
+		print(f"Total  Epoch {epoch+1} took {interval:.3f} s")
+		logger.info(f"  Epoch {epoch+1} checkpoint saved in {checkpoint_path}")
 
 	def generate_heatmap():
 		

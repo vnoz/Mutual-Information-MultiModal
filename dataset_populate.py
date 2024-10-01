@@ -14,7 +14,7 @@ from helpers import construct_dataset_parameters
 
 args = construct_dataset_parameters()
 
-print(f"*****Dataset_populate: args: {args}")
+print(f"Dataset_populate: args: {args}")
 
 
 def get_filename_url(base, file, save_location):
