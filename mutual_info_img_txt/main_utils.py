@@ -285,7 +285,7 @@ class ExplainableImageModelManager:
 
 		dataset = CXRImageDataset(img_dir=args.image_dir, 
 									dataset_metadata=args.dataset_metadata, 
-									disease='Pleural Effusion',
+									disease='PleuralEffusion',
 									transform=transform)
 		
 		data_loader = DataLoader(dataset, batch_size=1,
