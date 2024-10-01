@@ -253,18 +253,18 @@ class ExplainableImageModelManager:
 		self.pre_trained_img_model = build_resnet_model(model_name=args.image_model_name, checkpoint_path=output_model_file,
 													output_channels=args.output_channels)
 		
-		data_loaders = self.construct_data_loader(args)
+		data_loaders = self.construct_data_loader()
 		self.test_data_loader, self.validate_data_loader = data_loaders
 		# self.classifier_explanation = classifier_explanation_name
 		# self.classifier_metric_name = classifier_metric_name
 		# self.classifier_explanation_metric_name = classifier_explanation_metric_name
 
-	def construct_data_loader(args):
+	def construct_data_loader(self):
 
 		'''
 		Create an instance of traning data loader
 		'''
-
+		args = self.args
 		dataset = CXRImageDataset(img_dir=args.image_dir, 
 									dataset_metadata=args.dataset_metadata, 
 									disease=args.disease_label,
