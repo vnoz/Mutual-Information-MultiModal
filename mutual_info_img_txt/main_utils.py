@@ -13,6 +13,8 @@ import torchvision.transforms as transforms
 from pytorch_transformers.optimization import AdamW, WarmupLinearSchedule
 import torch.nn as nn
 
+from helpers import get_transform_function
+
 from .model import Basic_MLP, build_bert_model, build_resnet_model
 from .model import ImageReportModel
 from .model import make_mlp
@@ -237,66 +239,41 @@ class ExplainableImageModelManager:
 			and metrics for classifier and heatmap generation
 	"""
 
-	# def __init__(self):
-				#   ,classifier_explanation_name, classifier_metric_name, classifier_explanation_metric_name):
-		# self.training_data_set= training_data_set
-		# self.validate_data_set = validate_data_set
-		# self.output_channels = output_channels
-		# self.image_classifier_name = image_classifier_name
-		# self.image_classifier_model = Basic_MLP(768,[512,256])
-		# self.classifier_explanation = classifier_explanation_name
-		# self.classifier_metric_name = classifier_metric_name
-		# self.classifier_explanation_metric_name = classifier_explanation_metric_name
+	def __init__(self, args):
+				
+		self.args = args
 
-	def train(self, device, args):
-		
-		logger = logging.getLogger(__name__)
-		logger.info(f"ExplainableImageModelManager training start, args = {args}")
+		self.image_classifier_model = Basic_MLP(768,[512,256,128])
 
-		'''
-		Train the model
-		'''
-
-		
 		#NOTE: Load pre_trained image model from MI training
 		save_dir = os.path.join(args.save_dir,
                                  f'{args.mi_estimator}_total_epochs{args.num_train_epochs}')
 		output_model_file = os.path.join(save_dir, 
 													'pytorch_model_epoch'+str(args.num_train_epochs)+'.bin')
-
 		self.pre_trained_img_model = build_resnet_model(model_name=args.image_model_name, checkpoint_path=output_model_file,
 													output_channels=args.output_channels)
 		
+		self.test_data_loader, self.validate_data_loader = self.construct_data_loader(args)
+		# self.classifier_explanation = classifier_explanation_name
+		# self.classifier_metric_name = classifier_metric_name
+		# self.classifier_explanation_metric_name = classifier_explanation_metric_name
+
+	def construct_data_loader(args):
+
 		'''
 		Create an instance of traning data loader
 		'''
 
-		random_degrees = [-20,20]
-		random_translate = [0.1,0.1]
-		img_size = args.img_size
-
-		transform = transforms.Compose([
-		torchvision.transforms.Lambda(lambda img: img.astype(np.int16)),
-		torchvision.transforms.ToPILImage(),
-		torchvision.transforms.RandomAffine(degrees=random_degrees, translate=random_translate),
-		torchvision.transforms.CenterCrop(img_size),
-		torchvision.transforms.Lambda(
-			lambda img: np.array(img).astype(np.float32)),
-		torchvision.transforms.Lambda(
-			lambda img: img / max(1e-3, img.max()))
-		])
-
-
 		dataset = CXRImageDataset(img_dir=args.image_dir, 
 									dataset_metadata=args.dataset_metadata, 
-									disease='Pleural Effusion',
-									transform=transform)
+									disease=args.disease_label,
+									transform=get_transform_function(args.img_size))
 		
-		data_loader = DataLoader(dataset, batch_size=8,
-								 shuffle=True, num_workers=8,
-								 pin_memory=True, drop_last=True)
+		# data_loader = DataLoader(dataset, batch_size=8,
+		# 						 shuffle=True, num_workers=8,
+		# 						 pin_memory=True, drop_last=True)
 
-		#NOTE: separate training and validate dataset/dataloader here
+		#NOTE: separate training and validate dataset/dataloader here, might need to split with balanced label classes
 		test_ds, valid_ds = torch.utils.data.random_split(dataset, (0.8, 0.2))
 		test_data_loader = DataLoader(test_ds, batch_size=8,
 								 shuffle=True, num_workers=8,
@@ -306,15 +283,31 @@ class ExplainableImageModelManager:
 								 shuffle=True, num_workers=8,
 								 pin_memory=True, drop_last=True)
 		
+		return test_data_loader, validate_data_loader
+
+	def train(self, device):
+		
+		args = self.args
+
+		logger = logging.getLogger(__name__)
+		logger.info(f"ExplainableImageModelManager training start, args = {args}")
+
+		'''
+		Train the model
+		'''		
+		
+		
+		self.image_classifier_model = self.image_classifier_model.to(device)
+		self.pre_trained_img_model = self.pre_trained_img_model.to(device)
+
 		'''
 		Define Loss function and optimizer
 		'''
-		image_classifier_model = Basic_MLP(768,[512,256,128]).to(device)
-		
-		criterion = torch.nn.BCELoss().to(device)    # Softmax is internally computed.
-		optimizer = torch.optim.Adam(image_classifier_model.parameters(), lr=args.init_lr)
 
-		total_batch = len(data_loader)
+		criterion = torch.nn.BCELoss().to(device) 
+		optimizer = torch.optim.Adam(self.image_classifier_model.parameters(), lr=args.init_lr)
+
+		total_batch = len(self.test_data_loader)
 
 		start_time = time.time()
 
@@ -324,7 +317,7 @@ class ExplainableImageModelManager:
 			print('[Start Epoch: {:>4}]'.format(epoch + 1))
 			start_time_epoch = time.time()
 
-			for image, label in data_loader:
+			for image, label in self.test_data_loader:
 			
 				output_image = self.pre_trained_img_model.forward(image)
 				image_embeddings=output_image[1]
@@ -333,7 +326,7 @@ class ExplainableImageModelManager:
 				label = label.unsqueeze(1).to(device)
 
 				optimizer.zero_grad()
-				expectedLabel = image_classifier_model(image_embeddings)
+				expectedLabel = self.image_classifier_model(image_embeddings)
 				
 				loss = criterion( expectedLabel, label.float())
 				
@@ -349,11 +342,36 @@ class ExplainableImageModelManager:
 			logger.info(f"  Epoch {epoch+1} took {interval_epoch:.3f} s")
 			
 
-		checkpoint_path = image_classifier_model.save_pretrained(args.save_dir, epoch=epoch + 1)
+		checkpoint_path = self.image_classifier_model.save_pretrained(args.save_dir, epoch=epoch + 1)
 		interval = time.time() - start_time
 
 		print(f"Total  Epoch {epoch+1} took {interval:.3f} s")
 		logger.info(f"  Epoch {epoch+1} checkpoint saved in {checkpoint_path}")
+
+	def validate(self, device):	
+		logger = logging.getLogger(__name__)
+
+		count =0
+		total_batch = len(self.validate_data_loader)
+
+		for image, label in self.validate_data_loader:
+			
+				output_image = self.pre_trained_img_model.forward(image)
+				image_embeddings=output_image[1]
+				image_embeddings= image_embeddings.to(device)
+				
+				label = label.unsqueeze(1).to(device)
+
+				expectedLabel = self.image_classifier_model(image_embeddings)
+				
+				if(torch.equal(expectedLabel, label)):
+					count = count+1
+		
+		accuracy = count / total_batch
+
+		logger.info(f"ExplainableImageModelManager validate with accuracy = {accuracy}")
+
+		return accuracy
 
 	def generate_heatmap():
 		

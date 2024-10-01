@@ -1,5 +1,8 @@
 import os
 import argparse
+import numpy as np
+import torchvision
+import torchvision.transforms as transforms
 
 def construct_dataset_parameters():
     current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -112,4 +115,26 @@ def construct_training_parameters():
                         help='The number of ouput channels for the classifier')
     parser.add_argument('--image_model_name', default='resnet256_6_2_1', type=str,
                         help='Neural network architecture to be used for image model')
+    
+    parser.add_argument('--disease_label', default='Pleural Effusion', type=str,
+                        help='Disease lable for downstream classifier')
+    
+
     return parser.parse_args()
+
+def get_transform_function(img_size):
+    random_degrees = [-20,20]
+    random_translate = [0.1,0.1]
+    img_size = img_size
+
+    transform = transforms.Compose([
+    torchvision.transforms.Lambda(lambda img: img.astype(np.int16)),
+    torchvision.transforms.ToPILImage(),
+    torchvision.transforms.RandomAffine(degrees=random_degrees, translate=random_translate),
+    torchvision.transforms.CenterCrop(img_size),
+    torchvision.transforms.Lambda(
+        lambda img: np.array(img).astype(np.float32)),
+    torchvision.transforms.Lambda(
+        lambda img: img / max(1e-3, img.max()))
+    ])
+    return transform

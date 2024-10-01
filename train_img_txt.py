@@ -91,15 +91,15 @@ def train_image_classifier():
                                         datefmt='%m-%d %H:%M')
 
     logger = logging.getLogger(__name__)
-    logger.info(f"args: {args}")
-
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    print(f"Start training Image Model: ***************")
+    model_manager = ExplainableImageModelManager( args=args)
 
-    model_manager = ExplainableImageModelManager()
+    model_manager.train(device=device)
 
-    model_manager.train(device=device, args=args)
+    accuracy = model_manager.validate(device=device)
+
+    print('Accuracy for downstream image classifier: ' + str(accuracy))
     
 train_image_classifier()
