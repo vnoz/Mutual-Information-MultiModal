@@ -121,7 +121,7 @@ def train_image_classifier():
     
     args = parser.parse_args()
     
-    device = torch.device("cpu")
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     print(f"Start training Image Model: ***************")
 
