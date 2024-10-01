@@ -307,7 +307,7 @@ class ExplainableImageModelManager:
 		for epoch in range(args.num_train_epochs):
     		
 			avg_cost = 0
-
+			print('[Start Epoch: {:>4}]'.format(epoch + 1))
 			for image, label in data_loader:
 			
 				output_image = self.pre_trained_img_model.forward(image)
@@ -318,21 +318,18 @@ class ExplainableImageModelManager:
 
 				optimizer.zero_grad()
 				expectedLabel = image_classifier_model(image_embeddings)
-				# print('***label: ' + str(label.item())+', size: ' )
-				print(label.size())
-				# print('expectedLabel: '+str(expectedLabel.item()) +', size: ')
-				print(expectedLabel.size())
+				
 				loss = criterion( expectedLabel, label.float())
 				
 				loss.backward()
 				
 				optimizer.step()
 
-				# avg_cost += cost / total_batch
+				avg_cost += loss.item() / total_batch
 
-			# print('[Epoch: {:>4}] cost = {:>.9}'.format(epoch + 1, avg_cost))
+			print('[Epoch: {:>4}] cost = {:>.9}'.format(epoch + 1, avg_cost))
 		
-		checkpoint_path = self.image_classifier_model.save_pretrained(args.save_dir, epoch=epoch + 1)
+		checkpoint_path = image_classifier_model.save_pretrained(args.save_dir, epoch=epoch + 1)
 		interval = time.time() - start_time
 
 		print(f"  Epoch {epoch+1} took {interval:.3f} s")
