@@ -145,7 +145,7 @@ class Basic_MLP(nn.Module):
 
         self.layer4 = nn.Linear(hidden_dims[2], output_dim)
         
-        self.softmax = nn.Softmax(dim=1)
+        # self.softmax = nn.Softmax(dim=1)
 
         self.relu = nn.ReLU(inplace=True)
         
@@ -157,7 +157,7 @@ class Basic_MLP(nn.Module):
         
         x = self.layer4(x)    
         x = self.relu(x)
-        x = self.softmax(x)
+        # x = self.softmax(x)
         x = x.view(x.size(0), -1)
         # y = self.softmax(y_logits)
         return x
