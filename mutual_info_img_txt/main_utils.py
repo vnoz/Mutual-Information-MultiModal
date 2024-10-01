@@ -253,7 +253,8 @@ class ExplainableImageModelManager:
 		self.pre_trained_img_model = build_resnet_model(model_name=args.image_model_name, checkpoint_path=output_model_file,
 													output_channels=args.output_channels)
 		
-		self.test_data_loader, self.validate_data_loader = self.construct_data_loader(args)
+		data_loaders = self.construct_data_loader(args)
+		self.test_data_loader, self.validate_data_loader = data_loaders
 		# self.classifier_explanation = classifier_explanation_name
 		# self.classifier_metric_name = classifier_metric_name
 		# self.classifier_explanation_metric_name = classifier_explanation_metric_name
