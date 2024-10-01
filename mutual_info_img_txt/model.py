@@ -148,6 +148,7 @@ class Basic_MLP(nn.Module):
         # self.softmax = nn.Softmax(dim=1)
 
         self.relu = nn.ReLU(inplace=True)
+        self.sigmoid = nn.Sigmoid()
         
     def forward(self, x):
         x = self.layer1(x)
@@ -159,6 +160,7 @@ class Basic_MLP(nn.Module):
         x = self.relu(x)
         # x = self.softmax(x)
         x = x.view(x.size(0), -1)
+        x = self.sigmoid(x)
         # y = self.softmax(y_logits)
         return x
 
