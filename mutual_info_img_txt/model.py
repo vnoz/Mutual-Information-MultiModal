@@ -163,6 +163,28 @@ class Basic_MLP(nn.Module):
         x = self.sigmoid(x)
         # y = self.softmax(y_logits)
         return x
+    
+    def save_pretrained(self, save_directory, epoch=-1): 
+        """ Save a model with its configuration file to a directory, so that it
+            can be re-loaded using the `from_pretrained(save_directory)` class method.
+        """
+
+        # Saving path should be a directory where the model and configuration can be saved
+        if not os.path.exists(save_directory):
+            os.makedirs(save_directory)
+        assert os.path.isdir(save_directory)
+
+        # Only save the model it-self if we are using distributed training
+        model_to_save = self.module if hasattr(self, 'module') else self
+
+        # If we save using the predefined names, we can load using `from_pretrained`
+        if epoch == -1:
+            output_model_file = os.path.join(save_directory, 'pytorch_model.bin')
+        else:
+            output_model_file = os.path.join(save_directory, 
+                                             'pytorch_image_classifier_model_epoch'+str(epoch)+'.bin')
+
+        torch.save(model_to_save.state_dict(), output_model_file)
 
 class ResNet256_6_2_1(nn.Module):
     """ A residual network 6_2_1 
