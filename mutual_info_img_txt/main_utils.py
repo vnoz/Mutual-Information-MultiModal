@@ -322,7 +322,7 @@ class ExplainableImageModelManager:
 				print(label.size())
 				# print('expectedLabel: '+str(expectedLabel.item()) +', size: ')
 				print(expectedLabel.size())
-				loss = criterion( expectedLabel, label.Float())
+				loss = criterion( expectedLabel, label.float())
 				
 				loss.backward()
 				
