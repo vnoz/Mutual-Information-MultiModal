@@ -8,62 +8,13 @@ import sys
 import gzip
 from pathlib import Path
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
-print(current_dir)
-
-parser = argparse.ArgumentParser()
-
-parser.add_argument('--data_dir', type=str,
-                    default=os.path.join(current_dir, 'full_data_set/'),
-                    help='The parent data directory')
-
-parser.add_argument('--image_storage_dir', type=str,
-                    default=os.path.join(current_dir, 'full_data_set/images/'),
-                    help='The image data directory')
-
-parser.add_argument('--text_storage_dir', type=str,
-                    default=os.path.join(current_dir, 'full_data_set/text/'),
-                    help='The text data directory')
-
-parser.add_argument('--download_user', type=str,
-                    default='tuanle',
-                    help='The user to download MIMIC dataset')
-
-parser.add_argument('--download_password', type=str,
-                    default='A1thebest',
-                    help='The password to download MIMIC dataset')
-
-parser.add_argument('--total_amount', type=str,
-                    default=2000,
-                    help='Total amount of samples to download from MIMIC dataset')
-
-parser.add_argument('--amount_for_training', type=str,
-                    default=1000,
-                    help='Total amount of samples for training')
+from helpers import construct_dataset_parameters
 
 
-parser.add_argument('--amount_for_testing', type=str,
-                    default=100,
-                    help='Total amount of samples for testing')
 
-parser.add_argument('--training_data_dir', type=str,
-                    default=os.path.join(current_dir, 'example_data/'),
-                    help='The parent data directory')
+args = construct_dataset_parameters()
 
-parser.add_argument('--training_image_dir', type=str,
-                    default=os.path.join(current_dir, 'example_data/images/'),
-                    help='The training image data directory')
-parser.add_argument('--training_text_dir', type=str,
-                    default=os.path.join(current_dir, 'example_data/text/'),
-                    help='The training text data directory')
-parser.add_argument('--training_dataset_metadata', type=str,
-                    default=os.path.join(current_dir, 'example_data/training_text_label_negbio.csv'),
-                    help='The metadata for the model training ')
-
-
-args = parser.parse_args()
-
-print(f"Initial args: {args}")
+print(f"*****Dataset_populate: args: {args}")
 
 
 def get_filename_url(base, file, save_location):
@@ -253,7 +204,7 @@ def download_full_dataset(imgAmount):
         for i in range(len(contents_list)):
             tsv_writer.writerow([i,0, study_list[i][1:],'a',contents_list[i]])
  
-download_full_dataset(args.total_amount)
+#download_full_dataset(args.total_amount)
 
 def populate_training_and_testing_dataset(amount_for_training, amount_for_testing):
     
@@ -321,4 +272,4 @@ def populate_training_and_testing_dataset(amount_for_training, amount_for_testin
         tsv_writer = csv.writer(tsv_file)
         tsv_writer.writerows(label_report_lines)
  
-populate_training_and_testing_dataset(args.amount_for_training, args.amount_for_testing)
+#populate_training_and_testing_dataset(args.amount_for_training, args.amount_for_testing)

@@ -8,53 +8,15 @@ import cv2
 import torch
 from pytorch_transformers import BertTokenizer
 
+from helpers import construct_training_parameters
 from mutual_info_img_txt import model_utils
 from mutual_info_img_txt.main_utils import ExplainableImageModelManager, ImageTextModelManager
 from mutual_info_img_txt.model import build_resnet_model
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
-print(current_dir)
-
-parser = argparse.ArgumentParser()
-
-parser.add_argument('--image_dir', type=str,
-                    default=os.path.join(current_dir, 'example_data/images/'),
-                    help='The image data directory')
-parser.add_argument('--text_data_dir', type=str,
-                    default=os.path.join(current_dir, 'example_data/text/'),
-                    help='The text data directory')
-parser.add_argument('--bert_pretrained_dir', type=str,
-                    default=os.path.join(current_dir, 'bert_pretrain_all_notes_150000'),
-                    help='The directory that contains a pretrained BERT model')
-parser.add_argument('--bert_config_name',
-                    default='bert_config.json', help='Bert model config file')
-parser.add_argument('--save_dir', type=str,
-                    default=os.path.join(current_dir, 'save_dir'))
-parser.add_argument('--dataset_metadata', type=str,
-                    default=os.path.join(current_dir, 'example_data/training_text_label_negbio.csv'),
-                    help='The metadata for the model training ')
-
-parser.add_argument('--batch_size', default=8, type=int,
-                    help='Mini-batch size')
-parser.add_argument('--num_train_epochs', default=100, type=int,
-                    help='Number of training epochs')
-parser.add_argument('--mi_estimator', type=str,
-                    default='infonce',
-                    help='Mutual information estimator (variational bound): dv or infonce')
-parser.add_argument('--init_lr', default=5e-4, type=float,
-                    help='Intial learning rate')
-
-parser.add_argument('--max_seq_length', default=320, type=int,
-                    help='Maximum sequence length for the BERT model')
-parser.add_argument('--img_size', default=256, type=int,
-                    help='The size of the input image')
-parser.add_argument('--output_channels', default=1, type=int,
-                    help='The number of ouput channels for the classifier')
-parser.add_argument('--image_model_name', default='resnet256_6_2_1', type=str,
-                    help='Neural network architecture to be used for image model')
 
 def train_image_text():
-    args = parser.parse_args()
+
+    args = construct_training_parameters()
 
     print(f"Initial args: {args}")
 
@@ -108,25 +70,27 @@ def train_image_text():
 
     print(f"Start training for ImageTextModelManager")
 
-    model_manager.train(text_token_features=text_token_features,
-                        device=device,
-                        args=args)
+    # model_manager.train(text_token_features=text_token_features,
+    #                     device=device,
+    #                     args=args)
     print(f"Finish training for ImageTextModelManager")
 
-# train_image_text()
+train_image_text()
 
 
 
 def train_image_classifier():
     
-    args = parser.parse_args()
+    args =  construct_training_parameters()
+
+    print(f"Train_image_classifier args: {args}")
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     print(f"Start training Image Model: ***************")
 
-    model_manager = ExplainableImageModelManager()
+    # model_manager = ExplainableImageModelManager()
 
-    model_manager.train(device=device, args=args)
+    # model_manager.train(device=device, args=args)
     
 train_image_classifier()
