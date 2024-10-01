@@ -321,7 +321,7 @@ class ExplainableImageModelManager:
 				print('***label: ' + str(label.item()))
 				print('expectedLabel: '+str(expectedLabel.item()) )
 
-				loss = criterion(expectedLabel,label)
+				loss = criterion(label, expectedLabel)
 				
 				loss.backward()
 				
