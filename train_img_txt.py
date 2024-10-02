@@ -94,7 +94,7 @@ def train_image_classifier():
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    model_manager = ExplainableImageModelManager( args=args)
+    model_manager = ExplainableImageModelManager( args=args, using_pre_trained=False)
 
     model_manager.train(device=device)
 
