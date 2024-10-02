@@ -300,7 +300,7 @@ class ExplainableImageModelManager:
 		#TODO: add code to load classifier from pre_trained model saved in file
 
 		if(self.using_pre_trained):
-			output_model_file = os.path.join(args.save_directory, 
+			output_model_file = os.path.join(args.save_dir, 
                                              'pytorch_image_classifier_model_epoch'+str(args.num_train_epochs)+'.bin')
 			self.image_classifier_model = self.image_classifier_model.from_pretrained(output_model_file)
 
