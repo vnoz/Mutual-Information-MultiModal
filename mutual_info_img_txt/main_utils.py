@@ -221,6 +221,7 @@ class ImageTextModelManager:
 					projected_epoch_loss = len(data_loader)*epoch_loss/epoch_steps/args.batch_size
 					logger.info(f"  Projected epoch {epoch+1} loss = {projected_epoch_loss:.5f}")
 
+			image_model_file_path= self.model.save_image_model(args.save_dir)
 			checkpoint_path = self.model.save_pretrained(args.save_dir, epoch=epoch + 1)
 			interval = time.time() - start_time
 
@@ -230,6 +231,8 @@ class ImageTextModelManager:
 			logger.info(f"  Epoch {epoch+1} loss = {epoch_loss:.5f}")
 			logger.info(f"  Epoch {epoch+1} took {interval:.3f} s")
 			logger.info(f"  Epoch {epoch+1} checkpoint saved in {checkpoint_path}")
+			logger.info(f"  Image model saved in {image_model_file_path}")
+
 
 		return
 	
@@ -300,8 +303,9 @@ class ExplainableImageModelManager:
 		#TODO: add code to load classifier from pre_trained model saved in file
 
 		if(self.using_pre_trained):
-			output_model_file = os.path.join(args.save_dir, 
-                                             'pytorch_image_classifier_model_epoch'+str(args.num_train_epochs)+'.bin')
+			output_model_file = os.path.join(args.save_dir, 'pytorch_MI_image_model.bin')
+			# output_model_file = os.path.join(args.save_dir, 
+            #                                  'pytorch_image_classifier_model_epoch'+str(args.num_train_epochs)+'.bin')
 			self.image_classifier_model = self.image_classifier_model.from_pretrained(output_model_file)
 
 			return

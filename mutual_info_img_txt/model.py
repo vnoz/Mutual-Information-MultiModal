@@ -164,7 +164,7 @@ class Basic_MLP(nn.Module):
         # y = self.softmax(y_logits)
         return x
     
-    def save_pretrained(self, save_directory, epoch=-1): 
+    def save_pretrained(self, save_directory): 
         """ Save a model with its configuration file to a directory, so that it
             can be re-loaded using the `from_pretrained(save_directory)` class method.
         """
@@ -174,42 +174,21 @@ class Basic_MLP(nn.Module):
             os.makedirs(save_directory)
         assert os.path.isdir(save_directory)
 
-        # Only save the model it-self if we are using distributed training
-        model_to_save = self.module if hasattr(self, 'module') else self
+        model_to_save = self
 
         # If we save using the predefined names, we can load using `from_pretrained`
-        if epoch == -1:
-            output_model_file = os.path.join(save_directory, 'pytorch_image_classifier_model.bin')
-        else:
-            output_model_file = os.path.join(save_directory, 
-                                             'pytorch_image_classifier_model_epoch'+str(epoch)+'.bin')
-
+        
+        output_model_file = os.path.join(save_directory, 'pytorch_image_classifier_model.bin')
+        
         torch.save(model_to_save.state_dict(), output_model_file)
 
-    def from_pretrained(self, pretrained_model_path):
+    def load_from_pretrained(self, pretrained_model_path):
 
         model = self
         state_dict = torch.load(pretrained_model_path, map_location='cpu')
 
-         # Load from a PyTorch state_dict
-        missing_keys = []
-        unexpected_keys = []
-        error_msgs = []
-        # copy state_dict so _load_from_state_dict can modify it
-        metadata = getattr(state_dict, '_metadata', None)
-        state_dict = state_dict.copy()
-        if metadata is not None:
-            state_dict._metadata = metadata
-
-        def load(module, prefix=''):
-            local_metadata = {} if metadata is None else metadata.get(prefix[:-1], {})
-            module._load_from_state_dict(
-                state_dict, prefix, local_metadata, True, missing_keys, unexpected_keys, error_msgs)
-            for name, child in module._modules.items():
-                if child is not None:
-                    load(child, prefix + name + '.')
-
-        load(model)
+        # Load from a PyTorch state_dict
+        model.load_state_dict(state_dict)
 
         return model
 
@@ -311,6 +290,16 @@ class ResNet256_6_2_1(nn.Module):
 
         return y, z, z_local, y_logits
 
+    def load_from_pretrained(self, pretrained_model_path):
+
+        model = self
+        state_dict = torch.load(pretrained_model_path, map_location='cpu')
+
+        # Load from a PyTorch state_dict
+        model.load_state_dict(state_dict)
+
+        return model
+    
     # based on 
     # https://github.com/huggingface/transformers/blob/v1.0.0/pytorch_transformers/modeling_utils.py
     def save_pretrained(self, save_directory, epoch=-1): 
@@ -434,9 +423,10 @@ def build_resnet256_6_2_1(block=BasicBlock, blocks_per_layers=[2, 2, 2, 2, 2, 2]
                           loading_from_joint=False, freeze_encoder=False, **kwargs):
     model = ResNet256_6_2_1(block, blocks_per_layers, output_channels=output_channels, **kwargs)
     if pretrained:
-        model = model.from_pretrained(pretrained_model_path, block, blocks_per_layers,
-                                      output_channels, loading_from_joint=loading_from_joint, 
-                                      freeze_encoder=freeze_encoder, **kwargs)
+        model = model.load_from_pretrained(pretrained_model_path)
+        # model = model.from_pretrained(pretrained_model_path, block, blocks_per_layers,
+        #                               output_channels, loading_from_joint=loading_from_joint, 
+        #                               freeze_encoder=freeze_encoder, **kwargs)
     return model
 
 def build_resnet_model(model_name, checkpoint_path=None, output_channels=4, 
@@ -481,7 +471,14 @@ class ImageReportModel(nn.Module):
         logits_txt = outputs_txt[1]
 
         return embedding_img, embedding_txt, logits_img, logits_txt
+    
+    def save_image_model(self, save_directory):
+        model_to_save = self.image_model
+        output_model_file = os.path.join(save_directory, 'pytorch_MI_image_model.bin')
+        torch.save(model_to_save.state_dict(), output_model_file)
 
+        return output_model_file
+    
     def save_pretrained(self, save_directory, epoch=-1):
         """ Save a model with its configuration file to a directory, so that it
             can be re-loaded using the `from_pretrained(save_directory)` class method.
