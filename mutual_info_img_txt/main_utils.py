@@ -370,12 +370,14 @@ class ExplainableImageModelManager:
 		total_batch = len(self.validate_data_loader)
 
 		showLog=True
+		
+		# self.image_classifier_model = self.image_classifier_model.to(device)
 
 		for image, label in self.validate_data_loader:
 			
 				output_image = self.pre_trained_img_model.forward(image)
 				image_embeddings=output_image[1]
-				image_embeddings= image_embeddings.to(device)
+				# image_embeddings= image_embeddings.to(device)
 
 				expectedLabel = self.image_classifier_model(image_embeddings)
 				
