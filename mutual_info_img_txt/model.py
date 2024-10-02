@@ -179,12 +179,40 @@ class Basic_MLP(nn.Module):
 
         # If we save using the predefined names, we can load using `from_pretrained`
         if epoch == -1:
-            output_model_file = os.path.join(save_directory, 'pytorch_model.bin')
+            output_model_file = os.path.join(save_directory, 'pytorch_image_classifier_model.bin')
         else:
             output_model_file = os.path.join(save_directory, 
                                              'pytorch_image_classifier_model_epoch'+str(epoch)+'.bin')
 
         torch.save(model_to_save.state_dict(), output_model_file)
+
+    def from_pretrained(self, pretrained_model_path):
+
+        model = self
+        state_dict = torch.load(pretrained_model_path, map_location='cpu')
+
+         # Load from a PyTorch state_dict
+        missing_keys = []
+        unexpected_keys = []
+        error_msgs = []
+        # copy state_dict so _load_from_state_dict can modify it
+        metadata = getattr(state_dict, '_metadata', None)
+        state_dict = state_dict.copy()
+        if metadata is not None:
+            state_dict._metadata = metadata
+
+        def load(module, prefix=''):
+            local_metadata = {} if metadata is None else metadata.get(prefix[:-1], {})
+            module._load_from_state_dict(
+                state_dict, prefix, local_metadata, True, missing_keys, unexpected_keys, error_msgs)
+            for name, child in module._modules.items():
+                if child is not None:
+                    load(child, prefix + name + '.')
+
+        load(model)
+
+        return model
+
 
 class ResNet256_6_2_1(nn.Module):
     """ A residual network 6_2_1 

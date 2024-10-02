@@ -299,61 +299,69 @@ class ExplainableImageModelManager:
 
 		#TODO: add code to load classifier from pre_trained model saved in file
 
-		'''
-		Train the model
-		'''		
-		
-		
-		self.image_classifier_model = self.image_classifier_model.to(device)
-		# self.pre_trained_img_model = self.pre_trained_img_model.to(device)
+		if(self.using_pre_trained):
+			output_model_file = os.path.join(args.save_directory, 
+                                             'pytorch_image_classifier_model_epoch'+str(args.num_train_epochs)+'.bin')
+			self.image_classifier_model = self.image_classifier_model.from_pretrained(output_model_file)
 
-		'''
-		Define Loss function and optimizer
-		'''
+			return
+		else:
 
-		criterion = torch.nn.BCELoss().to(device) 
-		optimizer = torch.optim.Adam(self.image_classifier_model.parameters(), lr=args.init_lr)
-
-		total_batch = len(self.test_data_loader)
-
-		start_time = time.time()
-
-		for epoch in range(args.num_train_epochs):
-    		
-			avg_cost = 0
-			print('[Start Epoch: {:>4}]'.format(epoch + 1))
-			start_time_epoch = time.time()
-
-			for image, label in self.test_data_loader:
+			'''
+			Train the model
+			'''		
 			
-				output_image = self.pre_trained_img_model.forward(image)
-				image_embeddings=output_image[1]
-				image_embeddings= image_embeddings.to(device)
-				
-				label = label.unsqueeze(1).to(device)
-
-				optimizer.zero_grad()
-				expectedLabel = self.image_classifier_model(image_embeddings)
-				
-				loss = criterion( expectedLabel, label.float())
-				
-				loss.backward()
-				
-				optimizer.step()
-
-				avg_cost += loss.item() / total_batch
-
-			print('[Epoch: {:>4}] cost = {:>.9}'.format(epoch + 1, avg_cost))
-			logger.info(f"  Epoch {epoch+1} loss = {avg_cost:.5f}")
-			interval_epoch = time.time() - start_time_epoch
-			logger.info(f"  Epoch {epoch+1} took {interval_epoch:.3f} s")
 			
+			self.image_classifier_model = self.image_classifier_model.to(device)
+			# self.pre_trained_img_model = self.pre_trained_img_model.to(device)
 
-		checkpoint_path = self.image_classifier_model.save_pretrained(args.save_dir, epoch=epoch + 1)
-		interval = time.time() - start_time
+			'''
+			Define Loss function and optimizer
+			'''
 
-		print(f"Total  Epoch {epoch+1} took {interval:.3f} s")
-		logger.info(f"  Epoch {epoch+1} checkpoint saved in {checkpoint_path}")
+			criterion = torch.nn.BCELoss().to(device) 
+			optimizer = torch.optim.Adam(self.image_classifier_model.parameters(), lr=args.init_lr)
+
+			total_batch = len(self.test_data_loader)
+
+			start_time = time.time()
+
+			for epoch in range(args.num_train_epochs):
+				
+				avg_cost = 0
+				print('[Start Epoch: {:>4}]'.format(epoch + 1))
+				start_time_epoch = time.time()
+
+				for image, label in self.test_data_loader:
+				
+					output_image = self.pre_trained_img_model.forward(image)
+					image_embeddings=output_image[1]
+					image_embeddings= image_embeddings.to(device)
+					
+					label = label.unsqueeze(1).to(device)
+
+					optimizer.zero_grad()
+					expectedLabel = self.image_classifier_model(image_embeddings)
+					
+					loss = criterion( expectedLabel, label.float())
+					
+					loss.backward()
+					
+					optimizer.step()
+
+					avg_cost += loss.item() / total_batch
+
+				print('[Epoch: {:>4}] cost = {:>.9}'.format(epoch + 1, avg_cost))
+				logger.info(f"  Epoch {epoch+1} loss = {avg_cost:.5f}")
+				interval_epoch = time.time() - start_time_epoch
+				logger.info(f"  Epoch {epoch+1} took {interval_epoch:.3f} s")
+				
+
+			checkpoint_path = self.image_classifier_model.save_pretrained(args.save_dir, epoch=epoch + 1)
+			interval = time.time() - start_time
+
+			print(f"Total  Epoch {epoch+1} took {interval:.3f} s")
+			logger.info(f"  Epoch {epoch+1} checkpoint saved in {checkpoint_path}")
 
 	def validate(self, device):	
 		logger = logging.getLogger(__name__)
@@ -371,7 +379,7 @@ class ExplainableImageModelManager:
 
 				expectedLabel = self.image_classifier_model(image_embeddings)
 				
-				expectedLabelArray = expectedLabel.detach().numpy()
+				expectedLabelArray = expectedLabel.cpu().detach().numpy()
 
 				if(showLog == True):
 					print('Size of label, expectedLabel, expectedLabelArray')
