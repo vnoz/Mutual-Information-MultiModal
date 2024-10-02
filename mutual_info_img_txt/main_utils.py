@@ -380,7 +380,7 @@ class ExplainableImageModelManager:
 				# image_embeddings= image_embeddings.to(device)
 
 				expectedLabel = self.image_classifier_model(image_embeddings)
-				expectedLabel = torch.flatten(expectedLabel).item()
+				expectedLabel = torch.flatten(expectedLabel)
 				# expectedLabelArray = expectedLabel.cpu().detach().numpy()
 
 				if(showLog == True):
