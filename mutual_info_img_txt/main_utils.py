@@ -387,6 +387,7 @@ class ExplainableImageModelManager:
 					print('Size of label, expectedLabel')
 					print(label)
 					print(expectedLabel)
+					print(torch.sum(expectedLabel == label))
 					# print(expectedLabelArray)
 					showLog = False
 
