@@ -363,7 +363,7 @@ class ExplainableImageModelManager:
 			print(f"Total  Epoch {epoch+1} took {interval:.3f} s")
 			logger.info(f"  Epoch {epoch+1} checkpoint saved in {checkpoint_path}")
 
-	def validate(self, device):	
+	def validate(self):	
 		logger = logging.getLogger(__name__)
 
 		count =0
