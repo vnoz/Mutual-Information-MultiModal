@@ -239,9 +239,10 @@ class ExplainableImageModelManager:
 			and metrics for classifier and heatmap generation
 	"""
 
-	def __init__(self, args):
+	def __init__(self, args, using_pre_trained):
 				
 		self.args = args
+		self.using_pre_trained = using_pre_trained
 
 		self.image_classifier_model = Basic_MLP(768,[512,256,128])
 
@@ -295,6 +296,8 @@ class ExplainableImageModelManager:
 
 		logger = logging.getLogger(__name__)
 		logger.info(f"ExplainableImageModelManager training start, args = {args}")
+
+		#TODO: add code to load classifier from pre_trained model saved in file
 
 		'''
 		Train the model
@@ -358,18 +361,28 @@ class ExplainableImageModelManager:
 		count =0
 		total_batch = len(self.validate_data_loader)
 
+		showLog=True
+
 		for image, label in self.validate_data_loader:
 			
 				output_image = self.pre_trained_img_model.forward(image)
 				image_embeddings=output_image[1]
 				image_embeddings= image_embeddings.to(device)
-				
-				label = label.unsqueeze(1).to(device)
 
 				expectedLabel = self.image_classifier_model(image_embeddings)
 				
-				if(torch.equal(expectedLabel, label)):
-					count = count+1
+				expectedLabelArray = expectedLabel.detach().numpy()
+
+				if(showLog == True):
+					print('Size of label, expectedLabel, expectedLabelArray')
+					print(label.size())
+					print(expectedLabel.size())
+					print(expectedLabelArray.size())
+					showLog = False
+
+				# if(torch.equal(expectedLabel, label)):
+				# 	count = count+1
+				count = count + np.sum(expectedLabel == label)
 		
 		accuracy = count / total_batch
 
