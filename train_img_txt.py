@@ -75,7 +75,7 @@ def train_image_text():
                         args=args)
     print(f"Finish training for ImageTextModelManager")
 
-#train_image_text()
+train_image_text()
 
 
 
