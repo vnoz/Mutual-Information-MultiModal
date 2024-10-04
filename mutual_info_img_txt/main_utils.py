@@ -250,10 +250,8 @@ class ExplainableImageModelManager:
 		self.image_classifier_model = Basic_MLP(768,[512,256,128])
 
 		#NOTE: Load pre_trained image model from MI training
-		save_dir = os.path.join(args.save_dir,
-                                 f'{args.mi_estimator}_total_epochs{args.num_train_epochs}')
-		output_model_file = os.path.join(save_dir, 
-													'pytorch_model_epoch'+str(args.num_train_epochs)+'.bin')
+		output_model_file = os.path.join(args.save_dir, 'pytorch_MI_image_model.bin')
+		
 		self.pre_trained_img_model = build_resnet_model(model_name=args.image_model_name, checkpoint_path=output_model_file,
 													output_channels=args.output_channels)
 		
