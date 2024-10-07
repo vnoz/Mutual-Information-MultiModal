@@ -256,7 +256,10 @@ class ExplainableImageModelManager:
 													output_channels=args.output_channels)
 		
 		data_loaders = self.construct_data_loader()
-		self.test_data_loader, self.validate_data_loader = data_loaders
+		self.test_data_loader = data_loaders[0]
+		self.validate_data_loader =  data_loaders[1]
+		print('ExplainableImageModelManager ctor data_loader')
+		print(data_loaders)
 		# self.classifier_explanation = classifier_explanation_name
 		# self.classifier_metric_name = classifier_metric_name
 		# self.classifier_explanation_metric_name = classifier_explanation_metric_name
@@ -322,6 +325,7 @@ class ExplainableImageModelManager:
 
 			total_batch = len(self.test_data_loader)
 
+			print('total batch of test_data_loader: ' + str(total_batch))
 			start_time = time.time()
 
 			for epoch in range(args.num_train_epochs):
