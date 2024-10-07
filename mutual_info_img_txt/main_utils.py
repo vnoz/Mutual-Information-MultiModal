@@ -276,8 +276,8 @@ class ExplainableImageModelManager:
 									transform=get_transform_function(args.img_size))
 		
 		#NOTE: separate training and validate dataset/dataloader here, might need to split with balanced label classes
-		train_size = int(0.5 * len(dataset))
-		valid_size = len(dataset) - train_size
+		train_size = int(len(dataset))
+		valid_size = int(0.5 * len(dataset)) #len(dataset) - train_size
 
 		test_ds, valid_ds = torch.utils.data.random_split(dataset, [train_size, valid_size])
 		test_data_loader = DataLoader(test_ds, batch_size=8,
