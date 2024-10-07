@@ -102,4 +102,4 @@ def train_image_classifier():
 
     print('Accuracy for downstream image classifier: ' + str(accuracy))
     
-train_image_classifier()
+#train_image_classifier()
