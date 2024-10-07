@@ -395,7 +395,7 @@ class ExplainableImageModelManager:
 		# self.image_classifier_model = self.image_classifier_model.to(device)
 
 		for image, label in self.validate_data_loader:
-			
+				image = image.to(device)
 				output_image = self.pre_trained_img_model.forward(image)
 				image_embeddings=output_image[1]
 				image_embeddings= image_embeddings.to(device)
