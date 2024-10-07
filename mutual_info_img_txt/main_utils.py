@@ -355,10 +355,12 @@ class ExplainableImageModelManager:
 						showLog = False
 
 					#label = label.unsqueeze(1).to(device)
+					label=label.to(torch.float32)
 					label = label.to(device)
 
 					optimizer.zero_grad()
 					expectedLabel = self.image_classifier_model(image_embeddings)
+					expectedLabel= expectedLabel.to(torch.float32)
 					expectedLabel= torch.flatten(expectedLabel)
 					loss = criterion( expectedLabel, label)
 					
