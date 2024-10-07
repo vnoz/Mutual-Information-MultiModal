@@ -359,7 +359,7 @@ class ExplainableImageModelManager:
 
 					optimizer.zero_grad()
 					expectedLabel = self.image_classifier_model(image_embeddings)
-					
+					expectedLabel= torch.flatten(expectedLabel)
 					loss = criterion( expectedLabel, label)
 					
 					loss.backward()
