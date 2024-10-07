@@ -277,7 +277,7 @@ class ExplainableImageModelManager:
 									transform=get_transform_function(args.img_size))
 		
 		#NOTE: separate training and validate dataset/dataloader here, might need to split with balanced label classes
-		train_size = int(0.5 * len(dataset))
+		train_size = int(0.8 * len(dataset))
 		valid_size = len(dataset) - train_size
 
 		test_ds, valid_ds = torch.utils.data.random_split(dataset, [train_size, valid_size])
@@ -390,9 +390,7 @@ class ExplainableImageModelManager:
 		count =0
 		total_batch = len(self.validate_data_loader)
 
-		showLog=True
-		
-		# self.image_classifier_model = self.image_classifier_model.to(device)
+		#showLog=True
 
 		for image, label in self.validate_data_loader:
 				image = image.to(device)
@@ -404,13 +402,13 @@ class ExplainableImageModelManager:
 				expectedLabel = torch.flatten(expectedLabel).cpu().detach().numpy()
 				label = label.numpy()
 
-				if(showLog == True):
-					print('Size of label, expectedLabel')
-					print(label)
-					print(expectedLabel)
-					print(np.sum(expectedLabel == label).item())
+				# if(showLog == True):
+				# 	print('Size of label, expectedLabel')
+				# 	print(label)
+				# 	print(expectedLabel)
+				# 	print(np.sum(expectedLabel == label).item())
 					
-					showLog = False
+				# 	showLog = False
 
 				count = count + np.sum(expectedLabel == label).item()
 		
