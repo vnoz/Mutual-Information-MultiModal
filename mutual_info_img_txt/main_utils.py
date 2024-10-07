@@ -328,7 +328,8 @@ class ExplainableImageModelManager:
 
 			total_batch = len(self.test_data_loader)
 
-			print('total batch of test_data_loader: ' + str(total_batch))
+			logger.info(f"total batch of test_data_loader:, total_batch = {total_batch}")
+			
 			start_time = time.time()
 
 			showLog = True
@@ -353,12 +354,13 @@ class ExplainableImageModelManager:
 						
 						showLog = False
 
-					label = label.unsqueeze(1).to(device)
+					#label = label.unsqueeze(1).to(device)
+					label = label.to(device)
 
 					optimizer.zero_grad()
 					expectedLabel = self.image_classifier_model(image_embeddings)
 					
-					loss = criterion( expectedLabel, label.float())
+					loss = criterion( expectedLabel, label)
 					
 					loss.backward()
 					

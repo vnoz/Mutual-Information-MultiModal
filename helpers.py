@@ -99,7 +99,7 @@ def construct_training_parameters():
 
     parser.add_argument('--batch_size', default=8, type=int,
                         help='Mini-batch size')
-    parser.add_argument('--num_train_epochs', default=100, type=int,
+    parser.add_argument('--num_train_epochs', default=10, type=int,
                         help='Number of training epochs')
     parser.add_argument('--mi_estimator', type=str,
                         default='infonce',
