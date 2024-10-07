@@ -181,6 +181,7 @@ class Basic_MLP(nn.Module):
         output_model_file = os.path.join(save_directory, 'pytorch_image_classifier_model.bin')
         
         torch.save(model_to_save.state_dict(), output_model_file)
+        return output_model_file
 
     def load_from_pretrained(self, pretrained_model_path):
 
