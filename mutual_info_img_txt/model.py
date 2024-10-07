@@ -427,10 +427,10 @@ def build_resnet256_6_2_1(block=BasicBlock, blocks_per_layers=[2, 2, 2, 2, 2, 2]
     if pretrained:
         print('build_resnet256_6_2_1 load_from_pretrained')
         print(pretrained_model_path)
-        model = model.load_from_pretrained(pretrained_model_path)
-        # model = model.from_pretrained(pretrained_model_path, block, blocks_per_layers,
-        #                               output_channels, loading_from_joint=loading_from_joint, 
-        #                               freeze_encoder=freeze_encoder, **kwargs)
+        #model = model.load_from_pretrained(pretrained_model_path)
+        model = model.from_pretrained(pretrained_model_path, block, blocks_per_layers,
+                                      output_channels, loading_from_joint=loading_from_joint, 
+                                      freeze_encoder=freeze_encoder, **kwargs)
     return model
 
 def build_resnet_model(model_name, checkpoint_path=None, output_channels=4, 
