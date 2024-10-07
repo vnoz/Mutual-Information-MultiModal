@@ -160,7 +160,7 @@ class Basic_MLP(nn.Module):
         x = self.relu(x)
         # x = self.softmax(x)
         x = x.view(x.size(0), -1)
-        x = self.sigmoid(x)
+       # x = self.sigmoid(x)
         # y = self.softmax(y_logits)
         return x
     
