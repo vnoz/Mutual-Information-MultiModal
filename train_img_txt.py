@@ -75,11 +75,12 @@ def train_image_text():
                         args=args)
     print(f"Finish training for ImageTextModelManager")
 
-#train_image_text()
+    return model_manager.image_model
+
+mi_image_model= train_image_text()
 
 
-
-def train_image_classifier():
+def train_image_classifier(mi_image_model):
     
     args =  construct_training_parameters()
     args.save_dir = os.path.join(args.save_dir,
@@ -98,10 +99,10 @@ def train_image_classifier():
 
     model_manager = ExplainableImageModelManager( args=args, using_pre_trained=False)
 
-    model_manager.train(device=device)
+    model_manager.train(pretrained_model= mi_image_model, device=device)
 
     accuracy = model_manager.validate(device=device)
 
     print('Accuracy for downstream image classifier: ' + str(accuracy))
     
-train_image_classifier()
+train_image_classifier(mi_image_model)

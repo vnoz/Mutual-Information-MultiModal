@@ -251,12 +251,12 @@ class ExplainableImageModelManager:
 
 		print(args)
 		#NOTE: Load pre_trained image model from MI training
-		output_model_file = os.path.join(args.save_dir, 'pytorch_MI_image_model.bin')
+		# output_model_file = os.path.join(args.save_dir, 'pytorch_MI_image_model.bin')
 		
-		self.pre_trained_img_model = build_resnet_model(model_name=args.image_model_name, checkpoint_path=output_model_file,
-													output_channels=args.output_channels)
-		print('ExplainableImageModelManager ctor pre_trained_img_model')
-		print(self.pre_trained_img_model)
+		# self.pre_trained_img_model = build_resnet_model(model_name=args.image_model_name, checkpoint_path=output_model_file,
+		# 											output_channels=args.output_channels)
+		# print('ExplainableImageModelManager ctor pre_trained_img_model')
+		# print(self.pre_trained_img_model)
 		data_loaders = self.construct_data_loader()
 		self.test_data_loader = data_loaders[0]
 		self.validate_data_loader =  data_loaders[1]
@@ -291,9 +291,11 @@ class ExplainableImageModelManager:
 		
 		return test_data_loader, validate_data_loader
 
-	def train(self, device):
+	def train(self, pretrained_model, device):
 		
 		args = self.args
+
+		self.pre_trained_img_model = pretrained_model
 
 		logger = logging.getLogger(__name__)
 		logger.info(f"ExplainableImageModelManager training start, args = {args}")
