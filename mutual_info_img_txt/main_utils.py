@@ -249,9 +249,11 @@ class ExplainableImageModelManager:
 
 		self.image_classifier_model = Basic_MLP(768,[512,256,128])
 
+		print(args)
 		#NOTE: Load pre_trained image model from MI training
 		output_model_file = os.path.join(args.save_dir, 'pytorch_MI_image_model.bin')
-		
+		print('pytorch_MI_image_model file load:')
+		print(output_model_file)
 		self.pre_trained_img_model = build_resnet_model(model_name=args.image_model_name, checkpoint_path=output_model_file,
 													output_channels=args.output_channels)
 		print('ExplainableImageModelManager ctor pre_trained_img_model')
@@ -346,7 +348,7 @@ class ExplainableImageModelManager:
 						print('ExplainableImageModelManager train function')
 						print('Size of label, image_embeddings')
 						print(label)
-						print(image_embeddings)
+						print(image_embeddings.size())
 						
 						showLog = False
 
@@ -374,7 +376,7 @@ class ExplainableImageModelManager:
 
 			print(f"Total  Epoch {epoch+1} took {interval:.3f} s")
 			print('checkpoint_path: ' + str(checkpoint_path))
-			
+
 			logger.info(f"  Epoch {epoch+1} checkpoint saved in {checkpoint_path}")
 
 	def validate(self,device):	
