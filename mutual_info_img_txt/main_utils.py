@@ -340,7 +340,7 @@ class ExplainableImageModelManager:
 				start_time_epoch = time.time()
 
 				for image, label in self.test_data_loader:
-				
+					image = image.to(device)
 					output_image = self.pre_trained_img_model.forward(image)
 					image_embeddings=output_image[1]
 					image_embeddings= image_embeddings.to(device)
