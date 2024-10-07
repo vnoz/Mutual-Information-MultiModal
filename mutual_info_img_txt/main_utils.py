@@ -258,8 +258,7 @@ class ExplainableImageModelManager:
 		data_loaders = self.construct_data_loader()
 		self.test_data_loader = data_loaders[0]
 		self.validate_data_loader =  data_loaders[1]
-		print('ExplainableImageModelManager ctor data_loader')
-		print(data_loaders)
+		
 		# self.classifier_explanation = classifier_explanation_name
 		# self.classifier_metric_name = classifier_metric_name
 		# self.classifier_explanation_metric_name = classifier_explanation_metric_name
@@ -365,7 +364,7 @@ class ExplainableImageModelManager:
 			print(f"Total  Epoch {epoch+1} took {interval:.3f} s")
 			logger.info(f"  Epoch {epoch+1} checkpoint saved in {checkpoint_path}")
 
-	def validate(self):	
+	def validate(self,device):	
 		logger = logging.getLogger(__name__)
 
 		count =0
@@ -379,7 +378,7 @@ class ExplainableImageModelManager:
 			
 				output_image = self.pre_trained_img_model.forward(image)
 				image_embeddings=output_image[1]
-				# image_embeddings= image_embeddings.to(device)
+				image_embeddings= image_embeddings.to(device)
 
 				expectedLabel = self.image_classifier_model(image_embeddings)
 				expectedLabel = torch.flatten(expectedLabel)

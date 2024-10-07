@@ -100,7 +100,7 @@ def train_image_classifier():
 
     model_manager.train(device=device)
 
-    accuracy = model_manager.validate()
+    accuracy = model_manager.validate(device=device)
 
     print('Accuracy for downstream image classifier: ' + str(accuracy))
     
