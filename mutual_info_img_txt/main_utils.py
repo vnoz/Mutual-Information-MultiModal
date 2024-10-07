@@ -382,16 +382,17 @@ class ExplainableImageModelManager:
 
 				expectedLabel = self.image_classifier_model(image_embeddings)
 				expectedLabel = expectedLabel.cpu().detach().numpy() #torch.flatten(expectedLabel).cpu().detach().numpy()
-
+				label = label.numpy()
+				
 				if(showLog == True):
 					print('Size of label, expectedLabel')
 					print(label)
 					print(expectedLabel)
-					print(torch.sum(expectedLabel == label).item())
+					print(np.sum(expectedLabel == label).item())
 					
 					showLog = False
 
-				count = count + torch.sum(expectedLabel == label).item()
+				count = count + np.sum(expectedLabel == label).item()
 		
 		accuracy = count / total_batch
 
