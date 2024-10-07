@@ -295,7 +295,8 @@ class ResNet256_6_2_1(nn.Module):
 
         model = self
         state_dict = torch.load(pretrained_model_path, map_location='cpu')
-
+        print('state_dict')
+        print(state_dict)
         # Load from a PyTorch state_dict
         model.load_state_dict(state_dict)
 

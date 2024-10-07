@@ -252,8 +252,7 @@ class ExplainableImageModelManager:
 		print(args)
 		#NOTE: Load pre_trained image model from MI training
 		output_model_file = os.path.join(args.save_dir, 'pytorch_MI_image_model.bin')
-		print('pytorch_MI_image_model file load:')
-		print(output_model_file)
+		
 		self.pre_trained_img_model = build_resnet_model(model_name=args.image_model_name, checkpoint_path=output_model_file,
 													output_channels=args.output_channels)
 		print('ExplainableImageModelManager ctor pre_trained_img_model')
