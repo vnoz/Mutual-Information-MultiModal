@@ -254,7 +254,8 @@ class ExplainableImageModelManager:
 		
 		self.pre_trained_img_model = build_resnet_model(model_name=args.image_model_name, checkpoint_path=output_model_file,
 													output_channels=args.output_channels)
-		
+		print('ExplainableImageModelManager ctor pre_trained_img_model')
+		print(self.pre_trained_img_model)
 		data_loaders = self.construct_data_loader()
 		self.test_data_loader = data_loaders[0]
 		self.validate_data_loader =  data_loaders[1]
@@ -327,6 +328,8 @@ class ExplainableImageModelManager:
 			print('total batch of test_data_loader: ' + str(total_batch))
 			start_time = time.time()
 
+			showLog = True
+
 			for epoch in range(args.num_train_epochs):
 				
 				avg_cost = 0
@@ -339,6 +342,14 @@ class ExplainableImageModelManager:
 					image_embeddings=output_image[1]
 					image_embeddings= image_embeddings.to(device)
 					
+					if(showLog == True):
+						print('ExplainableImageModelManager train function')
+						print('Size of label, image_embeddings')
+						print(label)
+						print(image_embeddings)
+						
+						showLog = False
+
 					label = label.unsqueeze(1).to(device)
 
 					optimizer.zero_grad()
@@ -362,6 +373,8 @@ class ExplainableImageModelManager:
 			interval = time.time() - start_time
 
 			print(f"Total  Epoch {epoch+1} took {interval:.3f} s")
+			print('checkpoint_path: ' + str(checkpoint_path))
+			
 			logger.info(f"  Epoch {epoch+1} checkpoint saved in {checkpoint_path}")
 
 	def validate(self,device):	
