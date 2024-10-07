@@ -272,12 +272,8 @@ class ExplainableImageModelManager:
 									disease=args.disease_label,
 									transform=get_transform_function(args.img_size))
 		
-		# data_loader = DataLoader(dataset, batch_size=8,
-		# 						 shuffle=True, num_workers=8,
-		# 						 pin_memory=True, drop_last=True)
-
 		#NOTE: separate training and validate dataset/dataloader here, might need to split with balanced label classes
-		train_size = int(0.8 * len(dataset))
+		train_size = int(0.5 * len(dataset))
 		valid_size = len(dataset) - train_size
 
 		test_ds, valid_ds = torch.utils.data.random_split(dataset, [train_size, valid_size])

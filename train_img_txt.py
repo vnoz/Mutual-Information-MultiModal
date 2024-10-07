@@ -75,14 +75,16 @@ def train_image_text():
                         args=args)
     print(f"Finish training for ImageTextModelManager")
 
-train_image_text()
+#train_image_text()
 
 
 
 def train_image_classifier():
     
     args =  construct_training_parameters()
-
+    args.save_dir = os.path.join(args.save_dir,
+                                 f'{args.mi_estimator}_total_epochs{args.num_train_epochs}')
+    
     print(f"Train_image_classifier args: {args}")
 
     log_path = os.path.join(args.save_dir, 'training_classifier.log')
@@ -102,4 +104,4 @@ def train_image_classifier():
 
     print('Accuracy for downstream image classifier: ' + str(accuracy))
     
-#train_image_classifier()
+train_image_classifier()
