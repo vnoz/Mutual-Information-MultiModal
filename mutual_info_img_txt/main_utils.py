@@ -276,15 +276,15 @@ class ExplainableImageModelManager:
 									transform=get_transform_function(args.img_size))
 		
 		#NOTE: separate training and validate dataset/dataloader here, might need to split with balanced label classes
-		train_size = int(len(dataset))
+		train_size = int(0.5 * len(dataset))
 		valid_size = len(dataset) - train_size
 
-		#test_ds, valid_ds = torch.utils.data.random_split(dataset, [train_size, valid_size])
-		test_data_loader = DataLoader(dataset, batch_size=8,
+		test_ds, valid_ds = torch.utils.data.random_split(dataset, [train_size, valid_size])
+		test_data_loader = DataLoader(test_ds, batch_size=8,
 								 shuffle=True, num_workers=8,
 								 pin_memory=True, drop_last=True)
 		
-		validate_data_loader = DataLoader(dataset, batch_size=8,
+		validate_data_loader = DataLoader(test_ds, batch_size=8,
 								 shuffle=True, num_workers=8,
 								 pin_memory=True, drop_last=True)
 		
@@ -359,7 +359,7 @@ class ExplainableImageModelManager:
 				logger.info(f"  Epoch {epoch+1} took {interval_epoch:.3f} s")
 				
 
-			checkpoint_path = self.image_classifier_model.save_pretrained(args.save_dir, epoch=epoch + 1)
+			checkpoint_path = self.image_classifier_model.save_pretrained(args.save_dir)
 			interval = time.time() - start_time
 
 			print(f"Total  Epoch {epoch+1} took {interval:.3f} s")
