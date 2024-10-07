@@ -101,8 +101,8 @@ def train_image_classifier(mi_image_model):
 
     model_manager.train(pretrained_model= mi_image_model, device=device)
 
-    accuracy = model_manager.validate(device=device)
+    accuracy = model_manager.validate(device=device,batch_size=args.batch_size)
 
-    print('Accuracy for downstream image classifier: ' + str(accuracy/args.batch_size))
+    print('Accuracy for downstream image classifier: ' + str(accuracy))
     
 train_image_classifier(mi_image_model)

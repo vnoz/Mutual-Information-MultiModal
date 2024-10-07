@@ -384,7 +384,7 @@ class ExplainableImageModelManager:
 
 			logger.info(f"  Epoch {epoch+1} checkpoint saved in {checkpoint_path}")
 
-	def validate(self,device):	
+	def validate(self,device, batch_size):	
 		logger = logging.getLogger(__name__)
 
 		count =0
@@ -414,7 +414,7 @@ class ExplainableImageModelManager:
 
 				count = count + np.sum(expectedLabel == label).item()
 		
-		accuracy = count / total_batch
+		accuracy = count / (total_batch*batch_size)
 
 		logger.info(f"ExplainableImageModelManager validate with accuracy = {accuracy}")
 

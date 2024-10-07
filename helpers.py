@@ -81,10 +81,10 @@ def construct_training_parameters():
     parser = argparse.ArgumentParser()
 
     parser.add_argument('--image_dir', type=str,
-                        default=os.path.join(current_dir, 'example_data/images/'),
+                        default=os.path.join(current_dir, 'training_data/images/'),
                         help='The image data directory')
     parser.add_argument('--text_data_dir', type=str,
-                        default=os.path.join(current_dir, 'example_data/text/'),
+                        default=os.path.join(current_dir, 'training_data/text/'),
                         help='The text data directory')
     parser.add_argument('--bert_pretrained_dir', type=str,
                         default=os.path.join(current_dir, 'bert_pretrain_all_notes_150000'),
@@ -94,7 +94,7 @@ def construct_training_parameters():
     parser.add_argument('--save_dir', type=str,
                         default=os.path.join(current_dir, 'save_dir'))
     parser.add_argument('--dataset_metadata', type=str,
-                        default=os.path.join(current_dir, 'example_data/training_text_label_negbio.csv'),
+                        default=os.path.join(current_dir, 'training_data/training_text_label_negbio.csv'),
                         help='The metadata for the model training ')
 
     parser.add_argument('--batch_size', default=8, type=int,
