@@ -1,3 +1,4 @@
+import datetime
 import os
 import argparse
 import logging
@@ -43,6 +44,9 @@ def train_image_text():
                                         datefmt='%m-%d %H:%M')
 
     logger = logging.getLogger(__name__)
+
+    logger.info('Train_image_text: ' + datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+
     logger.info(f"args: {args}")
 
     print(f"Updated args: {args}")
@@ -94,6 +98,8 @@ def train_image_classifier(mi_image_model):
                                         datefmt='%m-%d %H:%M')
 
     logger = logging.getLogger(__name__)
+    logger.info('Train_image_classifier: ' + datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
