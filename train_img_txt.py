@@ -19,7 +19,6 @@ def train_image_text():
 
     args = construct_training_parameters()
 
-    print(f"Initial args: {args}")
 
     '''
     Check cuda
