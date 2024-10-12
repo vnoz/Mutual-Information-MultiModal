@@ -217,8 +217,9 @@ def populate_training_and_testing_dataset(amount_for_training, amount_for_testin
     # Move file from full dataset to training dataset folder
     with open(os.path.join(args.text_storage_dir,'all_data.tsv'), "r", encoding="utf-8") as f:
         reader = csv.reader(f, delimiter="\t", lineterminator='\n')
-        
+        print(args.text_storage_dir)
         for line in reader:
+            print(line[0])
             text = line[-1]
             # labels = line[1]
             study_id = line[2]
