@@ -223,23 +223,26 @@ def populate_training_and_testing_dataset(amount_for_training, amount_for_testin
 
     print('full dataset file count: ' + str(len(onlyfiles)))
 
-    #new_img_filename_without_extension = 'p'+subject_id+'_'+'s'+ study_id+'_'+dicom_id
-                    
-    #new_img_filename_full_path = os.path.join(args.image_storage_dir,new_img_filename_without_extension+'.jpg')  
     showLog = True
     for filename in onlyfiles:
         if(showLog == True):
-            print(filename)
+            study_id = filename.split('_')[1][1:]
+            print(study_id)
             showLog = False
             break
-    #study_dictionary[study_id] =  new_img_filename_full_path
+
+        #new_img_filename_without_extension = 'p'+subject_id+'_'+'s'+ study_id+'_'+dicom_id
+        # study_id = filename.split('_')[1][1:]       
+        # new_img_filename_full_path = os.path.join(args.image_storage_dir,new_img_filename_without_extension+'.jpg')  
+    
+        # study_dictionary[study_id] =  new_img_filename_full_path
     
     # Move file from full dataset to training dataset folder
     with open(os.path.join(args.text_storage_dir,'all_data.tsv'), "r", encoding="utf-8") as f:
         reader = csv.reader(f, delimiter="\t", lineterminator='\n')
         print(args.text_storage_dir)
         for line in reader:
-            print(line[0])
+            #print(line[0])
             text = line[-1]
             # labels = line[1]
             study_id = line[2]
