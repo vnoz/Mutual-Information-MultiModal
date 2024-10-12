@@ -25,7 +25,7 @@ def construct_dataset_parameters():
                         help='Total amount of samples to download from MIMIC dataset')
 
     parser.add_argument('--amount_for_training', type=str,
-                        default=1000,
+                        default=9000,
                         help='Total amount of samples for training')
 
 
@@ -68,6 +68,9 @@ def construct_dataset_parameters():
     parser.add_argument('--testing_image_dir', type=str,
                         default=os.path.join(current_dir, 'testing_data/images/'),
                         help='The testing image data directory')
+    parser.add_argument('--testing_text_dir', type=str,
+                        default=os.path.join(current_dir, 'testing_data/text/'),
+                        help='The testing text data directory')
     parser.add_argument('--testing_dataset_metadata', type=str,
                         default=os.path.join(current_dir, 'testing_data/testing_text_label_negbio.csv'),
                         help='The metadata for the model testing ')

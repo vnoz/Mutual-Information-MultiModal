@@ -88,6 +88,13 @@ def create_data_folder():
     if not os.path.exists(args.training_text_dir):
         os.makedirs(args.training_text_dir)
 
+    if not os.path.exists(args.testing_data_dir):
+        os.makedirs(args.testing_data_dir)
+    if not os.path.exists(args.testing_image_dir):
+        os.makedirs(args.testing_image_dir)
+    if not os.path.exists(args.testing_text_dir):
+        os.makedirs(args.testing_text_dir)
+
 def download_full_dataset(imgAmount):
 
     create_data_folder()
@@ -136,7 +143,8 @@ def download_full_dataset(imgAmount):
                     study_dictionary[study_id] =  new_img_filename_full_path
                     image_file_dictionary[study_id] = new_img_filename_without_extension
                     img_url = get_filename_new_location_url(jpg_cxr_base_url,img_filename,new_img_filename_full_path)
-                    execute_command(img_url)
+                    # NOTE: do not download files since they were already download into shared machine
+                    #execute_command(img_url)
                     
                     text_filename = os.path.join('files','p'+subject_id[:2],'p'+subject_id,'s'+ study_id+'.txt')
                     text_files.append(text_filename)
@@ -147,9 +155,11 @@ def download_full_dataset(imgAmount):
                         break
     
     # Downloading text files in MIMIC-CXR
-    for i in range(len(text_files)):
-        text_file_url = get_filename_url(mimic_cxr_base_url,text_files[i],args.text_storage_dir)
-        execute_command(text_file_url)
+    # NOTE: do not download files since they were already download into shared machine
+    # for i in range(len(text_files)):
+    #     text_file_url = get_filename_url(mimic_cxr_base_url,text_files[i],args.text_storage_dir)
+        
+    #     execute_command(text_file_url)
 
 
     contents_list=[]
@@ -206,69 +216,53 @@ def download_full_dataset(imgAmount):
         for i in range(len(contents_list)):
             tsv_writer.writerow([i,0, study_list[i][1:],'a',contents_list[i]])
  
-#download_full_dataset(args.total_amount)
+download_full_dataset(args.total_amount)
 
-def populate_training_and_testing_dataset(amount_for_training, amount_for_testing):
+def populate_training_and_testing_dataset():
     
     create_data_folder()
 
+    
+    populate_subset_dataset(args.amount_for_testing, args.testing_image_dir, args.testing_text_dir, args.testing_dataset_metadata)
+    
+    
+    populate_subset_dataset(args.amount_for_training, args.training_image_dir, args.training_text_dir, args.training_dataset_metadata)
+    
+
+    print('populate_training_and_testing_dataset: End ')
+
+def populate_subset_dataset(amount, image_dir,text_dir, metadata):
     current_study_count=0
     contents_list={}
-
-    print('populate_training_and_testing_dataset: Start ')
-
-    #read all files in full dataset to create study_dictionnary
-   
-    onlyfiles = [f for f in listdir(args.image_storage_dir) if isfile(join(args.image_storage_dir, f))]
-
-    print('full dataset file count: ' + str(len(onlyfiles)))
-
-    local_study_dictionary = {}
-
-    #showLog = True
-    for filename in onlyfiles:
-        # if(showLog == True):
-        #     study_id = filename.split('_')[1][1:]
-        #     print(study_id)
-        #     showLog = False
-        #     break
-
-        study_id = filename.split('_')[1][1:]       
-        new_img_filename_full_path = os.path.join(args.image_storage_dir,filename)  
-    
-        local_study_dictionary[study_id] =  new_img_filename_full_path
-    
     # Move file from full dataset to training dataset folder
     with open(os.path.join(args.text_storage_dir,'all_data.tsv'), "r", encoding="utf-8") as f:
         reader = csv.reader(f, delimiter="\t", lineterminator='\n')
-        print(args.text_storage_dir)
+        
         for line in reader:
-            #print(line[0])
+           
             text = line[-1]
             # labels = line[1]
             study_id = line[2]
-            image_file = local_study_dictionary.get(study_id,'')
+            image_file = study_dictionary.get(study_id,'')
             if(text != '' and image_file != ''):
                 current_study_count=current_study_count+1
                 # copy image file to args.training_image_dir folder example_data/images
-                copy_cmd = 'cp ' + image_file + ' ' + args.training_image_dir
+                copy_cmd = 'cp ' + image_file + ' ' + image_dir
                
                 execute_command(copy_cmd)
                 # append FINDINGs content to the list and write to file training_data.tsv in args.training_text_data_dir
                 contents_list[study_id]=text
-            if(current_study_count >= amount_for_training):
-                print('***********After break in line 236')
+            if(current_study_count >= amount):
                 break
     
-    print('***********After break in line 239')
     # Write FINDINGS in free text reports of training images to training_data.tsv
-    training_data_file = os.path.join(args.training_text_dir,'all_data.tsv')
+    all_data_file = os.path.join(text_dir,'all_data.tsv')
     
-    with open(training_data_file, 'w', encoding='utf8', newline='') as tsv_file:
+    with open(all_data_file, 'w', encoding='utf8', newline='') as tsv_file:
         tsv_writer = csv.writer(tsv_file, delimiter='\t', lineterminator='\n')
         
         i=0
-        print('start writing to file training_data_file: ' + args.training_text_dir)
+       
         for study_id in contents_list:
             tsv_writer.writerow([i,0, study_id,'a',contents_list[study_id]])
             i=i+1
@@ -278,7 +272,7 @@ def populate_training_and_testing_dataset(amount_for_training, amount_for_testin
     line_count = 0
     with gzip.open(os.path.join(args.data_dir,label_filename), "rt") as f:
             for line in f:
-                if(line_count > amount_for_training):
+                if(line_count > amount):
                     break
                 if (line_count == 0):
                     new_line=[]
@@ -297,9 +291,8 @@ def populate_training_and_testing_dataset(amount_for_training, amount_for_testin
                         label_report_lines.append(new_line)                
                         line_count = line_count + 1
 
-    with open(args.training_dataset_metadata, 'w') as tsv_file:
+    with open(metadata, 'w') as tsv_file:
         tsv_writer = csv.writer(tsv_file)
         tsv_writer.writerows(label_report_lines)
-    
-    print('populate_training_and_testing_dataset: End ')
-populate_training_and_testing_dataset(args.amount_for_training, args.amount_for_testing)
+
+populate_training_and_testing_dataset()
