@@ -7,6 +7,8 @@ import csv
 import sys
 import gzip
 from pathlib import Path
+from os import listdir
+from os.path import isfile, join
 
 from helpers import construct_dataset_parameters
 
@@ -214,6 +216,12 @@ def populate_training_and_testing_dataset(amount_for_training, amount_for_testin
     contents_list={}
 
     print('populate_training_and_testing_dataset: Start ')
+
+    #read all files in full dataset to create study_dictionnary
+   
+    onlyfiles = [f for f in listdir(args.image_storage_dir) if isfile(join(args.image_storage_dir, f))]
+
+    print('full dataset file count: ' + str(len(onlyfiles)))
     # Move file from full dataset to training dataset folder
     with open(os.path.join(args.text_storage_dir,'all_data.tsv'), "r", encoding="utf-8") as f:
         reader = csv.reader(f, delimiter="\t", lineterminator='\n')
