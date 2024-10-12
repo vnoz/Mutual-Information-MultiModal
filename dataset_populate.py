@@ -223,19 +223,20 @@ def populate_training_and_testing_dataset(amount_for_training, amount_for_testin
 
     print('full dataset file count: ' + str(len(onlyfiles)))
 
-    showLog = True
-    for filename in onlyfiles:
-        if(showLog == True):
-            study_id = filename.split('_')[1][1:]
-            print(study_id)
-            showLog = False
-            break
+    local_study_dictionary = {}
 
-        #new_img_filename_without_extension = 'p'+subject_id+'_'+'s'+ study_id+'_'+dicom_id
-        # study_id = filename.split('_')[1][1:]       
-        # new_img_filename_full_path = os.path.join(args.image_storage_dir,new_img_filename_without_extension+'.jpg')  
+    #showLog = True
+    for filename in onlyfiles:
+        # if(showLog == True):
+        #     study_id = filename.split('_')[1][1:]
+        #     print(study_id)
+        #     showLog = False
+        #     break
+
+        study_id = filename.split('_')[1][1:]       
+        new_img_filename_full_path = os.path.join(args.image_storage_dir,filename)  
     
-        # study_dictionary[study_id] =  new_img_filename_full_path
+        local_study_dictionary[study_id] =  new_img_filename_full_path
     
     # Move file from full dataset to training dataset folder
     with open(os.path.join(args.text_storage_dir,'all_data.tsv'), "r", encoding="utf-8") as f:
@@ -246,7 +247,7 @@ def populate_training_and_testing_dataset(amount_for_training, amount_for_testin
             text = line[-1]
             # labels = line[1]
             study_id = line[2]
-            image_file = study_dictionary.get(study_id,'')
+            image_file = local_study_dictionary.get(study_id,'')
             if(text != '' and image_file != ''):
                 current_study_count=current_study_count+1
                 # copy image file to args.training_image_dir folder example_data/images
