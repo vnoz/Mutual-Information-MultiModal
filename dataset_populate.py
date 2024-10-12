@@ -272,4 +272,4 @@ def populate_training_and_testing_dataset(amount_for_training, amount_for_testin
         tsv_writer = csv.writer(tsv_file)
         tsv_writer.writerows(label_report_lines)
  
-#populate_training_and_testing_dataset(args.amount_for_training, args.amount_for_testing)
+populate_training_and_testing_dataset(args.amount_for_training, args.amount_for_testing)
