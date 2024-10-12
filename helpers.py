@@ -25,12 +25,12 @@ def construct_dataset_parameters():
                         help='Total amount of samples to download from MIMIC dataset')
 
     parser.add_argument('--amount_for_training', type=str,
-                        default=1000,
+                        default=10,
                         help='Total amount of samples for training')
 
 
     parser.add_argument('--amount_for_testing', type=str,
-                        default=100,
+                        default=10,
                         help='Total amount of samples for testing')
 
     #Location for Full dataset 
