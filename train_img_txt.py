@@ -1,16 +1,11 @@
 import os
-import argparse
 import logging
-import json
-import numpy as np
-
 import torch
 from pytorch_transformers import BertTokenizer
 
 from helpers import construct_training_parameters
 from mutual_info_img_txt import model_utils
 from mutual_info_img_txt.main_utils import ExplainableImageModelManager, ImageTextModelManager
-from mutual_info_img_txt.model import build_resnet_model
 
 
 def train_image_text():

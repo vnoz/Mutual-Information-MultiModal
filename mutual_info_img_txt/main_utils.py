@@ -2,7 +2,6 @@ import os
 from tqdm import tqdm, trange
 import logging
 import numpy as np
-import sklearn
 import time
 
 import torch
