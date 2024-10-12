@@ -120,6 +120,7 @@ def download_full_dataset(imgAmount):
     count = 0
 
     # Download cxr-jpg file and create associate free-text file list
+    print('Download cxr-jpg file and create associate free-text file list')
     with gzip.open(os.path.join(args.data_dir,meta_filename), "rt") as f:
             
             for line in f:
@@ -166,6 +167,7 @@ def download_full_dataset(imgAmount):
     study_list=[]
 
     # Parse text file and construct content from FINDINGS keyword in free-text report
+    print('Parse text file and construct content from FINDINGS keyword in free-text report')
     for i in range(len(text_files)):
         findings_content=[]
         start_getting_content=False
@@ -210,6 +212,7 @@ def download_full_dataset(imgAmount):
 
     # Write to example_data\text\all_data.tsv for pairs of studyID and Findings in free-text report for Mutual Information training
 
+    print('Write to all_data.tsv for pairs of studyID and Findings ')
     with open(os.path.join(args.text_storage_dir,'all_data.tsv'), 'w', encoding='utf8', newline='') as tsv_file:
         tsv_writer = csv.writer(tsv_file, delimiter='\t', lineterminator='\n')
         
