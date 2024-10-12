@@ -213,6 +213,7 @@ def populate_training_and_testing_dataset(amount_for_training, amount_for_testin
     current_study_count=0
     contents_list={}
 
+    print('populate_training_and_testing_dataset: Start ')
     # Move file from full dataset to training dataset folder
     with open(os.path.join(args.text_storage_dir,'all_data.tsv'), "r", encoding="utf-8") as f:
         reader = csv.reader(f, delimiter="\t", lineterminator='\n')
@@ -271,5 +272,6 @@ def populate_training_and_testing_dataset(amount_for_training, amount_for_testin
     with open(args.training_dataset_metadata, 'w') as tsv_file:
         tsv_writer = csv.writer(tsv_file)
         tsv_writer.writerows(label_report_lines)
- 
+    
+    print('populate_training_and_testing_dataset: End ')
 populate_training_and_testing_dataset(args.amount_for_training, args.amount_for_testing)
