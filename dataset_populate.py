@@ -233,8 +233,10 @@ def populate_training_and_testing_dataset(amount_for_training, amount_for_testin
                 # append FINDINGs content to the list and write to file training_data.tsv in args.training_text_data_dir
                 contents_list[study_id]=text
             if(current_study_count >= amount_for_training):
+                print('***********After break in line 236')
                 break
     
+    print('***********After break in line 239')
     # Write FINDINGS in free text reports of training images to training_data.tsv
     training_data_file = os.path.join(args.training_text_dir,'all_data.tsv')
     
@@ -242,6 +244,7 @@ def populate_training_and_testing_dataset(amount_for_training, amount_for_testin
         tsv_writer = csv.writer(tsv_file, delimiter='\t', lineterminator='\n')
         
         i=0
+        print('start writing to file training_data_file: ' + args.training_text_dir)
         for study_id in contents_list:
             tsv_writer.writerow([i,0, study_id,'a',contents_list[study_id]])
             i=i+1
