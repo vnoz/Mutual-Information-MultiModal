@@ -1,10 +1,8 @@
-import datetime
 import os
 import argparse
 import logging
 import json
 import numpy as np
-import cv2
 
 import torch
 from pytorch_transformers import BertTokenizer
@@ -18,7 +16,6 @@ from mutual_info_img_txt.model import build_resnet_model
 def train_image_text():
 
     args = construct_training_parameters()
-
 
     '''
     Check cuda
@@ -43,8 +40,6 @@ def train_image_text():
                                         datefmt='%m-%d %H:%M')
 
     logger = logging.getLogger(__name__)
-
-    logger.info('Train_image_text: ' + datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
     logger.info(f"args: {args}")
 
@@ -97,9 +92,7 @@ def train_image_classifier(mi_image_model):
                                         datefmt='%m-%d %H:%M')
 
     logger = logging.getLogger(__name__)
-    logger.info('Train_image_classifier: ' + datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-
-
+    
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     model_manager = ExplainableImageModelManager( args=args, using_pre_trained=False)
