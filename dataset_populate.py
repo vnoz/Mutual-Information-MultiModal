@@ -95,7 +95,7 @@ def create_data_folder():
     if not os.path.exists(args.testing_text_dir):
         os.makedirs(args.testing_text_dir)
 
-def download_full_dataset(imgAmount):
+def download_full_dataset(imgAmount, download_from_mimic=True):
 
     create_data_folder()
 
@@ -143,9 +143,6 @@ def download_full_dataset(imgAmount):
                     new_img_filename_full_path = os.path.join(args.image_storage_dir,new_img_filename_without_extension+'.jpg')  
                     study_dictionary[study_id] =  new_img_filename_full_path
                     image_file_dictionary[study_id] = new_img_filename_without_extension
-                    img_url = get_filename_new_location_url(jpg_cxr_base_url,img_filename,new_img_filename_full_path)
-                    # NOTE: do not download files since they were already download into shared machine
-                    #execute_command(img_url)
                     
                     text_filename = os.path.join('files','p'+subject_id[:2],'p'+subject_id,'s'+ study_id+'.txt')
                     text_files.append(text_filename)
@@ -156,11 +153,11 @@ def download_full_dataset(imgAmount):
                         break
     
     # Downloading text files in MIMIC-CXR
-    # NOTE: do not download files since they were already download into shared machine
-    # for i in range(len(text_files)):
-    #     text_file_url = get_filename_url(mimic_cxr_base_url,text_files[i],args.text_storage_dir)
-        
-    #     execute_command(text_file_url)
+    if(download_from_mimic == True):
+        for i in range(len(text_files)):
+            text_file_url = get_filename_url(mimic_cxr_base_url,text_files[i],args.text_storage_dir)
+            
+            execute_command(text_file_url)
 
 
     contents_list=[]
@@ -205,8 +202,16 @@ def download_full_dataset(imgAmount):
             if(len(findings_content)==0 and len(content_without_findings_keyword) > 0):
                 findings_content = content_without_findings_keyword
         
-        contents_list.append(''.join(map(str,findings_content)))
-        study_list.append( Path(text_files[i]).stem)
+        if(len(findings_content) > 0):
+            contents_list.append(''.join(map(str,findings_content)))
+            studyId = Path(text_files[i]).stem
+            study_list.append(studyId)
+
+            # Only download image file when Text file has Findings_Content
+            if(download_from_mimic == True):
+                url = study_dictionary[studyId]
+                download_img_url = get_filename_new_location_url(jpg_cxr_base_url,img_filename,url)
+                execute_command(download_img_url)
     
     assert len(study_list) == len(contents_list), "Mismatch number of studies and free-text reports"
 
@@ -219,7 +224,7 @@ def download_full_dataset(imgAmount):
         for i in range(len(contents_list)):
             tsv_writer.writerow([i,0, study_list[i][1:],'a',contents_list[i]])
  
-download_full_dataset(args.total_amount)
+download_full_dataset(args.total_amount,download_from_mimic=False)
 
 def populate_training_and_testing_dataset():
     
