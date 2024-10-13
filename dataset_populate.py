@@ -230,6 +230,7 @@ def populate_training_and_testing_dataset():
     
     create_data_folder()
 
+    print('populate_training_and_testing_dataset: Start ')
     
     populate_subset_dataset(args.amount_for_testing, args.testing_image_dir, args.testing_text_dir, args.testing_dataset_metadata)
     
