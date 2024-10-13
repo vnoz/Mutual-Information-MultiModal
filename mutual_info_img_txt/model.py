@@ -182,7 +182,8 @@ class Basic_MLP(nn.Module):
         
         torch.save(model_to_save.state_dict(), output_model_file)
         return output_model_file
-
+    
+    @classmethod
     def load_from_pretrained(self, pretrained_model_path):
 
         model = self

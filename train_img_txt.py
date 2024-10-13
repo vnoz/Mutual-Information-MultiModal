@@ -6,23 +6,20 @@ from pytorch_transformers import BertTokenizer
 from helpers import construct_training_parameters
 from mutual_info_img_txt import model_utils
 from mutual_info_img_txt.main_utils import ExplainableImageModelManager, ImageTextModelManager
+from mutual_info_img_txt.model import build_resnet_model
+
+args =  construct_training_parameters()
+args.save_dir = os.path.join(args.save_dir,
+                                 f'{args.mi_estimator}_total_epochs{args.num_train_epochs}')
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 def train_image_text():
 
-    args = construct_training_parameters()
-
-    '''
-    Check cuda
-    '''
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    assert torch.cuda.is_available(), "No GPU/CUDA is detected!"
-
     '''
     Create a sub-directory under save_dir
     '''
-    args.save_dir = os.path.join(args.save_dir,
-                                 f'{args.mi_estimator}_total_epochs{args.num_train_epochs}')
+    
     if not os.path.exists(args.save_dir):
         os.makedirs(args.save_dir)
 
@@ -73,11 +70,8 @@ def train_image_text():
 #mi_image_model= train_image_text()
 
 
-def train_image_classifier():
+def train_image_classifier(pre_trained_img_model, using_pre_trained_classifier=True):
     
-    args =  construct_training_parameters()
-    args.save_dir = os.path.join(args.save_dir,
-                                 f'{args.mi_estimator}_total_epochs{args.num_train_epochs}')
     
     print(f"Train_image_classifier args: {args}")
 
@@ -88,14 +82,27 @@ def train_image_classifier():
 
     logger = logging.getLogger(__name__)
     
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    model_manager = ExplainableImageModelManager( args=args, using_pre_trained=False)
+    model_manager = ExplainableImageModelManager( args=args, pre_trained_img_model= pre_trained_img_model, using_pre_trained_classifier=using_pre_trained_classifier)
 
-    #model_manager.train(pretrained_model= mi_image_model, device=device)
     model_manager.train(device=device)
-    # accuracy = model_manager.validate(device=device,batch_size=args.batch_size)
-    # print('Accuracy for downstream image classifier: ' + str(accuracy))
-    # logger.info('Accuracy for downstream image classifier: ' + str(accuracy))
-    
-train_image_classifier()
+    return model_manager
+
+using_pre_trained_image_text_model = True
+using_pre_trained_classifier= False
+
+image_classifider_model_manager: ExplainableImageModelManager # type: ignore
+
+if(using_pre_trained_image_text_model == True):
+    output_model_file = os.path.join(args.save_dir, 'pytorch_MI_image_model.bin')
+		
+    pre_trained_img_model = build_resnet_model(model_name=args.image_model_name, checkpoint_path=output_model_file,
+													output_channels=args.output_channels)
+		
+    image_classifider_model_manager =  train_image_classifier(pre_trained_img_model = pre_trained_img_model, using_pre_trained_classifier=using_pre_trained_classifier)
+else:
+    mi_image_model= train_image_text()
+    image_classifider_model_manager =  train_image_classifier(pre_trained_img_model = mi_image_model, using_pre_trained_classifier=using_pre_trained_classifier)
+
+accuracy= image_classifider_model_manager.validate(device=device, batch_size=args.batch_size)
+print(' accuracy = {:>.9}'.format(accuracy))
