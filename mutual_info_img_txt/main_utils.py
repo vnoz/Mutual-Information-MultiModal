@@ -353,7 +353,6 @@ class ExplainableImageModelManager:
 						
 						showLog = False
 
-					#label = label.unsqueeze(1).to(device)
 					label=label.to(torch.float32)
 					label = label.to(device)
 
@@ -370,7 +369,7 @@ class ExplainableImageModelManager:
 					avg_cost += loss.item() / total_batch
 
 				count = 0
-				
+
 				for image, label in self.validate_data_loader:
 					#image = image.to(device)
 					output_image = self.pre_trained_img_model.forward(image)
@@ -380,14 +379,6 @@ class ExplainableImageModelManager:
 					expectedLabel = self.image_classifier_model(image_embeddings)
 					expectedLabel = torch.flatten(expectedLabel).cpu().detach().numpy()
 					label = label.numpy()
-
-					# if(showLog == True):
-					# 	print('Size of label, expectedLabel')
-					# 	print(label)
-					# 	print(expectedLabel)
-					# 	print(np.sum(expectedLabel == label).item())
-						
-					# 	showLog = False
 
 					count = count + np.sum(expectedLabel == label).item()
 			
