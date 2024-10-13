@@ -250,11 +250,11 @@ class ExplainableImageModelManager:
 
 		print(args)
 		#NOTE: Load pre_trained image model from MI training
-		# output_model_file = os.path.join(args.save_dir, 'pytorch_MI_image_model.bin')
+		output_model_file = os.path.join(args.save_dir, 'pytorch_MI_image_model.bin')
 		
-		# self.pre_trained_img_model = build_resnet_model(model_name=args.image_model_name, checkpoint_path=output_model_file,
-		# 											output_channels=args.output_channels)
-		# print('ExplainableImageModelManager ctor pre_trained_img_model')
+		self.pre_trained_img_model = build_resnet_model(model_name=args.image_model_name, checkpoint_path=output_model_file,
+													output_channels=args.output_channels)
+		print('ExplainableImageModelManager ctor pre_trained_img_model')
 		# print(self.pre_trained_img_model)
 		data_loaders = self.construct_data_loader()
 		self.test_data_loader = data_loaders[0]
@@ -284,17 +284,17 @@ class ExplainableImageModelManager:
 								 shuffle=True, num_workers=8,
 								 pin_memory=True, drop_last=True)
 		
-		validate_data_loader = DataLoader(test_ds, batch_size=8,
+		validate_data_loader = DataLoader(valid_ds, batch_size=8,
 								 shuffle=True, num_workers=8,
 								 pin_memory=True, drop_last=True)
 		
 		return test_data_loader, validate_data_loader
 
-	def train(self, pretrained_model, device):
+	def train(self, device):
 		
 		args = self.args
 
-		self.pre_trained_img_model = pretrained_model
+		# self.pre_trained_img_model = pretrained_model
 
 		logger = logging.getLogger(__name__)
 		logger.info(f"ExplainableImageModelManager training start, args = {args}")
@@ -369,11 +369,32 @@ class ExplainableImageModelManager:
 
 					avg_cost += loss.item() / total_batch
 
-				print('[Epoch: {:>4}] cost = {:>.9}'.format(epoch + 1, avg_cost))
-				logger.info(f"  Epoch {epoch+1} loss = {avg_cost:.5f}")
-				interval_epoch = time.time() - start_time_epoch
-				logger.info(f"  Epoch {epoch+1} took {interval_epoch:.3f} s")
+				for image, label in self.validate_data_loader:
+					image = image.to(device)
+					output_image = self.pre_trained_img_model.forward(image)
+					image_embeddings=output_image[1]
+					image_embeddings= image_embeddings.to(device)
+
+					expectedLabel = self.image_classifier_model(image_embeddings)
+					expectedLabel = torch.flatten(expectedLabel).cpu().detach().numpy()
+					label = label.numpy()
+
+					# if(showLog == True):
+					# 	print('Size of label, expectedLabel')
+					# 	print(label)
+					# 	print(expectedLabel)
+					# 	print(np.sum(expectedLabel == label).item())
+						
+					# 	showLog = False
+
+					count = count + np.sum(expectedLabel == label).item()
+			
+				accuracy = count / (total_batch*args.batch_size)
+
 				
+				interval_epoch = time.time() - start_time_epoch
+				logger.info(f"  Epoch {epoch+1} took {interval_epoch:.3f} s, loss = {avg_cost:.5f}, accuracy={accuracy:.5f}")
+				print('[Epoch: {:>4}], time= {:.3f}, cost = {:>.9}, accuracy = {:>.9}'.format(epoch + 1,interval_epoch, avg_cost, accuracy))
 
 			checkpoint_path = self.image_classifier_model.save_pretrained(args.save_dir)
 			interval = time.time() - start_time
