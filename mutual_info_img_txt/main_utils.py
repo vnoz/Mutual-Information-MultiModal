@@ -316,7 +316,7 @@ class ExplainableImageModelManager:
 			
 			
 			self.image_classifier_model = self.image_classifier_model.to(device)
-			# self.pre_trained_img_model = self.pre_trained_img_model.to(device)
+			self.pre_trained_img_model = self.pre_trained_img_model.to(device)
 
 			'''
 			Define Loss function and optimizer
