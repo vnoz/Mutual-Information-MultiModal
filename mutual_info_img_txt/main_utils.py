@@ -370,7 +370,7 @@ class ExplainableImageModelManager:
 					avg_cost += loss.item() / total_batch
 
 				for image, label in self.validate_data_loader:
-					image = image.to(device)
+					#image = image.to(device)
 					output_image = self.pre_trained_img_model.forward(image)
 					image_embeddings=output_image[1]
 					image_embeddings= image_embeddings.to(device)
