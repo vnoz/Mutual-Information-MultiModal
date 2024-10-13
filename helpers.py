@@ -48,17 +48,17 @@ def construct_dataset_parameters():
 
     #Location for training dataset 
     parser.add_argument('--training_data_dir', type=str,
-                        default=os.path.join(current_dir, 'training_data/'),
+                        default=os.path.join(current_dir, 'testing_data/'),
                         help='The parent data directory')
 
     parser.add_argument('--training_image_dir', type=str,
-                        default=os.path.join(current_dir, 'training_data/images/'),
+                        default=os.path.join(current_dir, 'testing_data/images/'),
                         help='The training image data directory')
     parser.add_argument('--training_text_dir', type=str,
-                        default=os.path.join(current_dir, 'training_data/text/'),
+                        default=os.path.join(current_dir, 'testing_data/text/'),
                         help='The training text data directory')
     parser.add_argument('--training_dataset_metadata', type=str,
-                        default=os.path.join(current_dir, 'training_data/training_text_label_negbio.csv'),
+                        default=os.path.join(current_dir, 'testing_data/training_text_label_negbio.csv'),
                         help='The metadata for the model training ')
 
     #Location for testing dataset 
