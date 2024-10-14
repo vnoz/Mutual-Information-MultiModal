@@ -328,7 +328,7 @@ class ExplainableImageModelManager:
 			print('[Start Epoch: {:>4}]'.format(epoch + 1))
 			start_time_epoch = time.time()
 
-			print('Before going into test_data_loader')
+			print('Before going into test_data_loader, total_batch='+str(total_batch))
 			for image, label in self.test_data_loader:
 				#image = image.to(device)
 				print('After going into test_data_loader: line 334')
