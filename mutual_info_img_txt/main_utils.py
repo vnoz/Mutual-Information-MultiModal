@@ -11,6 +11,7 @@ from torch.utils.data import DataLoader
 import torchvision.transforms as transforms
 from pytorch_transformers.optimization import AdamW, WarmupLinearSchedule
 import torch.nn as nn
+from matplotlib import pyplot as plt
 
 from helpers import get_transform_function
 
@@ -316,8 +317,8 @@ class ExplainableImageModelManager:
 		
 		start_time = time.time()
 
-		training_step_loss=[]
-		training_step_accuracy=[]
+		training_epoch_loss=[]
+		training_epoch_accuracy=[]
 
 		self.pre_trained_img_model.eval()
 
@@ -368,7 +369,7 @@ class ExplainableImageModelManager:
 
 			interval_epoch = time.time() - start_time_epoch
 			
-			training_step_loss.append(np.array(step_loss).mean())
+			training_epoch_loss.append(np.array(step_loss).mean())
 
 			count = 0
 
@@ -404,8 +405,8 @@ class ExplainableImageModelManager:
 					if(val_batch_id ==10):
 						showLog = False
 		
-			accuracy = count / (validate_total_batch*args.batch_size)
-			training_step_accuracy.append(accuracy)
+			accuracy = count * 100 / (validate_total_batch*args.batch_size)
+			training_epoch_accuracy.append(accuracy)
 			
 			logger.info(f"  Epoch {epoch+1} took {interval_epoch:.3f} s, loss = {np.array(step_loss).mean():.5f}, accuracy={accuracy:.5f}")
 			print('[Epoch: {:>4}], time= {:.3f}, cost = {:>.9}, accuracy = {:>.9}'.format(epoch + 1,interval_epoch, np.array(step_loss).mean(), accuracy))
@@ -418,10 +419,16 @@ class ExplainableImageModelManager:
 		print('checkpoint_path: ' + str(checkpoint_path))
 
 		logger.info('training loss:')
-		logger.info(training_step_loss)
+		logger.info(training_epoch_loss)
 
 		logger.info('epoch training accuracy:')
-		logger.info(training_step_accuracy)
+		logger.info(training_epoch_accuracy)
+
+		plt.plot(training_epoch_loss,label="train loss")
+		plt.plot(training_epoch_accuracy,label="accuracy")
+		plt.legend()
+		plt.show()
+		plt.savefig(os.path.join(args.save_directory, 'pytorch_image_classifier_training.png'))
 
 		logger.info(f"  Epoch {epoch+1} checkpoint saved in {checkpoint_path}")
 		
