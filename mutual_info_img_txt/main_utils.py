@@ -328,29 +328,32 @@ class ExplainableImageModelManager:
 			print('[Start Epoch: {:>4}]'.format(epoch + 1))
 			start_time_epoch = time.time()
 
-			print('Before going into test_data_loader, total_batch='+str(total_batch))
+			#print('Before going into test_data_loader, total_batch='+str(total_batch))
+			batch_id=0
 			for image, label in self.test_data_loader:
 				#image = image.to(device)
-				print('After going into test_data_loader: line 334')
+				batch_id +=1
+				print('After going into test_data_loader: line 334, batch_id='+ str(batch_id))
+				
 				output_image = self.pre_trained_img_model.forward(image)
 				image_embeddings=output_image[1]
 				image_embeddings= image_embeddings.to(device)
 				
-				print('Create image_embeddings: line 337')
+				#print('Create image_embeddings: line 337')
 
 				label=label.to(torch.float32)
 				label = label.to(device)
 
-				print('Move label to Device: line 342')
+				#print('Move label to Device: line 342')
 
 				optimizer.zero_grad()
 				expectedLabel = self.image_classifier_model(image_embeddings)
 				expectedLabel= expectedLabel.to(torch.float32)
 				expectedLabel= torch.flatten(expectedLabel)
 
-				print('Calculate expectedLabel: line 349')
+				#print('Calculate expectedLabel: line 349')
 				loss = criterion( expectedLabel, label)
-				print('Calculate loss: line 352')
+				print('Calculate loss: loss.item()')
 
 				loss.backward()
 				
