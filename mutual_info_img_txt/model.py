@@ -152,20 +152,17 @@ class Basic_MLP(nn.Module):
         
     def forward(self, x):
         x = self.layer1(x)
-        x = self.relu(x)
-
+       
         x = self.layer2(x)
-        x = self.relu(x)
-
+       
         x = self.layer3(x)
-        x = self.relu(x)
-        
+        x = self.sigmoid(x)
+
         x = self.layer4(x)    
         x = self.relu(x)
-        # x = self.softmax(x)
+       
         x = x.view(x.size(0), -1)
-       # x = self.sigmoid(x)
-        # y = self.softmax(y_logits)
+       
         return x
     
     def save_pretrained(self, save_directory): 
