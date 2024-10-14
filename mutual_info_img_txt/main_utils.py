@@ -351,7 +351,7 @@ class ExplainableImageModelManager:
 
 			validate_total_batch =  len(self.validate_data_loader)
 
-			index=0
+			indexCount=0
 			showLog = True
 
 			for image, label in self.validate_data_loader:
@@ -367,14 +367,14 @@ class ExplainableImageModelManager:
 				count = count + np.sum(expectedLabel == label).item()
 				
 				if(showLog == True):
-					print('index: ' + str(index))
+					print('index: ' + str(indexCount))
 					print('expectedLabel')
 					print(expectedLabel)
 					print('label')
 					print(label)
 					print(count)
-					index +=1
-					if(index ==10):
+					indexCount +=1
+					if(indexCount ==10):
 						print('validate_total_batch')
 						print(validate_total_batch)
 						showLog = False
