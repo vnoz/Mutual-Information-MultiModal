@@ -329,7 +329,7 @@ class ExplainableImageModelManager:
 			start_time_epoch = time.time()
 
 			batch_id=0
-			showLog_train=True
+			#showLog_train=True
 			for image, label in self.test_data_loader:
 				batch_id +=1
 
@@ -347,13 +347,13 @@ class ExplainableImageModelManager:
 
 				loss = criterion( expectedLabel, label)
 
-				if(showLog_train == True):
-					print('expectedLabel')
-					print(expectedLabel)
-					print('label')
-					print(label)
+				# if(showLog_train == True):
+				# 	print('expectedLabel')
+				# 	print(expectedLabel)
+				# 	print('label')
+				# 	print(label)
 					
-					showLog_train=False
+				# 	showLog_train=False
 
 			
 				loss.backward()
