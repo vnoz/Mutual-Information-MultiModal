@@ -107,7 +107,7 @@ def construct_training_parameters():
     parser.add_argument('--mi_estimator', type=str,
                         default='infonce',
                         help='Mutual information estimator (variational bound): dv or infonce')
-    parser.add_argument('--init_lr', default=5e-4, type=float,
+    parser.add_argument('--init_lr', default=5e-3, type=float,
                         help='Intial learning rate')
 
     parser.add_argument('--max_seq_length', default=320, type=int,
