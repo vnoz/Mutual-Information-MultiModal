@@ -324,16 +324,14 @@ class ExplainableImageModelManager:
 		for epoch in range(args.num_train_epochs):
 			self.image_classifier_model.train()
 			step_loss=[]
-			#avg_cost = 0
+			
 			print('[Start Epoch: {:>4}]'.format(epoch + 1))
 			start_time_epoch = time.time()
 
-			#print('Before going into test_data_loader, total_batch='+str(total_batch))
 			batch_id=0
+			showLog_train=True
 			for image, label in self.test_data_loader:
-				#image = image.to(device)
 				batch_id +=1
-				print('After going into test_data_loader: line 334, batch_id='+ str(batch_id))
 
 				output_image = self.pre_trained_img_model.forward(image)
 				image_embeddings=output_image[1]
@@ -347,15 +345,25 @@ class ExplainableImageModelManager:
 				expectedLabel= expectedLabel.to(torch.float32)
 				expectedLabel= torch.flatten(expectedLabel)
 
+				if(showLog_train == True):
+					print('expectedLabel')
+					print(expectedLabel)
+					print('label')
+					print(label)
+					print('Calculate loss: batch_id='+ str(batch_id) + 'loss.item()='+ str(loss.item()))
+
+					showLog_train=False
+
 				loss = criterion( expectedLabel, label)
 				if(batch_id <= 10):
-					print('Calculate loss: loss.item()='+ str(loss.item()))
+					print('Calculate loss: batch_id='+ str(batch_id) + 'loss.item()='+ str(loss.item()))
 
 				loss.backward()
 				
 				optimizer.step()
 
 				step_loss.append(loss.item())
+
 			
 			training_step_loss.append(np.array(step_loss).mean())
 
