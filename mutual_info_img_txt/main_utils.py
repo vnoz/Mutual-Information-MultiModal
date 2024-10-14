@@ -355,6 +355,7 @@ class ExplainableImageModelManager:
 
 			count = 0
 
+			validate_total_batch =  len(self.validate_data_loader)
 			for image, label in self.validate_data_loader:
 				#image = image.to(device)
 				output_image = self.pre_trained_img_model.forward(image)
@@ -367,7 +368,7 @@ class ExplainableImageModelManager:
 
 				count = count + np.sum(expectedLabel == label).item()
 		
-			accuracy = count / (total_batch*args.batch_size)
+			accuracy = count / (validate_total_batch*args.batch_size)
 
 			
 			interval_epoch = time.time() - start_time_epoch
