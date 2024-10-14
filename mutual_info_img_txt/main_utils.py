@@ -328,7 +328,7 @@ class ExplainableImageModelManager:
 			print('[Start Epoch: {:>4}]'.format(epoch + 1))
 			start_time_epoch = time.time()
 
-			batch_id=-1
+			batch_id=0
 			
 			for image, label in self.test_data_loader:
 				batch_id +=1
@@ -353,7 +353,15 @@ class ExplainableImageModelManager:
 				
 				
 				step_loss.append(loss.item())
-				
+
+				if(batch_id <= 10):
+					print('expectedLabel')
+					print(expectedLabel)
+					print('label')
+					print(label)
+					print('loss.item')
+					print(loss.item())
+
 				if(batch_id % 50 ==0):
 					print('Calculate loss: batch_id='+ str(batch_id) + ', loss.item()='+ str(np.array(step_loss).mean()))
 
