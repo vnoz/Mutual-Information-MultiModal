@@ -279,7 +279,7 @@ class ExplainableImageModelManager:
 		test_ds, valid_ds = torch.utils.data.random_split(dataset, [train_size, valid_size])
 		test_data_loader = DataLoader(test_ds, batch_size=8,
 								 shuffle=True, num_workers=0,
-								 pin_memory=False, drop_last=True)
+								 pin_memory=True, drop_last=True)
 		
 		validate_data_loader = DataLoader(valid_ds, batch_size=8,
 								 shuffle=True, num_workers=8,
@@ -323,7 +323,7 @@ class ExplainableImageModelManager:
 
 		for epoch in range(args.num_train_epochs):
 			self.image_classifier_model.train()
-			step_loss=0
+			step_loss=[]
 			#avg_cost = 0
 			print('[Start Epoch: {:>4}]'.format(epoch + 1))
 			start_time_epoch = time.time()
@@ -334,40 +334,37 @@ class ExplainableImageModelManager:
 				#image = image.to(device)
 				batch_id +=1
 				print('After going into test_data_loader: line 334, batch_id='+ str(batch_id))
-				
+
 				output_image = self.pre_trained_img_model.forward(image)
 				image_embeddings=output_image[1]
 				image_embeddings= image_embeddings.to(device)
 				
-				#print('Create image_embeddings: line 337')
-
 				label=label.to(torch.float32)
 				label = label.to(device)
-
-				#print('Move label to Device: line 342')
 
 				optimizer.zero_grad()
 				expectedLabel = self.image_classifier_model(image_embeddings)
 				expectedLabel= expectedLabel.to(torch.float32)
 				expectedLabel= torch.flatten(expectedLabel)
 
-				#print('Calculate expectedLabel: line 349')
 				loss = criterion( expectedLabel, label)
-				print('Calculate loss: loss.item()')
+				if(batch_id <= 10):
+					print('Calculate loss: loss.item()='+ str(loss.item()))
 
 				loss.backward()
 				
 				optimizer.step()
 
-				step_loss = loss.item()
-				training_step_loss.append(step_loss)
+				step_loss.append(loss.item())
+			
+			training_step_loss.append(np.array(step_loss).mean())
 
 			count = 0
 
 			validate_total_batch =  len(self.validate_data_loader)
 
-			# indexCount=0
-			# showLog = True
+			indexCount=0
+			showLog = True
 			
 			self.image_classifier_model.eval()
 			for image, label in self.validate_data_loader:
@@ -381,25 +378,25 @@ class ExplainableImageModelManager:
 
 				count = count + np.sum(expectedLabel == label).item()
 				
-				# if(showLog == True):
-				# 	print('index: ' + str(indexCount))
-				# 	print('expectedLabel')
-				# 	print(expectedLabel)
-				# 	print('label')
-				# 	print(label)
-				# 	print(count)
-				# 	indexCount +=1
-				# 	if(indexCount ==10):
-				# 		print('validate_total_batch')
-				# 		print(validate_total_batch)
-				# 		showLog = False
+				if(showLog == True):
+					print('index: ' + str(indexCount))
+					print('expectedLabel')
+					print(expectedLabel)
+					print('label')
+					print(label)
+					print(count)
+					indexCount +=1
+					if(indexCount ==10):
+						print('validate_total_batch')
+						print(validate_total_batch)
+						showLog = False
 		
 			accuracy = count / (validate_total_batch*args.batch_size)
 			training_step_accuracy.append(accuracy)
 			
 			interval_epoch = time.time() - start_time_epoch
-			logger.info(f"  Epoch {epoch+1} took {interval_epoch:.3f} s, loss = {step_loss:.5f}, accuracy={accuracy:.5f}")
-			print('[Epoch: {:>4}], time= {:.3f}, cost = {:>.9}, accuracy = {:>.9}'.format(epoch + 1,interval_epoch, step_loss, accuracy))
+			logger.info(f"  Epoch {epoch+1} took {interval_epoch:.3f} s, loss = {np.array(step_loss).mean():.5f}, accuracy={accuracy:.5f}")
+			print('[Epoch: {:>4}], time= {:.3f}, cost = {:>.9}, accuracy = {:>.9}'.format(epoch + 1,interval_epoch, np.array(step_loss).mean(), accuracy))
 
 		checkpoint_path = self.image_classifier_model.save_pretrained(args.save_dir)
 		interval = time.time() - start_time
