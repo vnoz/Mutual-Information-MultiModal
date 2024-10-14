@@ -316,11 +316,15 @@ class ExplainableImageModelManager:
 		
 		start_time = time.time()
 
-		
+		training_step_loss=[]
+		training_step_accuracy=[]
+
+		self.pre_trained_img_model.eval()
 
 		for epoch in range(args.num_train_epochs):
-			
-			avg_cost = 0
+			self.image_classifier_model.train()
+			step_loss=0
+			#avg_cost = 0
 			print('[Start Epoch: {:>4}]'.format(epoch + 1))
 			start_time_epoch = time.time()
 
@@ -345,17 +349,18 @@ class ExplainableImageModelManager:
 				
 				optimizer.step()
 
-				avg_cost += loss.item() / total_batch
+				step_loss = loss.item()
+				training_step_loss.append(step_loss)
 
 			count = 0
 
 			validate_total_batch =  len(self.validate_data_loader)
 
-			indexCount=0
-			showLog = True
-
+			# indexCount=0
+			# showLog = True
+			
+			self.image_classifier_model.eval()
 			for image, label in self.validate_data_loader:
-				#image = image.to(device)
 				output_image = self.pre_trained_img_model.forward(image)
 				image_embeddings=output_image[1]
 				image_embeddings= image_embeddings.to(device)
@@ -366,25 +371,25 @@ class ExplainableImageModelManager:
 
 				count = count + np.sum(expectedLabel == label).item()
 				
-				if(showLog == True):
-					print('index: ' + str(indexCount))
-					print('expectedLabel')
-					print(expectedLabel)
-					print('label')
-					print(label)
-					print(count)
-					indexCount +=1
-					if(indexCount ==10):
-						print('validate_total_batch')
-						print(validate_total_batch)
-						showLog = False
+				# if(showLog == True):
+				# 	print('index: ' + str(indexCount))
+				# 	print('expectedLabel')
+				# 	print(expectedLabel)
+				# 	print('label')
+				# 	print(label)
+				# 	print(count)
+				# 	indexCount +=1
+				# 	if(indexCount ==10):
+				# 		print('validate_total_batch')
+				# 		print(validate_total_batch)
+				# 		showLog = False
 		
 			accuracy = count / (validate_total_batch*args.batch_size)
-
+			training_step_accuracy.append(accuracy)
 			
 			interval_epoch = time.time() - start_time_epoch
-			logger.info(f"  Epoch {epoch+1} took {interval_epoch:.3f} s, loss = {avg_cost:.5f}, accuracy={accuracy:.5f}")
-			print('[Epoch: {:>4}], time= {:.3f}, cost = {:>.9}, accuracy = {:>.9}'.format(epoch + 1,interval_epoch, avg_cost, accuracy))
+			logger.info(f"  Epoch {epoch+1} took {interval_epoch:.3f} s, loss = {step_loss:.5f}, accuracy={accuracy:.5f}")
+			print('[Epoch: {:>4}], time= {:.3f}, cost = {:>.9}, accuracy = {:>.9}'.format(epoch + 1,interval_epoch, step_loss, accuracy))
 
 		checkpoint_path = self.image_classifier_model.save_pretrained(args.save_dir)
 		interval = time.time() - start_time
@@ -392,8 +397,14 @@ class ExplainableImageModelManager:
 		print(f"Total  Epoch {epoch+1} took {interval:.3f} s")
 		print('checkpoint_path: ' + str(checkpoint_path))
 
-		logger.info(f"  Epoch {epoch+1} checkpoint saved in {checkpoint_path}")
+		logger.info('training loss:')
+		logger.info(training_step_loss)
 
+		logger.info('epoch training accuracy:')
+		logger.info(training_step_accuracy)
+
+		logger.info(f"  Epoch {epoch+1} checkpoint saved in {checkpoint_path}")
+		
 		return self.image_classifier_model
 
 	def validate(self,device, batch_size):	
