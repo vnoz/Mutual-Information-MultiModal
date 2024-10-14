@@ -328,8 +328,8 @@ class ExplainableImageModelManager:
 			print('[Start Epoch: {:>4}]'.format(epoch + 1))
 			start_time_epoch = time.time()
 
-			batch_id=0
-			#showLog_train=True
+			batch_id=-1
+			
 			for image, label in self.test_data_loader:
 				batch_id +=1
 
@@ -347,15 +347,6 @@ class ExplainableImageModelManager:
 
 				loss = criterion( expectedLabel, label)
 
-				# if(showLog_train == True):
-				# 	print('expectedLabel')
-				# 	print(expectedLabel)
-				# 	print('label')
-				# 	print(label)
-					
-				# 	showLog_train=False
-
-			
 				loss.backward()
 				
 				optimizer.step()
@@ -366,6 +357,7 @@ class ExplainableImageModelManager:
 				if(batch_id % 50 ==0):
 					print('Calculate loss: batch_id='+ str(batch_id) + ', loss.item()='+ str(np.array(step_loss).mean()))
 
+			interval_epoch = time.time() - start_time_epoch
 			
 			training_step_loss.append(np.array(step_loss).mean())
 
@@ -394,20 +386,18 @@ class ExplainableImageModelManager:
 					print(expectedLabel)
 					print('label')
 					print(label)
-					print(count)
+					print(np.sum(expectedLabel == label).item())
 					indexCount +=1
 					if(indexCount ==10):
-						print('validate_total_batch')
-						print(validate_total_batch)
 						showLog = False
 		
 			accuracy = count / (validate_total_batch*args.batch_size)
 			training_step_accuracy.append(accuracy)
 			
-			interval_epoch = time.time() - start_time_epoch
 			logger.info(f"  Epoch {epoch+1} took {interval_epoch:.3f} s, loss = {np.array(step_loss).mean():.5f}, accuracy={accuracy:.5f}")
 			print('[Epoch: {:>4}], time= {:.3f}, cost = {:>.9}, accuracy = {:>.9}'.format(epoch + 1,interval_epoch, np.array(step_loss).mean(), accuracy))
 
+			
 		checkpoint_path = self.image_classifier_model.save_pretrained(args.save_dir)
 		interval = time.time() - start_time
 
