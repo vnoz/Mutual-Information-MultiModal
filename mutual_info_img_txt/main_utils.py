@@ -345,16 +345,16 @@ class ExplainableImageModelManager:
 				expectedLabel= expectedLabel.to(torch.float32)
 				expectedLabel= torch.flatten(expectedLabel)
 
+				loss = criterion( expectedLabel, label)
+
 				if(showLog_train == True):
 					print('expectedLabel')
 					print(expectedLabel)
 					print('label')
 					print(label)
-					print('Calculate loss: batch_id='+ str(batch_id) + 'loss.item()='+ str(loss.item()))
-
+					
 					showLog_train=False
 
-				loss = criterion( expectedLabel, label)
 				if(batch_id <= 10):
 					print('Calculate loss: batch_id='+ str(batch_id) + 'loss.item()='+ str(loss.item()))
 
