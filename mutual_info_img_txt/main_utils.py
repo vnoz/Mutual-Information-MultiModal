@@ -355,12 +355,13 @@ class ExplainableImageModelManager:
 					
 					showLog_train=False
 
-				if(batch_id <= 10):
-					print('Calculate loss: batch_id='+ str(batch_id) + 'loss.item()='+ str(loss.item()))
-
+			
 				loss.backward()
 				
 				optimizer.step()
+				
+				if(batch_id <= 10):
+					print('Calculate loss: batch_id='+ str(batch_id) + ', loss.item()='+ str(loss.item()))
 
 				step_loss.append(loss.item())
 
