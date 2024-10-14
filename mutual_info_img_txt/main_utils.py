@@ -278,11 +278,11 @@ class ExplainableImageModelManager:
 
 		test_ds, valid_ds = torch.utils.data.random_split(dataset, [train_size, valid_size])
 		test_data_loader = DataLoader(test_ds, batch_size=8,
-								 shuffle=True, num_workers=0,
+								 shuffle=True, num_workers=8,
 								 pin_memory=True, drop_last=True)
 		
 		validate_data_loader = DataLoader(valid_ds, batch_size=8,
-								 shuffle=True, num_workers=0,
+								 shuffle=True, num_workers=8,
 								 pin_memory=True, drop_last=True)
 		
 		return test_data_loader, validate_data_loader
@@ -328,11 +328,12 @@ class ExplainableImageModelManager:
 			print('[Start Epoch: {:>4}]'.format(epoch + 1))
 			start_time_epoch = time.time()
 
-			batch_id=0
 			
-			for image, label in self.test_data_loader:
-				batch_id +=1
+			training_epoch_iterator = tqdm(self.test_data_loader, desc="test_data_loader Iteration")
+			for batch_id, batch in enumerate(training_epoch_iterator, 0):
 
+				image, label = batch
+			
 				output_image = self.pre_trained_img_model.forward(image)
 				image_embeddings=output_image[1]
 				image_embeddings= image_embeddings.to(device)
@@ -373,11 +374,15 @@ class ExplainableImageModelManager:
 
 			validate_total_batch =  len(self.validate_data_loader)
 
-			indexCount=0
+			
 			showLog = True
 			
 			self.image_classifier_model.eval()
-			for image, label in self.validate_data_loader:
+
+			validate_epoch_iterator = tqdm(self.validate_data_loader, desc="validate_data_loader Iteration")
+			for val_batch_id, val_batch in enumerate(validate_epoch_iterator, 0):
+
+				image, label = val_batch
 				output_image = self.pre_trained_img_model.forward(image)
 				image_embeddings=output_image[1]
 				image_embeddings= image_embeddings.to(device)
@@ -389,14 +394,14 @@ class ExplainableImageModelManager:
 				count = count + np.sum(expectedLabel == label).item()
 				
 				if(showLog == True):
-					print('index: ' + str(indexCount))
+					print('val_batch_id: ' + str(val_batch_id))
 					print('expectedLabel')
 					print(expectedLabel)
 					print('label')
 					print(label)
 					print(np.sum(expectedLabel == label).item())
-					indexCount +=1
-					if(indexCount ==10):
+					
+					if(val_batch_id ==10):
 						showLog = False
 		
 			accuracy = count / (validate_total_batch*args.batch_size)
