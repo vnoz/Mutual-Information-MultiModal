@@ -279,11 +279,11 @@ class ExplainableImageModelManager:
 
 		test_ds, valid_ds = torch.utils.data.random_split(dataset, [train_size, valid_size])
 		test_data_loader = DataLoader(test_ds, batch_size=8,
-								 shuffle=True, num_workers=0,
+								 shuffle=True, num_workers=8,
 								 pin_memory=True, drop_last=True)
 		
 		validate_data_loader = DataLoader(valid_ds, batch_size=8,
-								 shuffle=True, num_workers=0,
+								 shuffle=True, num_workers=8,
 								 pin_memory=True, drop_last=True)
 		
 		return test_data_loader, validate_data_loader
@@ -356,13 +356,13 @@ class ExplainableImageModelManager:
 				
 				step_loss.append(loss.item())
 
-				if(batch_id <= 10):
-					print('expectedLabel')
-					print(expectedLabel)
-					print('label')
-					print(label)
-					print('loss.item')
-					print(loss.item())
+				# if(batch_id <= 10):
+				# 	print('expectedLabel')
+				# 	print(expectedLabel)
+				# 	print('label')
+				# 	print(label)
+				# 	print('loss.item')
+				# 	print(loss.item())
 
 				if(batch_id % 50 ==0):
 					print('Calculate loss: batch_id='+ str(batch_id) + ', loss.item()='+ str(np.array(step_loss).mean()))
