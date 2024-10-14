@@ -278,7 +278,7 @@ class ExplainableImageModelManager:
 
 		test_ds, valid_ds = torch.utils.data.random_split(dataset, [train_size, valid_size])
 		test_data_loader = DataLoader(test_ds, batch_size=8,
-								 shuffle=True, num_workers=8,
+								 shuffle=True, num_workers=0,
 								 pin_memory=False, drop_last=True)
 		
 		validate_data_loader = DataLoader(valid_ds, batch_size=8,
