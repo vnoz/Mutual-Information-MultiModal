@@ -282,7 +282,7 @@ class ExplainableImageModelManager:
 								 pin_memory=True, drop_last=True)
 		
 		validate_data_loader = DataLoader(valid_ds, batch_size=8,
-								 shuffle=True, num_workers=8,
+								 shuffle=True, num_workers=0,
 								 pin_memory=True, drop_last=True)
 		
 		return test_data_loader, validate_data_loader
@@ -360,10 +360,11 @@ class ExplainableImageModelManager:
 				
 				optimizer.step()
 				
-				if(batch_id <= 10):
-					print('Calculate loss: batch_id='+ str(batch_id) + ', loss.item()='+ str(loss.item()))
-
+				
 				step_loss.append(loss.item())
+				
+				if(batch_id % 50 ==0):
+					print('Calculate loss: batch_id='+ str(batch_id) + ', loss.item()='+ str(np.array(step_loss).mean()))
 
 			
 			training_step_loss.append(np.array(step_loss).mean())
