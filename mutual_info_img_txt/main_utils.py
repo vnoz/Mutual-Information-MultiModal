@@ -316,7 +316,7 @@ class ExplainableImageModelManager:
 		
 		start_time = time.time()
 
-		showLog = True
+		
 
 		for epoch in range(args.num_train_epochs):
 			
@@ -330,13 +330,7 @@ class ExplainableImageModelManager:
 				image_embeddings=output_image[1]
 				image_embeddings= image_embeddings.to(device)
 				
-				if(showLog == True):
-					print('ExplainableImageModelManager train function')
-					print('Size of label, image_embeddings')
-					print(label)
-					print(image_embeddings.size())
-					
-					showLog = False
+				
 
 				label=label.to(torch.float32)
 				label = label.to(device)
@@ -356,6 +350,10 @@ class ExplainableImageModelManager:
 			count = 0
 
 			validate_total_batch =  len(self.validate_data_loader)
+
+			index=0
+			showLog = True
+
 			for image, label in self.validate_data_loader:
 				#image = image.to(device)
 				output_image = self.pre_trained_img_model.forward(image)
@@ -367,6 +365,19 @@ class ExplainableImageModelManager:
 				label = label.numpy()
 
 				count = count + np.sum(expectedLabel == label).item()
+				
+				if(showLog == True):
+					print('index: ' + str(index))
+					print('expectedLabel')
+					print(expectedLabel)
+					print('label')
+					print(label)
+					print(count)
+					index +=1
+					if(index ==10):
+						print('validate_total_batch')
+						print(validate_total_batch)
+						showLog = False
 		
 			accuracy = count / (validate_total_batch*args.batch_size)
 
