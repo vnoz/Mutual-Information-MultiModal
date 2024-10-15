@@ -139,25 +139,34 @@ class Basic_MLP(nn.Module):
 
         self.layer1 = nn.Linear(input_dim, hidden_dims[0])
 
+        nn.init.kaiming_uniform_(self.layer1.weight, nonlinearity='relu')
+
+        self.act1 = nn.ReLU()
+
         self.layer2 = nn.Linear(hidden_dims[0], hidden_dims[1])
-        
+        nn.init.kaiming_uniform_(self.layer2.weight, nonlinearity='relu')
+
+        self.act2 = nn.ReLU()
 
         self.layer3 = nn.Linear(hidden_dims[1], output_dim)
-        
+        nn.init.xavier_uniform_(self.layer3.weight)
+        self.act3 = nn.Sigmoid()
+
         #self.relu = nn.ReLU(inplace=True)
-        self.sigmoid = nn.Sigmoid()
+        #self.sigmoid = nn.Sigmoid()
         
-    def forward(self, x):
-        x = self.layer1(x)
-       
-        x = self.layer2(x)
-       
-        x = self.layer3(x)  
-      
-        x = self.sigmoid(x)
-        x = x.view(x.size(0), -1)
-       
-        return x
+    def forward(self, X):
+        X = self.layer1(X)
+        X = self.act1(X)
+
+        # Second hidden layer
+        X = self.layer2(X)
+        X = self.act2(X)
+        
+        # Third hidden layer
+        X = self.layer3(X)
+        X = self.act3(X)
+        return X
     
     def save_pretrained(self, save_directory): 
         """ Save a model with its configuration file to a directory, so that it

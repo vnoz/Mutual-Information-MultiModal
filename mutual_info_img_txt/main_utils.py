@@ -309,7 +309,7 @@ class ExplainableImageModelManager:
 		'''
 
 		criterion = torch.nn.BCELoss().to(device) 
-		optimizer = torch.optim.Adam(self.image_classifier_model.parameters(), lr=args.init_lr)
+		optimizer = torch.optim.SGD(self.image_classifier_model.parameters(), lr=args.init_lr, momentum=0.9)
 
 		total_batch = len(self.train_data_loader)
 
@@ -375,12 +375,12 @@ class ExplainableImageModelManager:
 
 
 			train_data_iterators=tqdm(self.train_data_loader, desc='Training Accuracy calculation Iterations')
-			validate_data_iterators=tqdm(self.train_data_loader, desc='Validation Accuracy calculation Iterations')
+			validate_data_iterators=tqdm(self.validate_data_loader, desc='Validation Accuracy calculation Iterations')
 
 			self.image_classifier_model.eval()
 
 			count=0
-			showLog = True
+			#showLog = True
 			for batch_id, batch in enumerate(train_data_iterators, 0):
 				image, label = batch
 				output_image = self.pre_trained_img_model.forward(image)
@@ -389,17 +389,23 @@ class ExplainableImageModelManager:
 
 				expectedLabel = self.image_classifier_model(image_embeddings)
 				expectedLabel = torch.flatten(expectedLabel).cpu().detach().numpy()
+				expectedLabelRound = expectedLabel.round()
+
 				label = label.numpy()
 
-				count = count + np.sum(expectedLabel == label).item()
+				count = count + np.sum(expectedLabelRound == label).item()
 				
 				if(showLog == True):
 					print('Validation Log: batch_id= ' + str(batch_id))
 					print('expectedLabel')
 					print(expectedLabel)
+
+					print('expectedLabelRound')
+					print(expectedLabelRound)
+
 					print('label')
 					print(label)
-					print(np.sum(expectedLabel == label).item())
+					print(np.sum(expectedLabelRound == label).item())
 					
 					if(batch_id ==10):
 						showLog = False
@@ -417,6 +423,8 @@ class ExplainableImageModelManager:
 
 				expectedLabel = self.image_classifier_model(image_embeddings)
 				expectedLabel = torch.flatten(expectedLabel).cpu().detach().numpy()
+				expectedLabel = expectedLabel.round()
+
 				label = label.numpy()
 
 				val_count = val_count + np.sum(expectedLabel == label).item()
@@ -429,7 +437,7 @@ class ExplainableImageModelManager:
 					print(label)
 					print(np.sum(expectedLabel == label).item())
 					
-					if(batch_id ==10):
+					if(batch_id ==5):
 						val_showLog = False
 		
 			val_accuracy = val_count * 100 / (len(self.validate_data_loader)*args.batch_size)
