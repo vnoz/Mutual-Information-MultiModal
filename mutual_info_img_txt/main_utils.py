@@ -373,50 +373,66 @@ class ExplainableImageModelManager:
 			
 			training_epoch_loss.append(np.array(step_loss).mean())
 
-			def calculate_accuracy(self, device):
-				img_text_model=self.pre_trained_img_model,image_classifier_model=self.image_classifier_model
-				batch_size = self.args.batch_size
 
-				dataloaders_iterators=[]
-				dataloaders_iterators.append(tqdm(self.train_data_loader, desc='Training Accuracy calculation Iterations'))
-				dataloaders_iterators.append(tqdm(self.validate_data_loader, desc='Validation Accuracy calculation Iterations'))
+			train_data_iterators=tqdm(self.train_data_loader, desc='Training Accuracy calculation Iterations')
+			validate_data_iterators=tqdm(self.train_data_loader, desc='Validation Accuracy calculation Iterations')
 
-				img_text_model.eval()
-				image_classifier_model.eval()
+			self.image_classifier_model.eval()
+
+			count=0
+			showLog == True
+			for batch_id, batch in enumerate(train_data_iterators, 0):
+				image, label = batch
+				output_image = self.pre_trained_img_model.forward(image)
+				image_embeddings=output_image[1]
+				image_embeddings= image_embeddings.to(device)
+
+				expectedLabel = self.image_classifier_model(image_embeddings)
+				expectedLabel = torch.flatten(expectedLabel).cpu().detach().numpy()
+				label = label.numpy()
+
+				count = count + np.sum(expectedLabel == label).item()
 				
-				accuracy_list=[]
-				for epoch_iterator in dataloaders_iterators:
-					count=0
-					showLog == True
-					for batch_id, batch in enumerate(epoch_iterator, 0):
-						image, label = batch
-						output_image = img_text_model.forward(image)
-						image_embeddings=output_image[1]
-						image_embeddings= image_embeddings.to(device)
-
-						expectedLabel = image_classifier_model(image_embeddings)
-						expectedLabel = torch.flatten(expectedLabel).cpu().detach().numpy()
-						label = label.numpy()
-
-						count = count + np.sum(expectedLabel == label).item()
-						
-						if(showLog == True):
-							print('Validation Log: batch_id= ' + str(batch_id))
-							print('expectedLabel')
-							print(expectedLabel)
-							print('label')
-							print(label)
-							print(np.sum(expectedLabel == label).item())
-							
-							if(batch_id ==10):
-								showLog = False
-				
-					accuracy = count * 100 / (len(dataloaders_iterators)*batch_size)
-					accuracy_list.append(accuracy)
-				return accuracy_list[0],accuracy_list[1]
-				
-			train_accuracy, val_accuracy = calculate_accuracy(device=device)
+				if(showLog == True):
+					print('Validation Log: batch_id= ' + str(batch_id))
+					print('expectedLabel')
+					print(expectedLabel)
+					print('label')
+					print(label)
+					print(np.sum(expectedLabel == label).item())
+					
+					if(batch_id ==10):
+						showLog = False
+		
+			train_accuracy = count * 100 / (len(self.train_data_loader)*args.batch_size)
 			training_epoch_accuracy.append(train_accuracy)
+				
+			val_count=0
+			val_showLog == True
+			for batch_id, batch in enumerate(validate_data_iterators, 0):
+				image, label = batch
+				output_image = self.pre_trained_img_model.forward(image)
+				image_embeddings=output_image[1]
+				image_embeddings= image_embeddings.to(device)
+
+				expectedLabel = self.image_classifier_model(image_embeddings)
+				expectedLabel = torch.flatten(expectedLabel).cpu().detach().numpy()
+				label = label.numpy()
+
+				val_count = val_count + np.sum(expectedLabel == label).item()
+				
+				if(val_showLog == True):
+					print('Validation Log: batch_id= ' + str(batch_id))
+					print('expectedLabel')
+					print(expectedLabel)
+					print('label')
+					print(label)
+					print(np.sum(expectedLabel == label).item())
+					
+					if(batch_id ==10):
+						val_showLog = False
+		
+			val_accuracy = val_count * 100 / (len(self.validate_data_loader)*args.batch_size)
 
 			validation_epoch_accuracy.append(val_accuracy)
 			
