@@ -332,7 +332,7 @@ class ExplainableImageModelManager:
 			start_time_epoch = time.time()
 
 			
-			training_epoch_iterator = tqdm(self.train_data_loader, desc="train_data_loader Iteration")
+			training_epoch_iterator = tqdm(self.train_data_loader, desc="***Training: train_data_loader Iteration")
 			for batch_id, batch in enumerate(training_epoch_iterator, 0):
 
 				image, label = batch
@@ -373,10 +373,10 @@ class ExplainableImageModelManager:
 			
 			training_epoch_loss.append(np.array(step_loss).mean())
 
-			train_accuracy = self.calculate_accuracy(device,self.pre_trained_img_model,self.train_data_loader,args.batch_size,'train_data_loader Iteration')
+			train_accuracy = self.calculate_accuracy(device,self.pre_trained_img_model,self.image_classifier_model,self.train_data_loader,args.batch_size,'Validation: train_data_loader Iteration')
 			training_epoch_accuracy.append(train_accuracy)
 
-			val_accuracy = self.calculate_accuracy(device,self.pre_trained_img_model,self.validate_data_loader,args.batch_size,'validate_data_loader Iteration')
+			val_accuracy = self.calculate_accuracy(device,self.pre_trained_img_model,self.image_classifier_model,self.validate_data_loader,args.batch_size,'Validation: validate_data_loader Iteration')
 			validation_epoch_accuracy.append(val_accuracy)
 			
 			logger.info(f"  Epoch {epoch+1} took {interval_epoch:.3f} s, loss = {np.array(step_loss).mean():.5f}, train accuracy={train_accuracy:.5f}, validation accuracy={val_accuracy:.5f}")
@@ -436,7 +436,7 @@ class ExplainableImageModelManager:
 			count = count + np.sum(expectedLabel == label).item()
 			
 			if(showLog == True):
-				print('val_batch_id: ' + str(batch_id))
+				print('Validation Log: batch_id= ' + str(batch_id))
 				print('expectedLabel')
 				print(expectedLabel)
 				print('label')
