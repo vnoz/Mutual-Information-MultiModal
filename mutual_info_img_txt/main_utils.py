@@ -415,7 +415,7 @@ class ExplainableImageModelManager:
 					accuracy_list.append(accuracy)
 				return accuracy_list[0],accuracy_list[1]
 				
-			train_accuracy, val_accuracy = calculate_accuracy(device)
+			train_accuracy, val_accuracy = calculate_accuracy(device=device)
 			training_epoch_accuracy.append(train_accuracy)
 
 			validation_epoch_accuracy.append(val_accuracy)
