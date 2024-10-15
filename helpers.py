@@ -94,7 +94,7 @@ def construct_training_parameters():
                         help='The directory that contains a pretrained BERT model')
     parser.add_argument('--bert_config_name',
                         default='bert_config.json', help='Bert model config file')
-    parser.add_argument('--save_dir', type=str,
+    parser.add_argument('--save_directory', type=str,
                         default=os.path.join(current_dir, 'save_dir'))
     parser.add_argument('--dataset_metadata', type=str,
                         default=os.path.join(current_dir, 'training_data/training_text_label_negbio.csv'),

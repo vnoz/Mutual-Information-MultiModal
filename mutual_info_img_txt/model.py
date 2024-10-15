@@ -134,7 +134,7 @@ class BasicBlock(nn.Module):
         return out
 
 class Basic_MLP(nn.Module):
-    def __init__(self, input_dim, hidden_dims: list, output_dim=1, activation='relu'):
+    def __init__(self, input_dim, hidden_dims: list, output_dim=1):
         super(Basic_MLP, self).__init__()
 
         self.layer1 = nn.Linear(input_dim, hidden_dims[0])
@@ -156,11 +156,11 @@ class Basic_MLP(nn.Module):
         x = self.layer2(x)
        
         x = self.layer3(x)
-        x = self.sigmoid(x)
+        x = self.relu(x)
 
         x = self.layer4(x)    
-        x = self.relu(x)
-       
+      
+        x = self.sigmoid(x)
         x = x.view(x.size(0), -1)
        
         return x

@@ -9,7 +9,7 @@ from mutual_info_img_txt.main_utils import ExplainableImageModelManager, ImageTe
 from mutual_info_img_txt.model import build_resnet_model
 
 args =  construct_training_parameters()
-args.save_dir = os.path.join(args.save_dir,
+args.save_directory = os.path.join(args.save_directory,
                                  f'{args.mi_estimator}_total_epochs{args.num_train_epochs}')
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -20,13 +20,13 @@ def train_image_text():
     Create a sub-directory under save_dir
     '''
     
-    if not os.path.exists(args.save_dir):
-        os.makedirs(args.save_dir)
+    if not os.path.exists(args.save_directory):
+        os.makedirs(args.save_directory)
 
     '''
     Configure the log file
     '''
-    log_path = os.path.join(args.save_dir, 'training_MI.log')
+    log_path = os.path.join(args.save_directory, 'training_MI.log')
     logging.basicConfig(filename=log_path, level=logging.INFO, filemode='w',
                                         format='%(asctime)s - %(name)s %(message)s',
                                         datefmt='%m-%d %H:%M')
@@ -75,7 +75,7 @@ def train_image_classifier(pre_trained_img_model, using_pre_trained_classifier=T
     
     print(f"Train_image_classifier args: {args}")
 
-    log_path = os.path.join(args.save_dir, 'training_classifier.log')
+    log_path = os.path.join(args.save_directory, 'training_classifier.log')
     logging.basicConfig(filename=log_path, level=logging.INFO, filemode='w',
                                         format='%(asctime)s - %(name)s %(message)s',
                                         datefmt='%m-%d %H:%M')
@@ -94,7 +94,7 @@ using_pre_trained_classifier= False
 image_classifider_model_manager: ExplainableImageModelManager # type: ignore
 
 if(using_pre_trained_image_text_model == True):
-    output_model_file = os.path.join(args.save_dir, 'pytorch_MI_image_model.bin')
+    output_model_file = os.path.join(args.save_directory, 'pytorch_MI_image_model.bin')
 		
     pre_trained_img_model = build_resnet_model(model_name=args.image_model_name, checkpoint_path=output_model_file,
 													output_channels=args.output_channels)

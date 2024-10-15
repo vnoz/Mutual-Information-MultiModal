@@ -221,8 +221,8 @@ class ImageTextModelManager:
 					projected_epoch_loss = len(data_loader)*epoch_loss/epoch_steps/args.batch_size
 					logger.info(f"  Projected epoch {epoch+1} loss = {projected_epoch_loss:.5f}")
 
-			image_model_file_path= self.model.save_image_model(args.save_dir)
-			checkpoint_path = self.model.save_pretrained(args.save_dir, epoch=epoch + 1)
+			image_model_file_path= self.model.save_image_model(args.save_directory)
+			checkpoint_path = self.model.save_pretrained(args.save_directory, epoch=epoch + 1)
 			interval = time.time() - start_time
 
 			print(f'Epoch {epoch+1} finished! Epoch loss: {epoch_loss:.5f}')
@@ -249,13 +249,13 @@ class ExplainableImageModelManager:
 		self.image_classifier_model = Basic_MLP(768,[512,256,128])
 
 		if(using_pre_trained_classifier == True):
-			output_model_file = os.path.join(args.save_dir, 'pytorch_image_classifier_model.bin')
+			output_model_file = os.path.join(args.save_directory, 'pytorch_image_classifier_model.bin')
 			self.image_classifier_model = self.image_classifier_model.from_pretrained(output_model_file)
 
 		self.pre_trained_img_model = pre_trained_img_model
 		
 		data_loaders = self.construct_data_loader()
-		self.test_data_loader = data_loaders[0]
+		self.train_data_loader = data_loaders[0]
 		self.validate_data_loader =  data_loaders[1]
 		
 		# self.classifier_explanation = classifier_explanation_name
@@ -277,8 +277,8 @@ class ExplainableImageModelManager:
 		train_size = int(0.8 * len(dataset))
 		valid_size = len(dataset) - train_size
 
-		test_ds, valid_ds = torch.utils.data.random_split(dataset, [train_size, valid_size])
-		test_data_loader = DataLoader(test_ds, batch_size=8,
+		train_ds, valid_ds = torch.utils.data.random_split(dataset, [train_size, valid_size])
+		train_data_loader = DataLoader(train_ds, batch_size=8,
 								 shuffle=True, num_workers=8,
 								 pin_memory=True, drop_last=True)
 		
@@ -286,7 +286,7 @@ class ExplainableImageModelManager:
 								 shuffle=True, num_workers=8,
 								 pin_memory=True, drop_last=True)
 		
-		return test_data_loader, validate_data_loader
+		return train_data_loader, validate_data_loader
 
 	def train(self, device):
 		
@@ -311,14 +311,16 @@ class ExplainableImageModelManager:
 		criterion = torch.nn.BCELoss().to(device) 
 		optimizer = torch.optim.Adam(self.image_classifier_model.parameters(), lr=args.init_lr)
 
-		total_batch = len(self.test_data_loader)
+		total_batch = len(self.train_data_loader)
 
-		logger.info(f"total batch of test_data_loader:, total_batch = {total_batch}")
+		logger.info(f"total batch of train_data_loader:, total_batch = {total_batch}")
 		
 		start_time = time.time()
 
 		training_epoch_loss=[]
 		training_epoch_accuracy=[]
+		validation_epoch_accuracy=[]
+		
 
 		self.pre_trained_img_model.eval()
 
@@ -330,7 +332,7 @@ class ExplainableImageModelManager:
 			start_time_epoch = time.time()
 
 			
-			training_epoch_iterator = tqdm(self.test_data_loader, desc="test_data_loader Iteration")
+			training_epoch_iterator = tqdm(self.train_data_loader, desc="train_data_loader Iteration")
 			for batch_id, batch in enumerate(training_epoch_iterator, 0):
 
 				image, label = batch
@@ -371,48 +373,27 @@ class ExplainableImageModelManager:
 			
 			training_epoch_loss.append(np.array(step_loss).mean())
 
-			count = 0
+			train_accuracy = self.calculate_accuracy(device,self.pre_trained_img_model,self.train_data_loader,args.batch_size,'train_data_loader Iteration')
+			training_epoch_accuracy.append(train_accuracy)
 
-			validate_total_batch =  len(self.validate_data_loader)
+			val_accuracy = self.calculate_accuracy(device,self.pre_trained_img_model,self.validate_data_loader,args.batch_size,'validate_data_loader Iteration')
+			validation_epoch_accuracy.append(val_accuracy)
+			
+			logger.info(f"  Epoch {epoch+1} took {interval_epoch:.3f} s, loss = {np.array(step_loss).mean():.5f}, train accuracy={train_accuracy:.5f}, validation accuracy={val_accuracy:.5f}")
+			print('[Epoch: {:>4}], time= {:.3f}, cost = {:>.9}, train accuracy = {:>.9}, validate accuracy = {:>.9}'.format(epoch + 1,interval_epoch, np.array(step_loss).mean(), train_accuracy,val_accuracy))
+
+			if(epoch==5):
+				print('***********Plot and save picture')
+				plt.plot(training_epoch_loss,label="train loss")
+				plt.plot(training_epoch_accuracy,label="training accuracy")
+				plt.plot(validation_epoch_accuracy,label="validation accuracy")
+
+				plt.legend()
+				plt.show()
+				plt.savefig(os.path.join(args.save_directory, 'pytorch_image_classifier_training_epoch10.png'))
 
 			
-			showLog = True
-			
-			self.image_classifier_model.eval()
-
-			validate_epoch_iterator = tqdm(self.validate_data_loader, desc="validate_data_loader Iteration")
-			for val_batch_id, val_batch in enumerate(validate_epoch_iterator, 0):
-
-				image, label = val_batch
-				output_image = self.pre_trained_img_model.forward(image)
-				image_embeddings=output_image[1]
-				image_embeddings= image_embeddings.to(device)
-
-				expectedLabel = self.image_classifier_model(image_embeddings)
-				expectedLabel = torch.flatten(expectedLabel).cpu().detach().numpy()
-				label = label.numpy()
-
-				count = count + np.sum(expectedLabel == label).item()
-				
-				if(showLog == True):
-					print('val_batch_id: ' + str(val_batch_id))
-					print('expectedLabel')
-					print(expectedLabel)
-					print('label')
-					print(label)
-					print(np.sum(expectedLabel == label).item())
-					
-					if(val_batch_id ==10):
-						showLog = False
-		
-			accuracy = count * 100 / (validate_total_batch*args.batch_size)
-			training_epoch_accuracy.append(accuracy)
-			
-			logger.info(f"  Epoch {epoch+1} took {interval_epoch:.3f} s, loss = {np.array(step_loss).mean():.5f}, accuracy={accuracy:.5f}")
-			print('[Epoch: {:>4}], time= {:.3f}, cost = {:>.9}, accuracy = {:>.9}'.format(epoch + 1,interval_epoch, np.array(step_loss).mean(), accuracy))
-
-			
-		checkpoint_path = self.image_classifier_model.save_pretrained(args.save_dir)
+		checkpoint_path = self.image_classifier_model.save_pretrained(args.save_directory)
 		interval = time.time() - start_time
 
 		print(f"Total  Epoch {epoch+1} took {interval:.3f} s")
@@ -425,7 +406,9 @@ class ExplainableImageModelManager:
 		logger.info(training_epoch_accuracy)
 
 		plt.plot(training_epoch_loss,label="train loss")
-		plt.plot(training_epoch_accuracy,label="accuracy")
+		plt.plot(training_epoch_accuracy,label="training accuracy")
+		plt.plot(validation_epoch_accuracy,label="validation accuracy")
+
 		plt.legend()
 		plt.show()
 		plt.savefig(os.path.join(args.save_directory, 'pytorch_image_classifier_training.png'))
@@ -434,6 +417,38 @@ class ExplainableImageModelManager:
 		
 		return self.image_classifier_model
 
+	def calculate_accuracy(device,img_text_model,image_classifier_model,dataloader, batch_size, description):
+		epoch_iterator = tqdm(dataloader, desc=description)
+		count=0
+		img_text_model.eval()
+		image_classifier_model.eval()
+		showLog == True
+		for batch_id, batch in enumerate(epoch_iterator, 0):
+			image, label = batch
+			output_image = img_text_model.forward(image)
+			image_embeddings=output_image[1]
+			image_embeddings= image_embeddings.to(device)
+
+			expectedLabel = image_classifier_model(image_embeddings)
+			expectedLabel = torch.flatten(expectedLabel).cpu().detach().numpy()
+			label = label.numpy()
+
+			count = count + np.sum(expectedLabel == label).item()
+			
+			if(showLog == True):
+				print('val_batch_id: ' + str(batch_id))
+				print('expectedLabel')
+				print(expectedLabel)
+				print('label')
+				print(label)
+				print(np.sum(expectedLabel == label).item())
+				
+				if(batch_id ==10):
+					showLog = False
+	
+		accuracy = count * 100 / (len(dataloader)*batch_size)
+		return accuracy
+		
 	def validate(self,device, batch_size):	
 		logger = logging.getLogger(__name__)
 
