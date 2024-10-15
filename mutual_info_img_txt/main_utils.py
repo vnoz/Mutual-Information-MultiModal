@@ -408,7 +408,7 @@ class ExplainableImageModelManager:
 			training_epoch_accuracy.append(train_accuracy)
 				
 			val_count=0
-			val_showLog == True
+			val_showLog = True
 			for batch_id, batch in enumerate(validate_data_iterators, 0):
 				image, label = batch
 				output_image = self.pre_trained_img_model.forward(image)
