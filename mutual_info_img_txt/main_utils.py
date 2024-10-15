@@ -246,7 +246,7 @@ class ExplainableImageModelManager:
 				
 		self.args = args
 		
-		self.image_classifier_model = Basic_MLP(768,[512,256,128])
+		self.image_classifier_model = Basic_MLP(768,[256,128])
 
 		if(using_pre_trained_classifier == True):
 			output_model_file = os.path.join(args.save_directory, 'pytorch_image_classifier_model.bin')
@@ -380,7 +380,7 @@ class ExplainableImageModelManager:
 			self.image_classifier_model.eval()
 
 			count=0
-			showLog == True
+			showLog = True
 			for batch_id, batch in enumerate(train_data_iterators, 0):
 				image, label = batch
 				output_image = self.pre_trained_img_model.forward(image)
