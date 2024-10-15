@@ -417,15 +417,13 @@ class ExplainableImageModelManager:
 		return self.image_classifier_model
 
 	def calculate_accuracy(self, device):
-		img_text_model=self.pre_trained_img_model,image_classifier_model=self.image_classifier_model,dataloader= self.validate_data_loader
+		img_text_model=self.pre_trained_img_model,image_classifier_model=self.image_classifier_model
 		batch_size = self.args.batch_size
 
 		dataloaders_iterators=[]
 		dataloaders_iterators.append(tqdm(self.train_data_loader, desc='Training Accuracy calculation Iterations'))
 		dataloaders_iterators.append(tqdm(self.validate_data_loader, desc='Validation Accuracy calculation Iterations'))
 
-		epoch_iterator = tqdm(dataloader, desc='Accuracy calculation Iterations')
-		
 		img_text_model.eval()
 		image_classifier_model.eval()
 		
