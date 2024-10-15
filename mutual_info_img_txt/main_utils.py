@@ -380,7 +380,7 @@ class ExplainableImageModelManager:
 			self.image_classifier_model.eval()
 
 			count=0
-			#showLog = True
+			showLog = True
 			for batch_id, batch in enumerate(train_data_iterators, 0):
 				image, label = batch
 				output_image = self.pre_trained_img_model.forward(image)
