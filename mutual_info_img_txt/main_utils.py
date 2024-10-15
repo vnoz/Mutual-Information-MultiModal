@@ -358,7 +358,7 @@ class ExplainableImageModelManager:
 				
 				step_loss.append(loss.item())
 
-				if(batch_id <= 10):
+				if(batch_id <= 3):
 					print('expectedLabel')
 					print(expectedLabel)
 					print('label')
@@ -380,7 +380,7 @@ class ExplainableImageModelManager:
 			self.image_classifier_model.eval()
 
 			count=0
-			showLog = True
+			#showLog = True
 			for batch_id, batch in enumerate(train_data_iterators, 0):
 				image, label = batch
 				output_image = self.pre_trained_img_model.forward(image)
@@ -395,26 +395,26 @@ class ExplainableImageModelManager:
 
 				count = count + np.sum(expectedLabelRound == label).item()
 				
-				if(showLog == True):
-					print('Validation Log: batch_id= ' + str(batch_id))
-					print('expectedLabel')
-					print(expectedLabel)
+				# if(showLog == True):
+				# 	print('Validation Log: batch_id= ' + str(batch_id))
+				# 	print('expectedLabel')
+				# 	print(expectedLabel)
 
-					print('expectedLabelRound')
-					print(expectedLabelRound)
+				# 	print('expectedLabelRound')
+				# 	print(expectedLabelRound)
 
-					print('label')
-					print(label)
-					print(np.sum(expectedLabelRound == label).item())
+				# 	print('label')
+				# 	print(label)
+				# 	print(np.sum(expectedLabelRound == label).item())
 					
-					if(batch_id ==10):
-						showLog = False
+				# 	if(batch_id ==10):
+				# 		showLog = False
 		
 			train_accuracy = count * 100 / (len(self.train_data_loader)*args.batch_size)
 			training_epoch_accuracy.append(train_accuracy)
 				
 			val_count=0
-			val_showLog = True
+			#val_showLog = True
 			for batch_id, batch in enumerate(validate_data_iterators, 0):
 				image, label = batch
 				output_image = self.pre_trained_img_model.forward(image)
@@ -429,16 +429,16 @@ class ExplainableImageModelManager:
 
 				val_count = val_count + np.sum(expectedLabel == label).item()
 				
-				if(val_showLog == True):
-					print('Validation Log: batch_id= ' + str(batch_id))
-					print('expectedLabel')
-					print(expectedLabel)
-					print('label')
-					print(label)
-					print(np.sum(expectedLabel == label).item())
+				# if(val_showLog == True):
+				# 	print('Validation Log: batch_id= ' + str(batch_id))
+				# 	print('expectedLabel')
+				# 	print(expectedLabel)
+				# 	print('label')
+				# 	print(label)
+				# 	print(np.sum(expectedLabel == label).item())
 					
-					if(batch_id ==5):
-						val_showLog = False
+				# 	if(batch_id ==5):
+				# 		val_showLog = False
 		
 			val_accuracy = val_count * 100 / (len(self.validate_data_loader)*args.batch_size)
 
