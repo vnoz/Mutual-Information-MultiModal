@@ -366,6 +366,7 @@ class ExplainableImageModelManager:
 					print('loss.item')
 					print(loss.item())
 					print('------------------')
+					
 				if(batch_id % 50 ==0):
 					print('Calculate loss: batch_id='+ str(batch_id) + ', loss.item()='+ str(np.array(step_loss).mean()))
 
