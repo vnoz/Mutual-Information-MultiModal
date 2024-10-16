@@ -158,11 +158,10 @@ class Basic_MLP(nn.Module):
     def forward(self, X):
         X = self.layer1(X)
         X = self.act1(X)
-
+        
         # Second hidden layer
         X = self.layer2(X)
         X = self.act2(X)
-        
         # Third hidden layer
         X = self.layer3(X)
         X = self.act3(X)

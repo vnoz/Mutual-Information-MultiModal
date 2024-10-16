@@ -331,7 +331,7 @@ class ExplainableImageModelManager:
 			print('[Start Epoch: {:>4}]'.format(epoch + 1))
 			start_time_epoch = time.time()
 
-			
+			#Note: Epoch training start
 			training_epoch_iterator = tqdm(self.train_data_loader, desc="***Training: train_data_loader Iteration")
 			for batch_id, batch in enumerate(training_epoch_iterator, 0):
 
@@ -366,22 +366,23 @@ class ExplainableImageModelManager:
 					print('loss.item')
 					print(loss.item())
 					print('------------------')
-					
+
 				if(batch_id % 50 ==0):
 					print('Calculate loss: batch_id='+ str(batch_id) + ', loss.item()='+ str(np.array(step_loss).mean()))
 
 			interval_epoch = time.time() - start_time_epoch
 			
 			training_epoch_loss.append(np.array(step_loss).mean())
+			#Note: training completed for the current epoch
 
 
+			#Note: perform accuracy calculation in Training dataset and Validation dataset
 			train_data_iterators=tqdm(self.train_data_loader, desc='Training Accuracy calculation Iterations')
 			validate_data_iterators=tqdm(self.validate_data_loader, desc='Validation Accuracy calculation Iterations')
 
 			self.image_classifier_model.eval()
 
-			count=0
-			#showLog = True
+			train_count=0
 			for batch_id, batch in enumerate(train_data_iterators, 0):
 				image, label = batch
 				output_image = self.pre_trained_img_model.forward(image)
@@ -394,24 +395,9 @@ class ExplainableImageModelManager:
 
 				label = label.numpy()
 
-				count = count + np.sum(expectedLabelRound == label).item()
+				train_count = train_count + np.sum(expectedLabelRound == label).item()
 				
-				# if(showLog == True):
-				# 	print('Validation Log: batch_id= ' + str(batch_id))
-				# 	print('expectedLabel')
-				# 	print(expectedLabel)
-
-				# 	print('expectedLabelRound')
-				# 	print(expectedLabelRound)
-
-				# 	print('label')
-				# 	print(label)
-				# 	print(np.sum(expectedLabelRound == label).item())
-					
-				# 	if(batch_id ==10):
-				# 		showLog = False
-		
-			train_accuracy = count * 100 / (len(self.train_data_loader)*args.batch_size)
+			train_accuracy = train_count * 100 / (len(self.train_data_loader)*args.batch_size)
 			training_epoch_accuracy.append(train_accuracy)
 				
 			val_count=0
@@ -445,6 +431,10 @@ class ExplainableImageModelManager:
 
 			validation_epoch_accuracy.append(val_accuracy)
 			
+			#Note: accuracy calculation completed in Training dataset and Validation dataset for current epoch
+
+
+			#Note: logging for current epoch: start
 			logger.info(f"  Epoch {epoch+1} took {interval_epoch:.3f} s, loss = {np.array(step_loss).mean():.5f}, train accuracy={train_accuracy:.5f}, validation accuracy={val_accuracy:.5f}")
 			print('[Epoch: {:>4}], time= {:.3f}, cost = {:>.9}, train accuracy = {:>.9}, validate accuracy = {:>.9}'.format(epoch + 1,interval_epoch, np.array(step_loss).mean(), train_accuracy,val_accuracy))
 
@@ -457,10 +447,13 @@ class ExplainableImageModelManager:
 				plt.legend()
 				plt.show()
 				plt.savefig(os.path.join(args.save_directory, 'pytorch_image_classifier_training_epoch10.png'))
-
+			#Note: logging for current epoch: end
 			
+		
+		#Note: save img_classifier_model to file and add logs
 		checkpoint_path = self.image_classifier_model.save_pretrained(args.save_directory)
 		interval = time.time() - start_time
+
 
 		print(f"Total  Epoch {epoch+1} took {interval:.3f} s")
 		print('checkpoint_path: ' + str(checkpoint_path))
@@ -470,7 +463,10 @@ class ExplainableImageModelManager:
 
 		logger.info('epoch training accuracy:')
 		logger.info(training_epoch_accuracy)
+		logger.info(f"  Epoch {epoch+1} checkpoint saved in {checkpoint_path}")
 
+
+		#Note: plot loss and accuracy and save to file
 		plt.plot(training_epoch_loss,label="train loss")
 		plt.plot(training_epoch_accuracy,label="training accuracy")
 		plt.plot(validation_epoch_accuracy,label="validation accuracy")
@@ -479,7 +475,6 @@ class ExplainableImageModelManager:
 		plt.show()
 		plt.savefig(os.path.join(args.save_directory, 'pytorch_image_classifier_training.png'))
 
-		logger.info(f"  Epoch {epoch+1} checkpoint saved in {checkpoint_path}")
 		
 		return self.image_classifier_model
 
