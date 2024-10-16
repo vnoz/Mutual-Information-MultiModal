@@ -302,7 +302,7 @@ class ExplainableImageModelManager:
 		
 		
 		self.image_classifier_model = self.image_classifier_model.to(device)
-		#self.pre_trained_img_model = self.pre_trained_img_model.to(device)
+		self.pre_trained_img_model = self.pre_trained_img_model.to(device)
 
 		'''
 		Define Loss function and optimizer
@@ -336,7 +336,7 @@ class ExplainableImageModelManager:
 			for batch_id, batch in enumerate(training_epoch_iterator, 0):
 
 				image, label = batch
-			
+				image= image.to(device)
 				output_image = self.pre_trained_img_model.forward(image)
 				image_embeddings=output_image[1]
 				image_embeddings= image_embeddings.to(device)
@@ -385,6 +385,7 @@ class ExplainableImageModelManager:
 			train_count=0
 			for batch_id, batch in enumerate(train_data_iterators, 0):
 				image, label = batch
+				image= image.to(device)
 				output_image = self.pre_trained_img_model.forward(image)
 				image_embeddings=output_image[1]
 				image_embeddings= image_embeddings.to(device)
@@ -404,6 +405,7 @@ class ExplainableImageModelManager:
 			#val_showLog = True
 			for batch_id, batch in enumerate(validate_data_iterators, 0):
 				image, label = batch
+				image= image.to(device)
 				output_image = self.pre_trained_img_model.forward(image)
 				image_embeddings=output_image[1]
 				image_embeddings= image_embeddings.to(device)
