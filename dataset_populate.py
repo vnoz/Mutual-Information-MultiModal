@@ -316,16 +316,16 @@ def parsing_csv_meta_data_for_label_stats(metadata):
                 labels=row[1:]
                 print(labels)
             else:
-                line_count+=1
+                line_count =line_count + 1
                 mimic_id = row[0]
-                for i in row[1:]:
-                    if(row[i] == 1.0):
+                for idx,x in enumerate(row[1:]):
+                    if(x == 1.0):
                         if(line_count==1):
                             print(row)
-                            print(i)
+                            print(idx)
                             print(labels)
-                            
-                        result[labels[i]].append(mimic_id.split('_')[1][1:])
+
+                        result[labels[idx]].append(mimic_id.split('_')[1][1:])
 
     print(result)
 
