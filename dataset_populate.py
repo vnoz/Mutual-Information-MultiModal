@@ -314,7 +314,9 @@ def parsing_csv_meta_data_for_label_stats(metadata):
         for row in csvreader:
             if(line_count==0):
                 labels=row[1:]
-                print(labels)
+                for label in enumerate(labels):
+                    result[label]=[]
+                    print(labels)
             else:
                 line_count =line_count + 1
                 mimic_id = row[0]

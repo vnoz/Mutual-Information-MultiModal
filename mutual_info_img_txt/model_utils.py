@@ -19,6 +19,10 @@ import torch.nn.functional as F
 
 from .utils import MimicID
 
+from pytorch_grad_cam import GradCAM, HiResCAM, ScoreCAM, GradCAMPlusPlus, AblationCAM, XGradCAM, EigenCAM, FullGrad
+from pytorch_grad_cam.utils.model_targets import ClassifierOutputTarget
+from pytorch_grad_cam.utils.image import show_cam_on_image
+
 
 # Convert pulmonary edema severity (0-3) to one-hot encoding
 def convert_to_onehot(severity):
@@ -360,3 +364,30 @@ def convert_examples_to_features(examples, label_list, max_seq_length, tokenizer
                                  examples_for_processing), 
                             total=len(examples)))
     return features
+
+
+def generate_GradCAM_image(model, device, target_layers, input_image, location_path):
+    #Note: input_image is the np array for image from cv2.read in dataload.getItem function
+    input_tensor = input_image.to(device)# Create an input tensor image for your model..
+    # Note: input_tensor can be a batch tensor with several images!
+
+    # We have to specify the target we want to generate
+    # the Class Activation Maps for.
+    # If targets is None, the highest scoring category (for every member in the batch) will be used.
+    targets = [ClassifierOutputTarget(281)]
+    model = model.to(device).eval()
+    rgb_img = input_image
+    # Construct the CAM object once, and then re-use it on many images.
+    with GradCAM(model=model, target_layers=target_layers) as cam:
+        # You can also pass aug_smooth=True and eigen_smooth=True, to apply smoothing.
+        grayscale_cam = cam(input_tensor=input_tensor, targets=targets)
+        # In this example grayscale_cam has only one image in the batch:
+        grayscale_cam = grayscale_cam[0, :]
+        cam_image = show_cam_on_image(rgb_img, grayscale_cam, use_rgb=True)
+        # You can also get the model outputs without having to redo inference
+        model_outputs = cam.outputs
+
+        cam_image = cv2.cvtColor(cam_image, cv2.COLOR_RGB2BGR)
+
+    cam_output_path = os.path.join(location_path, f'Grad_Cam.jpg')
+    cv2.imwrite(cam_output_path, cam_image)
