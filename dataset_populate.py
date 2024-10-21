@@ -224,7 +224,7 @@ def download_full_dataset(imgAmount, download_from_mimic=True):
         for i in range(len(contents_list)):
             tsv_writer.writerow([i,0, study_list[i][1:],'a',contents_list[i]])
  
-download_full_dataset(args.total_amount,download_from_mimic=False)
+#download_full_dataset(args.total_amount,download_from_mimic=False)
 
 def populate_training_and_testing_dataset():
     
@@ -304,4 +304,23 @@ def populate_subset_dataset(amount, image_dir,text_dir, metadata):
         tsv_writer = csv.writer(tsv_file)
         tsv_writer.writerows(label_report_lines)
 
-populate_training_and_testing_dataset()
+def parsing_csv_meta_data_for_label_stats(metadata):
+    result = {}
+
+    with open(os.path.join(args.data_dir,metadata), 'rb') as csvfile:
+        csvreader = csv.reader(csvfile, delimiter=',', quotechar='"')
+        for row in csvreader:
+            if row[0] in result:
+                result[row[0]].append(row[1])
+            else:
+                result[row[0]] = [row[1]]
+
+    print(result)
+
+    with open(os.path.join(args.data_dir,'disease_stats'), 'w') as tsv_file:
+        tsv_writer = csv.writer(tsv_file)
+        tsv_writer.writerows(result)
+
+parsing_csv_meta_data_for_label_stats(args.testing_dataset_metadata)
+
+#populate_training_and_testing_dataset()
