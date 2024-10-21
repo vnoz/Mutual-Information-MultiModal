@@ -318,7 +318,7 @@ def parsing_csv_meta_data_for_label_stats(metadata):
                 line_count+=1
                 mimic_id = row[0]
                 for i in row[1:]:
-                    if(row[i] == 1):
+                    if(row[i] == 1.0):
                         result[labels[i]].append(mimic_id.split('_')[1][1:])
 
     print(result)
