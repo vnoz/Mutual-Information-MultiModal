@@ -307,7 +307,7 @@ def populate_subset_dataset(amount, image_dir,text_dir, metadata):
 def parsing_csv_meta_data_for_label_stats(metadata):
     result = {}
 
-    with open(os.path.join(args.data_dir,metadata), 'rb') as csvfile:
+    with open(os.path.join(args.data_dir,metadata), 'rt') as csvfile:
         csvreader = csv.reader(csvfile, delimiter=',', quotechar='"')
         for row in csvreader:
             if row[0] in result:
