@@ -120,9 +120,15 @@ class CXRImageDataset(torchvision.datasets.VisionDataset):
         super(CXRImageDataset, self).__init__(root=None, transform=transform)
         
         filtered_df = pd.DataFrame(columns=[data_key, disease])
-        #all_df = pd.read_csv(dataset_metadata)
-        disease_stats = pd.read_csv(disease_stats)
-        filtered_row = disease_stats[(disease_stats[0] ==  disease)]
+      
+        filtered_row=[]
+        with open(disease_stats, 'rt') as disease_csvfile:
+            disease_csvreader = csv.reader(disease_csvfile, lineterminator='\n')
+            for row in disease_csvreader:
+                if(row[0] == disease):
+                    filtered_row = row
+                    break
+
         total_positive_study_for_disease = filtered_row[1]
         total_positive_study_ids_for_disease = filtered_row[2]
 
