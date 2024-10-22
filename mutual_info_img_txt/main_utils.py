@@ -454,7 +454,8 @@ class ExplainableImageModelManager:
 
 		plt.xlabel('Epochs')
 		plt.ylabel('Value for Loss and Accuracy')
-		plt.title('Training stats for disease ' + args.disease_label)
+		plt.title('Training stats for disease ' + args.disease_label+'\n batch_size= ' + str(args.batch_size)+', total batch = ' + str(total_batch)+ ', total training time= '  + str(interval))
+		
 		plt.plot(training_epoch_loss,label="train loss")
 		plt.plot(training_epoch_accuracy,label="training accuracy")
 		plt.plot(validation_epoch_accuracy,label="validation accuracy")
