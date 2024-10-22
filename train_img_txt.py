@@ -85,7 +85,7 @@ def train_image_classifier(pre_trained_img_model, using_pre_trained_classifier=T
 
     model_manager = ExplainableImageModelManager( args=args, pre_trained_img_model= pre_trained_img_model, using_pre_trained_classifier=using_pre_trained_classifier)
 
-    model_manager.train(device=device)
+    #model_manager.train(device=device)
     return model_manager
 
 using_pre_trained_image_text_model = True

@@ -100,6 +100,9 @@ def construct_training_parameters():
                         default=os.path.join(current_dir, 'training_data/training_text_label_negbio.csv'),
                         help='The metadata for the model training ')
 
+    parser.add_argument('--dataset_disease_stats', type=str,
+                        default=os.path.join(current_dir, 'training_data/disease_stats.csv'),
+                        help='The disease stats for balanced class label for model training ')
     parser.add_argument('--batch_size', default=8, type=int,
                         help='Mini-batch size')
     parser.add_argument('--num_train_epochs', default=100, type=int,
@@ -120,7 +123,7 @@ def construct_training_parameters():
                         help='Neural network architecture to be used for image model')
     
     parser.add_argument('--disease_label', default='Cardiomegaly', type=str,
-                        help='Disease lable for downstream classifier')
+                        help='Disease label for downstream classifier')
     
 
     return parser.parse_args()

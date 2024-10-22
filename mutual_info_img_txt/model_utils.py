@@ -115,11 +115,54 @@ class CXRImageReportDataset(torchvision.datasets.VisionDataset):
             self.images[str(idx)] = img
 
 class CXRImageDataset(torchvision.datasets.VisionDataset):
-    def __init__(self, img_dir, dataset_metadata, disease,
+    def __init__(self, img_dir, dataset_metadata, disease, disease_stats,
                  data_key='mimic_id', transform=None, cache_images=False):
         super(CXRImageDataset, self).__init__(root=None, transform=transform)
         
-        self.dataset_metadata = pd.read_csv(dataset_metadata)
+        filtered_df = pd.DataFrame(columns=[data_key, disease])
+        #all_df = pd.read_csv(dataset_metadata)
+        disease_stats = pd.read_csv(disease_stats)
+        filtered_row = disease_stats[(disease_stats[0] ==  disease)]
+        total_positive_study_for_disease = filtered_row[1]
+        total_positive_study_ids_for_disease = filtered_row[2]
+
+        total_negative_study_for_disease = total_positive_study_for_disease
+
+        with open(dataset_metadata, 'rt') as csvfile:
+            csvreader = csv.reader(csvfile, lineterminator='\n')
+            line_count=0
+            total_positive_disease_count=0
+            total_negative_disease_count=0
+            total_disease_count = 0
+            for row in csvreader:
+                if(line_count==0):
+                    print(row)
+                else:
+                    mimic_id = row[0]
+                    study_id = mimic_id.split('_')[1][1:]
+                    if(study_id in total_positive_study_ids_for_disease):
+                        if(total_positive_disease_count < total_positive_study_for_disease):
+                            filtered_df.loc[total_disease_count]=[mimic_id,1]
+                            total_disease_count = total_disease_count +1
+                            total_positive_disease_count = total_positive_disease_count +1
+                    elif(study_id not in total_positive_study_ids_for_disease):
+                        if(total_negative_disease_count < total_negative_study_for_disease):
+                            filtered_df.loc[total_disease_count]=[mimic_id,0]
+                            total_disease_count = total_disease_count +1
+                            total_negative_disease_count = total_negative_disease_count +1
+
+                    if(total_disease_count > total_positive_study_for_disease + total_negative_study_for_disease):
+                        print('total_positive_study_for_disease: ' + str(total_positive_study_for_disease))
+                        print('total_negative_study_for_disease: ' + str(total_negative_study_for_disease))
+                        
+                        print('filtered_df')
+                        print(filtered_df)
+                        break
+
+                line_count =line_count + 1
+
+
+        self.dataset_metadata = filtered_df # pd.read_csv(dataset_metadata)
         self.dataset_metadata['study_id'] = \
             self.dataset_metadata.apply(lambda row: \
                 MimicID.get_study_id(row.mimic_id), axis=1)

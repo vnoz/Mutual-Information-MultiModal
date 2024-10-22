@@ -271,6 +271,7 @@ class ExplainableImageModelManager:
 		dataset = CXRImageDataset(img_dir=args.image_dir, 
 									dataset_metadata=args.dataset_metadata, 
 									disease=args.disease_label,
+									disease_stats=args.dataset_disease_stats,
 									transform=get_transform_function(args.img_size))
 		
 		#NOTE: separate training and validate dataset/dataloader here, might need to split with balanced label classes
