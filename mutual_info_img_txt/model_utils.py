@@ -134,6 +134,10 @@ class CXRImageDataset(torchvision.datasets.VisionDataset):
 
         total_negative_study_for_disease = total_positive_study_for_disease
 
+        print('total_positive_study_for_disease: ' + str(total_positive_study_for_disease))
+        print('total_negative_study_for_disease: ' + str(total_negative_study_for_disease))
+                        
+
         with open(dataset_metadata, 'rt') as csvfile:
             csvreader = csv.reader(csvfile, lineterminator='\n')
             line_count=0
@@ -146,6 +150,8 @@ class CXRImageDataset(torchvision.datasets.VisionDataset):
                 else:
                     mimic_id = row[0]
                     study_id = mimic_id.split('_')[1][1:]
+                    
+
                     if(study_id in total_positive_study_ids_for_disease):
                         if(total_positive_disease_count < total_positive_study_for_disease):
                             filtered_df.loc[total_disease_count]=[mimic_id,1]
@@ -156,19 +162,18 @@ class CXRImageDataset(torchvision.datasets.VisionDataset):
                             filtered_df.loc[total_disease_count]=[mimic_id,0]
                             total_disease_count = total_disease_count +1
                             total_negative_disease_count = total_negative_disease_count +1
+                    
 
-                    if(total_disease_count > total_positive_study_for_disease + total_negative_study_for_disease):
-                        print('total_positive_study_for_disease: ' + str(total_positive_study_for_disease))
-                        print('total_negative_study_for_disease: ' + str(total_negative_study_for_disease))
-                        
-                        print('filtered_df')
-                        print(filtered_df)
+                    if(total_disease_count == total_positive_study_for_disease + total_negative_study_for_disease):
+                      
+                        # print('filtered_df')
+                        # print(filtered_df)
                         break
 
                 line_count =line_count + 1
 
 
-        self.dataset_metadata = filtered_df # pd.read_csv(dataset_metadata)
+        self.dataset_metadata = filtered_df 
         self.dataset_metadata['study_id'] = \
             self.dataset_metadata.apply(lambda row: \
                 MimicID.get_study_id(row.mimic_id), axis=1)

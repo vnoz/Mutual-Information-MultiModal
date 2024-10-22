@@ -1,6 +1,6 @@
 import os
 import logging
-import torch
+import torch 
 from pytorch_transformers import BertTokenizer
 
 from helpers import construct_training_parameters
@@ -85,7 +85,7 @@ def train_image_classifier(pre_trained_img_model, using_pre_trained_classifier=T
 
     model_manager = ExplainableImageModelManager( args=args, pre_trained_img_model= pre_trained_img_model, using_pre_trained_classifier=using_pre_trained_classifier)
 
-    #model_manager.train(device=device)
+    model_manager.train(device=device)
     return model_manager
 
 using_pre_trained_image_text_model = True
@@ -104,5 +104,5 @@ else:
     mi_image_model= train_image_text()
     image_classifider_model_manager =  train_image_classifier(pre_trained_img_model = mi_image_model, using_pre_trained_classifier=using_pre_trained_classifier)
 
-accuracy= image_classifider_model_manager.validate(device=device, batch_size=args.batch_size)
-print(' accuracy = {:>.9}'.format(accuracy))
+#accuracy= image_classifider_model_manager.validate(device=device, batch_size=args.batch_size)
+#print(' accuracy = {:>.9}'.format(accuracy))

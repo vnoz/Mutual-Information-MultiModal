@@ -122,7 +122,7 @@ def construct_training_parameters():
     parser.add_argument('--image_model_name', default='resnet256_6_2_1', type=str,
                         help='Neural network architecture to be used for image model')
     
-    parser.add_argument('--disease_label', default='Cardiomegaly', type=str,
+    parser.add_argument('--disease_label', default='Edema', type=str,
                         help='Disease label for downstream classifier')
     
 

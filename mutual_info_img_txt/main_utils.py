@@ -359,16 +359,16 @@ class ExplainableImageModelManager:
 				
 				step_loss.append(loss.item())
 
-				if(batch_id <= 3):
-					print('expectedLabel')
-					print(expectedLabel)
-					print('label')
-					print(label)
-					print('loss.item')
-					print(loss.item())
-					print('------------------')
+				# if(batch_id <= 3):
+				# 	print('expectedLabel')
+				# 	print(expectedLabel)
+				# 	print('label')
+				# 	print(label)
+				# 	print('loss.item')
+				# 	print(loss.item())
+				# 	print('------------------')
 
-				if(batch_id % 50 ==0):
+				if(batch_id % 20 ==0):
 					print('Calculate loss: batch_id='+ str(batch_id) + ', loss.item()='+ str(np.array(step_loss).mean()))
 
 			interval_epoch = time.time() - start_time_epoch
@@ -419,18 +419,8 @@ class ExplainableImageModelManager:
 
 				val_count = val_count + np.sum(expectedLabel == label).item()
 				
-				# if(val_showLog == True):
-				# 	print('Validation Log: batch_id= ' + str(batch_id))
-				# 	print('expectedLabel')
-				# 	print(expectedLabel)
-				# 	print('label')
-				# 	print(label)
-				# 	print(np.sum(expectedLabel == label).item())
-					
-				# 	if(batch_id ==5):
-				# 		val_showLog = False
 		
-			val_accuracy = val_count * 100 / (len(self.validate_data_loader)*args.batch_size)
+			val_accuracy = val_count / (len(self.validate_data_loader)*args.batch_size)
 
 			validation_epoch_accuracy.append(val_accuracy)
 			
@@ -441,15 +431,6 @@ class ExplainableImageModelManager:
 			logger.info(f"  Epoch {epoch+1} took {interval_epoch:.3f} s, loss = {np.array(step_loss).mean():.5f}, train accuracy={train_accuracy:.5f}, validation accuracy={val_accuracy:.5f}")
 			print('[Epoch: {:>4}], time= {:.3f}, cost = {:>.9}, train accuracy = {:>.9}, validate accuracy = {:>.9}'.format(epoch + 1,interval_epoch, np.array(step_loss).mean(), train_accuracy,val_accuracy))
 
-			if(epoch==5):
-				print('***********Plot and save picture')
-				plt.plot(training_epoch_loss,label="train loss")
-				plt.plot(training_epoch_accuracy,label="training accuracy")
-				plt.plot(validation_epoch_accuracy,label="validation accuracy")
-
-				plt.legend()
-				plt.show()
-				plt.savefig(os.path.join(args.save_directory, 'pytorch_image_classifier_training_epoch10.png'))
 			#Note: logging for current epoch: end
 			
 		
@@ -466,10 +447,14 @@ class ExplainableImageModelManager:
 
 		logger.info('epoch training accuracy:')
 		logger.info(training_epoch_accuracy)
-		logger.info(f"  Epoch {epoch+1} checkpoint saved in {checkpoint_path}")
+		logger.info(f"Training for {epoch+1} Epochs checkpoint saved in {checkpoint_path}")
 
 
 		#Note: plot loss and accuracy and save to file
+
+		plt.xlabel('Epochs')
+		plt.ylabel('Value for Loss and Accuracy')
+		plt.title('Training stats for disease ' + args.disease_label)
 		plt.plot(training_epoch_loss,label="train loss")
 		plt.plot(training_epoch_accuracy,label="training accuracy")
 		plt.plot(validation_epoch_accuracy,label="validation accuracy")
