@@ -304,9 +304,10 @@ def populate_subset_dataset(amount, image_dir,text_dir, metadata):
         tsv_writer = csv.writer(tsv_file)
         tsv_writer.writerows(label_report_lines)
 
-def parsing_csv_meta_data_for_label_stats(metadata):
+def parsing_csv_meta_data_for_label_stats(metadata, data_dir):
     result = {}
     labels=[]
+    print(metadata)
     with open(metadata, 'rt') as csvfile:
         csvreader = csv.reader(csvfile, lineterminator='\n')
         line_count=0
@@ -338,7 +339,7 @@ def parsing_csv_meta_data_for_label_stats(metadata):
     print('result dict')
     print(result)
 
-    with open(os.path.join(args.training_data_dir,'disease_stats.csv'), 'w') as tsv_file:
+    with open(os.path.join(data_dir,'disease_stats.csv'), 'w') as tsv_file:
         tsv_writer = csv.writer(tsv_file)
         for label in labels:
             line=[]
@@ -347,6 +348,6 @@ def parsing_csv_meta_data_for_label_stats(metadata):
             line.append(result[label])
             tsv_writer.writerow(line)
 
-parsing_csv_meta_data_for_label_stats(args.testing_dataset_metadata)
+parsing_csv_meta_data_for_label_stats(args.training_dataset_metadata, args.training_data_dir)
 
 #populate_training_and_testing_dataset()
