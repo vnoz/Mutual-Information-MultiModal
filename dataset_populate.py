@@ -308,7 +308,7 @@ def parsing_csv_meta_data_for_label_stats(metadata):
     result = {}
 
     with open(metadata, 'rt') as csvfile:
-        csvreader = csv.reader(csvfile, delimiter=',', quotechar='"')
+        csvreader = csv.reader(csvfile, lineterminator='\n')
         line_count=0
         labels=[]
         for row in csvreader:
@@ -316,14 +316,17 @@ def parsing_csv_meta_data_for_label_stats(metadata):
                 labels=row[1:]
                 for label in labels:
                     result[label]=[]
+                
+                print('labels:')
                 print(labels)  
-            else:
-                line_count =line_count + 1
-                mimic_id = row[0]
-                for idx,x in enumerate(row[1:]):
-                    if(x == '1.0'):
-                        result[labels[idx]].append(mimic_id.split('_')[1][1:])
+            
+            line_count =line_count + 1
+            mimic_id = row[0]
+            for idx,x in enumerate(row[1:]):
+                if(x == '1.0'):
+                    result[labels[idx]].append(mimic_id.split('_')[1][1:])
 
+    print('result dict')
     print(result)
 
     with open(os.path.join(args.training_data_dir,'disease_stats.csv'), 'w') as tsv_file:
