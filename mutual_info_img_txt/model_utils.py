@@ -129,7 +129,7 @@ class CXRImageDataset(torchvision.datasets.VisionDataset):
                     filtered_row = row
                     break
 
-        total_positive_study_for_disease = filtered_row[1]
+        total_positive_study_for_disease = int(filtered_row[1])
         total_positive_study_ids_for_disease = filtered_row[2]
 
         total_negative_study_for_disease = total_positive_study_for_disease
