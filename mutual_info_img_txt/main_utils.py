@@ -454,7 +454,7 @@ class ExplainableImageModelManager:
 
 		plt.xlabel('Epochs')
 		plt.ylabel('Value for Loss and Accuracy')
-		plt.title('Training stats for disease ' + args.disease_label+'\n batch_size= ' + str(args.batch_size)+', total batch = ' + str(total_batch)+ ', total training time= '  + str(interval))
+		plt.title('Training stats for disease ' + args.disease_label+'\n batch_size= ' + str(args.batch_size)+', total batch = ' + str(total_batch)+ ', total training time= '  + str("{:.2f}".format(interval)))
 		
 		plt.plot(training_epoch_loss,label="train loss")
 		plt.plot(training_epoch_accuracy,label="training accuracy")
@@ -462,7 +462,7 @@ class ExplainableImageModelManager:
 
 		plt.legend()
 		plt.show()
-		plt.savefig(os.path.join(args.save_directory, 'pytorch_image_classifier_training.png'))
+		plt.savefig(os.path.join(args.save_directory, 'pytorch_image_classifier_training_'+args.disease_label+'.png'))
 
 		
 		return self.image_classifier_model
