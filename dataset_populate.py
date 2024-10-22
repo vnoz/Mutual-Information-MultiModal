@@ -348,6 +348,6 @@ def parsing_csv_meta_data_for_label_stats(metadata, data_dir):
             line.append(result[label])
             tsv_writer.writerow(line)
 
-parsing_csv_meta_data_for_label_stats(args.training_dataset_metadata, args.training_data_dir)
+parsing_csv_meta_data_for_label_stats(args.testing_dataset_metadata, args.testing_data_dir)
 
 #populate_training_and_testing_dataset()
