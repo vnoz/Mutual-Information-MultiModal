@@ -368,7 +368,7 @@ class ExplainableImageModelManager:
 				# 	print(loss.item())
 				# 	print('------------------')
 
-				if(batch_id % 20 ==0):
+				if(batch_id % 12 ==0):
 					print('Calculate loss: batch_id='+ str(batch_id) + ', loss.item()='+ str(np.array(step_loss).mean()))
 
 			interval_epoch = time.time() - start_time_epoch
@@ -399,7 +399,7 @@ class ExplainableImageModelManager:
 
 				train_count = train_count + np.sum(expectedLabelRound == label).item()
 				
-			train_accuracy = train_count * 100 / (len(self.train_data_loader)*args.batch_size)
+			train_accuracy = train_count / (len(self.train_data_loader)*args.batch_size)
 			training_epoch_accuracy.append(train_accuracy)
 				
 			val_count=0
