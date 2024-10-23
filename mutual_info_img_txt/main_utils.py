@@ -251,7 +251,7 @@ class ExplainableImageModelManager:
 
 		if(using_pre_trained_classifier == True):
 			output_model_file = os.path.join(args.save_directory, 'pytorch_image_classifier_model.bin')
-			self.image_classifier_model = self.image_classifier_model.from_pretrained(output_model_file)
+			self.image_classifier_model = self.image_classifier_model.load_from_pretrained(output_model_file)
 
 		self.pre_trained_img_model = pre_trained_img_model
 		
