@@ -89,7 +89,7 @@ def train_image_classifier(pre_trained_img_model, using_pre_trained_classifier=T
     return model_manager
 
 using_pre_trained_image_text_model = True
-using_pre_trained_classifier= False
+using_pre_trained_classifier= True
 
 image_classifider_model_manager: ExplainableImageModelManager # type: ignore
 
@@ -104,5 +104,9 @@ else:
     mi_image_model= train_image_text()
     image_classifider_model_manager =  train_image_classifier(pre_trained_img_model = mi_image_model, using_pre_trained_classifier=using_pre_trained_classifier)
 
+img_path = os.path.join(args.image_dir, 'p10000032_s50414267_02aa804e-bde0afdd-112c0b34-7bc16630-4e384014.jpg')
+print('Start generate heatmap for image: ' + str(img_path))
+image_classifider_model_manager.generate_heatmap(img_path=img_path, device=device, args=args)
+print('Finish generate heatmap for image: ' + str(img_path))
 #accuracy= image_classifider_model_manager.validate(device=device, batch_size=args.batch_size)
 #print(' accuracy = {:>.9}'.format(accuracy))

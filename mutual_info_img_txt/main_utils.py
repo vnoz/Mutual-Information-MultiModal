@@ -1,4 +1,5 @@
 import os
+import cv2
 from tqdm import tqdm, trange
 import logging
 import numpy as np
@@ -19,7 +20,7 @@ from .model import Basic_MLP, build_bert_model, build_resnet_model
 from .model import ImageReportModel
 from .model import make_mlp
 from .utils import MimicID
-from .model_utils import CXRImageDataset, CXRImageReportDataset
+from .model_utils import CXRImageDataset, CXRImageReportDataset, generate_GradCAM_image
 from .mi_critics import dv_bound_loss, infonce_bound_loss
 
 
@@ -504,11 +505,15 @@ class ExplainableImageModelManager:
 
 		return accuracy
 
-	def generate_heatmap():
+	def generate_heatmap(self,img_path, device, args):
 		
 		'''
 		TODO
 		'''
+		img = cv2.imread(img_path, cv2.IMREAD_ANYDEPTH)
+		transform_fn = get_transform_function()
+		img = transform_fn(img)
+		generate_GradCAM_image(self.image_classifier_model, device=device, input_image = img,location_path=args.save_directory)
 
 	def generate_accuracy_metric():
 		'''
