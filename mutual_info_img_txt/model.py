@@ -193,7 +193,7 @@ class Basic_MLP(nn.Module):
         state_dict = torch.load(pretrained_model_path, map_location='cpu')
 
         # Load from a PyTorch state_dict
-        model.load_state_dict(state_dict)
+        model.load_state_dict(state_dict=state_dict)
 
         return model
 
