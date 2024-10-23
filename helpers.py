@@ -122,7 +122,7 @@ def construct_training_parameters():
     parser.add_argument('--image_model_name', default='resnet256_6_2_1', type=str,
                         help='Neural network architecture to be used for image model')
     
-    parser.add_argument('--disease_label', default='Pleural Effusion', type=str,
+    parser.add_argument('--disease_label', default='Lung Opacity', type=str,
                         help='Disease label for downstream classifier')
     
 
