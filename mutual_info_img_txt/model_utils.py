@@ -420,7 +420,7 @@ def convert_examples_to_features(examples, label_list, max_seq_length, tokenizer
     return features
 
 
-def generate_GradCAM_image(model, device, target_layers, input_image, location_path):
+def generate_GradCAM_image(model, device, input_image, location_path):
     #Note: input_image is the np array for image from cv2.read in dataload.getItem function
     input_tensor = input_image.to(device)# Create an input tensor image for your model..
     # Note: input_tensor can be a batch tensor with several images!
@@ -432,7 +432,7 @@ def generate_GradCAM_image(model, device, target_layers, input_image, location_p
     model = model.to(device).eval()
     rgb_img = input_image
     # Construct the CAM object once, and then re-use it on many images.
-    with GradCAM(model=model, target_layers=target_layers) as cam:
+    with GradCAM(model=model, target_layers=targets) as cam:
         # You can also pass aug_smooth=True and eigen_smooth=True, to apply smoothing.
         grayscale_cam = cam(input_tensor=input_tensor, targets=targets)
         # In this example grayscale_cam has only one image in the batch:
