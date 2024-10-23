@@ -511,7 +511,7 @@ class ExplainableImageModelManager:
 		TODO
 		'''
 		img = cv2.imread(img_path, cv2.IMREAD_ANYDEPTH)
-		transform_fn = get_transform_function()
+		transform_fn = get_transform_function(args.img_size)
 		img = transform_fn(img)
 		generate_GradCAM_image(self.image_classifier_model, device=device, input_image = img,location_path=args.save_directory)
 
