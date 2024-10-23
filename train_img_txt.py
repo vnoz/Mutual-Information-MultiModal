@@ -89,7 +89,7 @@ def train_image_classifier(pre_trained_img_model, using_pre_trained_classifier=T
     return model_manager
 
 using_pre_trained_image_text_model = True
-using_pre_trained_classifier= True
+using_pre_trained_classifier= False
 
 image_classifider_model_manager: ExplainableImageModelManager # type: ignore
 
