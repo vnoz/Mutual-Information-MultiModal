@@ -81,6 +81,16 @@ def create_data_folder():
     if not os.path.exists(args.text_storage_dir):
         os.makedirs(args.text_storage_dir)
 
+    sub_folders = ['p10', 'p11','p12', 'p13','p14', 'p15','p16', 'p17','p18', 'p19']
+    for id, subfolder in enumerate(sub_folders):
+        img_sub_folder = os.path.join(args.image_storage_dir,subfolder)
+        txt_sub_folder = os.path.join(args.text_storage_dir,subfolder)
+        
+        if not os.path.exists(img_sub_folder):
+            os.makedirs(img_sub_folder)
+        if not os.path.exists(txt_sub_folder):
+            os.makedirs(txt_sub_folder)
+
     if not os.path.exists(args.training_data_dir):
         os.makedirs(args.training_data_dir)
     if not os.path.exists(args.training_image_dir):
@@ -94,8 +104,8 @@ def create_data_folder():
         os.makedirs(args.testing_image_dir)
     if not os.path.exists(args.testing_text_dir):
         os.makedirs(args.testing_text_dir)
-
-def download_full_dataset(imgAmount, download_from_mimic=True):
+create_data_folder()
+def download_full_dataset(imgAmount, subfolder,download_from_mimic=True):
 
     create_data_folder()
 
@@ -115,9 +125,11 @@ def download_full_dataset(imgAmount, download_from_mimic=True):
 
     # Read content of meta data file, and loop through each item 
     #     to download images from MIMIC-CXR-JPG and free-text report from MIMIC-CXR
-    text_files = []
-    
+   
     count = 0
+
+    contents_list=[]
+    study_list=[]
 
     # Download cxr-jpg file and create associate free-text file list
     print('Download cxr-jpg file and create associate free-text file list')
@@ -135,17 +147,72 @@ def download_full_dataset(imgAmount, download_from_mimic=True):
                 subject_id = split_items[1]
                 study_id = split_items[2]
                 view_position = split_items[4]
-                if(view_position == 'PA'):
+                if(view_position == 'PA' and subfolder =='p'+subject_id[:2] ):
 
                     img_filename = os.path.join('files','p'+subject_id[:2],'p'+subject_id,'s'+ study_id, dicom_id+'.jpg')
                     new_img_filename_without_extension = 'p'+subject_id+'_'+'s'+ study_id+'_'+dicom_id
                     
-                    new_img_filename_full_path = os.path.join(args.image_storage_dir,new_img_filename_without_extension+'.jpg')  
+                    new_img_filename_full_path = os.path.join(args.image_storage_dir,'p'+subject_id[:2],new_img_filename_without_extension+'.jpg')  
                     study_dictionary[study_id] =  new_img_filename_full_path
                     image_file_dictionary[study_id] = new_img_filename_without_extension
                     
                     text_filename = os.path.join('files','p'+subject_id[:2],'p'+subject_id,'s'+ study_id+'.txt')
-                    text_files.append(text_filename)
+                    
+                    # Downloading text file in MIMIC-CXR
+                    current_file_sub_folder = os.path.join(args.text_storage_dir,'p'+subject_id[:2])
+                    text_file_url = get_filename_url(mimic_cxr_base_url,text_filename,current_file_sub_folder)
+                    
+                    execute_command(text_file_url)
+
+                    # Finish Downloading text file in MIMIC-CXR
+
+                    # Parsing text file and construct content from FINDINGS keyword in free-text report
+                    
+                    findings_content=[]
+                    start_getting_content=False
+                    
+                    content_without_findings_keyword=[]
+                    new_line_for_findings_content = False
+
+                    with open(os.path.join(current_file_sub_folder,'s'+ study_id+'.txt'),"rt") as f:
+                        # NOTE: if content has Findings keyword, then return the text between Findings and Impression keywords, 
+                        #           otherwise return the text after the last empty line break
+                        for line in f:
+                            line_content= line.strip()
+                            if('FINDINGS:' in line_content):
+                                if(line_content != 'FINDINGS:' and line_content.startswith('FINDINGS:')):
+                                    findings_content.append(line_content[line_content.index('FINDINGS:')+9:].strip())
+                                    
+                                start_getting_content = True
+                                continue
+                            elif('IMPRESSION:' in line_content and start_getting_content==True):
+                                start_getting_content = False
+                                break
+                        
+                            if(start_getting_content == True and line_content != ''):
+                                findings_content.append(line_content)
+                            
+                            if(line_content == ''):
+                                new_line_for_findings_content = True
+                                content_without_findings_keyword = []
+                                
+                            elif(new_line_for_findings_content == True and 'FINDINGS:' not in line_content and 'IMPRESSION:' not in line_content):
+                                content_without_findings_keyword.append(line_content)
+                        
+                        if(len(findings_content)==0 and len(content_without_findings_keyword) > 0):
+                            findings_content = content_without_findings_keyword
+                    
+                    if(len(findings_content) > 0):
+                        contents_list.append(''.join(map(str,findings_content)))
+                        
+                        study_list.append(study_id)
+
+                        # Only download image file when Text file has Findings_Content
+                        if(download_from_mimic == True):
+                            download_img_url = get_filename_new_location_url(jpg_cxr_base_url,img_filename,new_img_filename_full_path)
+                            execute_command(download_img_url)
+                    
+                    # Finish Parsing text file
                     
                     count = count+1
 
@@ -153,65 +220,27 @@ def download_full_dataset(imgAmount, download_from_mimic=True):
                         break
     
     # Downloading text files in MIMIC-CXR
-    if(download_from_mimic == True):
-        for i in range(len(text_files)):
-            text_file_url = get_filename_url(mimic_cxr_base_url,text_files[i],args.text_storage_dir)
+    # if(download_from_mimic == True):
+    #     for i in range(len(text_files)):
+    #         text_file_url = get_filename_url(mimic_cxr_base_url,text_files[i],args.text_storage_dir)
             
-            execute_command(text_file_url)
+    #         execute_command(text_file_url)
 
 
-    contents_list=[]
-    study_list=[]
+   
 
-    # Parse text file and construct content from FINDINGS keyword in free-text report
-    print('Parse text file and construct content from FINDINGS keyword in free-text report')
-    for i in range(len(text_files)):
-        findings_content=[]
-        start_getting_content=False
+    # # Parse text file and construct content from FINDINGS keyword in free-text report
+    # print('Parse text file and construct content from FINDINGS keyword in free-text report')
+    # for i in range(len(text_files)):
+    #     findings_content=[]
+    #     start_getting_content=False
         
-        single_text_file =text_files[i].split('/')[-1]
+    #     single_text_file =text_files[i].split('/')[-1]
 
-        content_without_findings_keyword=[]
-        new_line_for_findings_content = False
+    #     content_without_findings_keyword=[]
+    #     new_line_for_findings_content = False
 
-        # NOTE: if content has Findings keyword, then return the text between Findings and Impression keywords, 
-        #           otherwise return the text after the last empty line break
-        with open(os.path.join(args.text_storage_dir,single_text_file),"rt") as f:
-            for line in f:
-                line_content= line.strip()
-                if('FINDINGS:' in line_content):
-                    if(line_content != 'FINDINGS:' and line_content.startswith('FINDINGS:')):
-                        findings_content.append(line_content[line_content.index('FINDINGS:')+9:].strip())
-                        
-                    start_getting_content = True
-                    continue
-                elif('IMPRESSION:' in line_content and start_getting_content==True):
-                    start_getting_content = False
-                    break
-            
-                if(start_getting_content == True and line_content != ''):
-                    findings_content.append(line_content)
-                
-                if(line_content == ''):
-                    new_line_for_findings_content = True
-                    content_without_findings_keyword = []
-                    
-                elif(new_line_for_findings_content == True and 'FINDINGS:' not in line_content and 'IMPRESSION:' not in line_content):
-                    content_without_findings_keyword.append(line_content)
-            
-            if(len(findings_content)==0 and len(content_without_findings_keyword) > 0):
-                findings_content = content_without_findings_keyword
         
-        if(len(findings_content) > 0):
-            contents_list.append(''.join(map(str,findings_content)))
-            studyId = Path(text_files[i]).stem
-            study_list.append(studyId)
-
-            # Only download image file when Text file has Findings_Content
-            if(download_from_mimic == True):
-                url = study_dictionary[studyId]
-                download_img_url = get_filename_new_location_url(jpg_cxr_base_url,img_filename,url)
-                execute_command(download_img_url)
     
     assert len(study_list) == len(contents_list), "Mismatch number of studies and free-text reports"
 
@@ -223,8 +252,8 @@ def download_full_dataset(imgAmount, download_from_mimic=True):
         
         for i in range(len(contents_list)):
             tsv_writer.writerow([i,0, study_list[i][1:],'a',contents_list[i]])
- 
-#download_full_dataset(args.total_amount,download_from_mimic=False)
+download_full_dataset(10,subfolder='p10',download_from_mimic=True) 
+#download_full_dataset(args.total_amount,subfolder='p10',download_from_mimic=True)
 
 def populate_training_and_testing_dataset():
     
@@ -348,6 +377,6 @@ def parsing_csv_meta_data_for_label_stats(metadata, data_dir):
             line.append(result[label])
             tsv_writer.writerow(line)
 
-parsing_csv_meta_data_for_label_stats(args.testing_dataset_metadata, args.testing_data_dir)
+#parsing_csv_meta_data_for_label_stats(args.testing_dataset_metadata, args.testing_data_dir)
 
 #populate_training_and_testing_dataset()
