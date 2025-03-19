@@ -1,0 +1,13 @@
+WARNING: combining -O with -r or -p will mean that all downloaded content
+will be placed in the single file you specified.
+
+--2025-01-07 13:40:53--  https://physionet.org/files/mimic-cxr-jpg/2.1.0/files/p10/p10001884/s50712381/7b25b3ed-e780a527-319cb7b3-02d5d071-f1cddee9.jpg
+Resolving physionet.org (physionet.org)... 18.18.42.54
+Connecting to physionet.org (physionet.org)|18.18.42.54|:443... connected.
+HTTP request sent, awaiting response... 401 Unauthorized
+Authentication selected: Basic realm="PhysioNet", charset="UTF-8"
+Reusing existing connection to physionet.org:443.
+HTTP request sent, awaiting response... 416 Requested Range Not Satisfiable
+
+    The file is already fully retrieved; nothing to do.
+
