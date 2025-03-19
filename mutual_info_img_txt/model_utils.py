@@ -5,6 +5,7 @@ import sys
 import numpy as np
 from math import floor, ceil
 from multiprocessing import Pool, cpu_count
+import logging
 from tqdm import tqdm
 import pandas as pd
 import cv2
@@ -76,34 +77,98 @@ class CXRImageReportDataset(torchvision.datasets.VisionDataset):
         else:
             self.images = None
 
+        #Note: add default values for image and token for missing study_id key or any exception in loading
+        self.default_img = None
+        self.default_tokens = None
+        self.default_token_masks = None
+        self.default_token_segments = None
+
+        self.logger = logging.getLogger(__name__)
+
+    def set_default(self,img, tokens, token_masks, token_segments, study_id):
+        self.default_img = img
+        self.default_tokens = tokens
+        self.default_token_masks = token_masks
+        self.default_token_segments = token_segments
+        print('Set default value for Dataloader from study_id ' + str(study_id))
+        print('default tokens length='+ str(len(tokens)))
+        print(img)
+        print(tokens)
+        print(token_masks)
+        print(token_segments)
+
     def __len__(self):
         return len(self.image_ids)
 
     def __getitem__(self, idx):
+        
+        logger = logging.getLogger(__name__)
+
         img_id, study_id = self.dataset_metadata.loc[idx, \
             [self.data_key, 'study_id']]
 
-        txt = self.all_txt_tokens[study_id]
-        txt = torch.tensor(txt, dtype=torch.long)
+        #logger.info(f"studyId={study_id}, img_id={img_id} ")
 
-        txt_masks = self.all_txt_masks[study_id]
-        txt_masks = torch.tensor(txt_masks, dtype=torch.long)
+        try: 
+            #Note: try to get txt, txt_masks, txt_segments from dictionary and cast to tensors, and use default values for any missing ones
+            txt = self.all_txt_tokens[study_id]
+            if(txt is not None):
+                txt = torch.tensor(txt, dtype=torch.long)
+            else:
+                print('Default token for study_id=' + str(study_id))
+                txt = self.default_tokens
 
-        txt_segments = self.all_txt_segments[study_id]
-        txt_segments = torch.tensor(txt_segments, dtype=torch.long)
+            txt_masks = self.all_txt_masks[study_id]
+            if(txt_masks is not None):
+                txt_masks = torch.tensor(txt_masks, dtype=torch.long)
+            else:
+                print('Default token masks for study_id=' + str(study_id))
+                txt_masks = self.default_token_masks
+            
+            txt_segments = self.all_txt_segments[study_id]
+            if(txt_segments is not None):
+                txt_segments = torch.tensor(txt_segments, dtype=torch.long)
+            else:
+                print('Default token segments for study_id=' + str(study_id))
+                txt_segments = self.default_token_segments
 
-        if self.cache_images:
-            img = self.images[str(idx)]
-        else:
-            png_path = os.path.join(self.img_dir, f'{img_id}.jpg')
-            img = cv2.imread(png_path, cv2.IMREAD_ANYDEPTH)
+            #Note: try to load image from file and transform, or use default image value for any exception
+            try:
+                png_path = os.path.join(self.img_dir,img_id)
+            
+                # print('CXRImageReportDataset getItem: '+png_path)
+                img = cv2.imread(png_path, cv2.IMREAD_ANYDEPTH)
+                
+                if(img is not None):
+                    if self.transform is not None:
+                        img = self.transform(img)
+                    
+                    img = np.expand_dims(img, axis=0)
+                else:    
+                    print('Default image for study_id=' + str(study_id)+', img_id'+str(img_id)+', index= '+str(idx))
+                    logger.error('Default image for study_id=' + str(study_id)+', img_id'+str(img_id)+', index= '+str(idx))
+                    img = self.default_img
 
-        if self.transform is not None:
-            img = self.transform(img)
+            except Exception as e: 
+                logger.error(f"Exception loading image for study_id={study_id}, img_id={img_id}")
+                logger.error(e)
 
-        img = np.expand_dims(img, axis=0)
+                print('Exception loading image for study_id ' + str(study_id)+', img_id='+str(img_id))
+                print(repr(e))
 
-        return img, txt, txt_masks, txt_segments, study_id, img_id
+            if(img is None):
+                img = self.default_img
+
+            return img, txt, txt_masks, txt_segments, study_id, img_id
+        except Exception as e: 
+            logger.error(f"Exception raise for study_id={study_id}, img_id={img_id}")
+            logger.error(e)
+            logger.error("----------------------------------")
+            print('Exception raise for study_id ' + str(study_id))
+            print(repr(e))
+            return self.default_img, self.default_tokens, self.default_token_masks, self.default_token_segments, study_id, img_id
+
+        
 
     def cache_img_set(self):
         for idx in range(self.__len__()):
@@ -120,20 +185,23 @@ class CXRImageDataset(torchvision.datasets.VisionDataset):
         super(CXRImageDataset, self).__init__(root=None, transform=transform)
         
         filtered_df = pd.DataFrame(columns=[data_key, disease])
-      
-        filtered_row=[]
+        maxInt = sys.maxsize
+
         with open(disease_stats, 'rt') as disease_csvfile:
-            disease_csvreader = csv.reader(disease_csvfile, lineterminator='\n')
-            for row in disease_csvreader:
-                if(row[0] == disease):
-                    filtered_row = row
-                    break
-
-        total_positive_study_for_disease = int(filtered_row[1])
-        total_positive_study_ids_for_disease = filtered_row[2]
-
-        total_negative_study_for_disease = total_positive_study_for_disease
-
+            try:
+                csv.field_size_limit(maxInt)
+                disease_csvreader = csv.reader(disease_csvfile, lineterminator='\n')
+                for row in disease_csvreader:
+                    if(row[0] == disease):
+                        total_positive_study_for_disease = int(row[1])
+                        total_positive_study_ids_for_disease = row[2]
+                    elif(row[0] == disease+'_negative'):
+                        total_negative_study_for_disease = int(row[1])
+                        total_negative_study_ids_for_disease = row[2]
+            except OverflowError:
+                axInt = int(maxInt/10)
+                
+        print('disease: ' + disease)
         print('total_positive_study_for_disease: ' + str(total_positive_study_for_disease))
         print('total_negative_study_for_disease: ' + str(total_negative_study_for_disease))
                         
@@ -149,21 +217,17 @@ class CXRImageDataset(torchvision.datasets.VisionDataset):
                     print(row)
                 else:
                     mimic_id = row[0]
-                    study_id = mimic_id.split('_')[1][1:]
-                    
+                    study_id = mimic_id.split('_')[1][1:]                 
 
                     if(study_id in total_positive_study_ids_for_disease):
-                        if(total_positive_disease_count < total_positive_study_for_disease):
                             filtered_df.loc[total_disease_count]=[mimic_id,1]
                             total_disease_count = total_disease_count +1
                             total_positive_disease_count = total_positive_disease_count +1
-                    elif(study_id not in total_positive_study_ids_for_disease):
-                        if(total_negative_disease_count < total_negative_study_for_disease):
+                    elif(study_id  in total_negative_study_ids_for_disease):
                             filtered_df.loc[total_disease_count]=[mimic_id,0]
                             total_disease_count = total_disease_count +1
                             total_negative_disease_count = total_negative_disease_count +1
                     
-
                     if(total_disease_count == total_positive_study_for_disease + total_negative_study_for_disease):
                       
                         # print('filtered_df')
@@ -171,7 +235,9 @@ class CXRImageDataset(torchvision.datasets.VisionDataset):
                         break
 
                 line_count =line_count + 1
-
+                if(line_count % 10000 == 0):
+                    print('line count = ' + str(line_count))                   
+                    print('-----')
 
         self.dataset_metadata = filtered_df 
         self.dataset_metadata['study_id'] = \
@@ -190,6 +256,9 @@ class CXRImageDataset(torchvision.datasets.VisionDataset):
         else:
             self.images = None
 
+        print('CXRImageDataset dataset_metadata')
+        print(dataset_metadata)
+        
     def __len__(self):
         return len(self.image_ids)
 
@@ -204,14 +273,17 @@ class CXRImageDataset(torchvision.datasets.VisionDataset):
         if self.cache_images:
             img = self.images[str(idx)]
         else:
-            jpg_path = os.path.join(self.img_dir, f'{img_id}.jpg')
+            jpg_path = os.path.join(self.img_dir, img_id)
+
             img = cv2.imread(jpg_path, cv2.IMREAD_ANYDEPTH)
 
-        if self.transform is not None:
-            img = self.transform(img)
+        if(img is not None):
+            if self.transform is not None:
+                img = self.transform(img)
 
-        img = np.expand_dims(img, axis=0)
-
+            img = np.expand_dims(img, axis=0)
+        else:
+            print('Exception loading image, studyId='+str(study_id))
         return img, labelDisease
 
 # adapted from
@@ -237,7 +309,9 @@ def load_and_cache_examples(args, tokenizer):
         logger.info(f"Creating features from dataset file at {args.text_data_dir}")
         print(f"Creating features from dataset file at {args.text_data_dir}")
         label_list = processor.get_labels()
+        print(f"label list length = {len(label_list)}")
         examples = processor.get_all_examples(args.text_data_dir)
+        print(f"examples length = {len(examples)}")
         features = convert_examples_to_features(examples, label_list, args.max_seq_length, tokenizer)
         logger.info(f"Saving features into cached file {cached_features_file}")
         print(f"Saving features into cached file {cached_features_file}")

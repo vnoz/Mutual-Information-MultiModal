@@ -1,4 +1,5 @@
 import csv
+import math
 import os
 import numpy as np
 from math import floor, ceil
@@ -136,25 +137,38 @@ class BasicBlock(nn.Module):
 class Basic_MLP(nn.Module):
     def __init__(self, input_dim, hidden_dims: list, output_dim=1):
         super(Basic_MLP, self).__init__()
+        
+        hidden_dim = hidden_dims[0] # math.floor(input_dim*2/3)
+        hidden_dim1 = hidden_dims[1] #math.floor(math.sqrt(hidden_dim))
+        hidden_dim2 = hidden_dims[2] #math.ceil(math.sqrt(hidden_dim1))
 
-        self.layer1 = nn.Linear(input_dim, hidden_dims[0])
+        self.layer1 = nn.Linear(input_dim, hidden_dim)
 
         nn.init.kaiming_uniform_(self.layer1.weight, nonlinearity='relu')
 
-        self.act1 = nn.ReLU()
+        self.act1 =nn.ReLU() #nn.Sigmoid() 
+        
 
-        self.layer2 = nn.Linear(hidden_dims[0], hidden_dims[1])
+        self.layer2 = nn.Linear(hidden_dim, hidden_dim1)
+
         nn.init.kaiming_uniform_(self.layer2.weight, nonlinearity='relu')
 
-        self.act2 = nn.ReLU()
+        self.act2 =nn.ReLU() #nn.Sigmoid() 
 
-        self.layer3 = nn.Linear(hidden_dims[1], output_dim)
-        nn.init.xavier_uniform_(self.layer3.weight)
-        self.act3 = nn.Sigmoid()
 
-        #self.relu = nn.ReLU(inplace=True)
-        #self.sigmoid = nn.Sigmoid()
-        
+        self.layer3 = nn.Linear(hidden_dim1, hidden_dim2)
+
+        nn.init.kaiming_uniform_(self.layer3.weight, nonlinearity='relu')
+
+        self.act3 =nn.ReLU() #nn.Sigmoid() 
+
+
+        self.layer4 = nn.Linear(hidden_dim2, output_dim)
+        nn.init.kaiming_uniform_(self.layer4.weight, nonlinearity='relu')
+        #nn.init.xavier_uniform_(self.layer3.weight)
+        self.act4 = nn.Sigmoid()
+
+       
     def forward(self, X):
         X = self.layer1(X)
         X = self.act1(X)
@@ -162,12 +176,15 @@ class Basic_MLP(nn.Module):
         # Second hidden layer
         X = self.layer2(X)
         X = self.act2(X)
-        # Third hidden layer
+        # # Third hidden layer
         X = self.layer3(X)
         X = self.act3(X)
+
+        X = self.layer4(X)
+        X = self.act4(X)
         return X
     
-    def save_pretrained(self, save_directory): 
+    def save_pretrained(self, save_directory,label): 
         """ Save a model with its configuration file to a directory, so that it
             can be re-loaded using the `from_pretrained(save_directory)` class method.
         """
@@ -181,7 +198,7 @@ class Basic_MLP(nn.Module):
 
         # If we save using the predefined names, we can load using `from_pretrained`
         
-        output_model_file = os.path.join(save_directory, 'pytorch_image_classifier_model.bin')
+        output_model_file = os.path.join(save_directory, 'pytorch_image_classifier_'+label+'.bin')
         
         torch.save(model_to_save.state_dict(), output_model_file)
         return output_model_file
@@ -238,6 +255,8 @@ class ResNet256_6_2_1(nn.Module):
         self.fc1 = nn.Linear(768, output_channels)
         self.softmax = nn.Softmax(dim=1)
         
+        self.sigmoid =  nn.Sigmoid()
+
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
                 nn.init.kaiming_normal_(m.weight, mode='fan_out', 
@@ -292,8 +311,8 @@ class ResNet256_6_2_1(nn.Module):
         z = torch.flatten(x, 1)
         y_logits = self.fc1(z)
         y = self.softmax(y_logits)
-
-        return y, z, z_local, y_logits
+        y_sigmoid = self.sigmoid(y_logits)
+        return y, z, y_sigmoid , z_local, y_logits
 
     def load_from_pretrained(self, pretrained_model_path):
 
@@ -487,6 +506,13 @@ class ImageReportModel(nn.Module):
         torch.save(model_to_save.state_dict(), output_model_file)
 
         return output_model_file
+
+    def save_text_model(self, save_directory):
+        model_to_save = self.text_model
+        output_text_model_file = os.path.join(save_directory, 'pytorch_MI_text_model.bin')
+        torch.save(model_to_save.state_dict(), output_text_model_file)
+
+        return output_text_model_file
     
     def save_pretrained(self, save_directory, epoch=-1):
         """ Save a model with its configuration file to a directory, so that it

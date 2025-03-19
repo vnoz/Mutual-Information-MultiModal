@@ -21,7 +21,7 @@ def construct_dataset_parameters():
 
     #Amount of samples for full dataset, training and testing
     parser.add_argument('--total_amount', type=str,
-                        default=10000,
+                        default=1000000,
                         help='Total amount of samples to download from MIMIC dataset')
 
     parser.add_argument('--amount_for_training', type=str,
@@ -57,9 +57,9 @@ def construct_dataset_parameters():
     parser.add_argument('--training_text_dir', type=str,
                         default=os.path.join(current_dir, 'training_data/text/'),
                         help='The training text data directory')
-    parser.add_argument('--training_dataset_metadata', type=str,
-                        default=os.path.join(current_dir, 'training_data/training_text_label_negbio.csv'),
-                        help='The metadata for the model training ')
+    parser.add_argument('--training_dataset_labeldata', type=str,
+                        default=os.path.join(current_dir, 'training_data/training_label_negbio.csv'),
+                        help='The labeldata for the model training ')
 
     #Location for testing dataset 
     parser.add_argument('--testing_data_dir', type=str,
@@ -71,10 +71,14 @@ def construct_dataset_parameters():
     parser.add_argument('--testing_text_dir', type=str,
                         default=os.path.join(current_dir, 'testing_data/text/'),
                         help='The testing text data directory')
-    parser.add_argument('--testing_dataset_metadata', type=str,
-                        default=os.path.join(current_dir, 'testing_data/testing_text_label_negbio.csv'),
-                        help='The metadata for the model testing ')
+    parser.add_argument('--testing_dataset_labeldata', type=str,
+                        default=os.path.join(current_dir, 'testing_data/testing_label_negbio.csv'),
+                        help='The labeldata for the model testing ')
 
+    parser.add_argument('--sub_folder', type=str,
+                        default='p10',
+                        help='Sub_folder to download image from Physio.net')
+    
     return parser.parse_args()
 
 def construct_training_parameters():
@@ -84,7 +88,7 @@ def construct_training_parameters():
     parser = argparse.ArgumentParser()
 
     parser.add_argument('--image_dir', type=str,
-                        default=os.path.join(current_dir, 'training_data/images/'),
+                        default=os.path.join(current_dir, 'full_data_set/images/'),
                         help='The image data directory')
     parser.add_argument('--text_data_dir', type=str,
                         default=os.path.join(current_dir, 'training_data/text/'),
@@ -97,20 +101,28 @@ def construct_training_parameters():
     parser.add_argument('--save_directory', type=str,
                         default=os.path.join(current_dir, 'save_dir'))
     parser.add_argument('--dataset_metadata', type=str,
-                        default=os.path.join(current_dir, 'training_data/training_text_label_negbio.csv'),
+                        default=os.path.join(current_dir, 'training_data/training_label_negbio.csv'),
                         help='The metadata for the model training ')
 
     parser.add_argument('--dataset_disease_stats', type=str,
                         default=os.path.join(current_dir, 'training_data/disease_stats.csv'),
                         help='The disease stats for balanced class label for model training ')
-    parser.add_argument('--batch_size', default=8, type=int,
+    parser.add_argument('--batch_size', default=32, type=int,
                         help='Mini-batch size')
-    parser.add_argument('--num_train_epochs', default=100, type=int,
-                        help='Number of training epochs')
+    
+    parser.add_argument('--data_loader_workers', default=32, type=int,
+                        help='Number of workers for DataLoader')
+    
+    parser.add_argument('--num_train_epochs', default=10, type=int,
+                        help='Number of training epochs for Mutual Information')
+    
+    parser.add_argument('--num_train_epochs_classifier', default=100, type=int,
+                        help='Number of training epochs for classifier')
+    
     parser.add_argument('--mi_estimator', type=str,
-                        default='infonce',
+                        default='dv',
                         help='Mutual information estimator (variational bound): dv or infonce')
-    parser.add_argument('--init_lr', default=5e-5, type=float,
+    parser.add_argument('--init_lr', default=1e-4, type=float,
                         help='Intial learning rate')
 
     parser.add_argument('--max_seq_length', default=320, type=int,
@@ -122,7 +134,7 @@ def construct_training_parameters():
     parser.add_argument('--image_model_name', default='resnet256_6_2_1', type=str,
                         help='Neural network architecture to be used for image model')
     
-    parser.add_argument('--disease_label', default='Enlarged Cardiomediastinum', type=str,
+    parser.add_argument('--disease_label', default='Pneumonia', type=str,
                         help='Disease label for downstream classifier')
     
 
