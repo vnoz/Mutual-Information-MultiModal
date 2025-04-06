@@ -114,6 +114,7 @@ class ImageTextModelManager:
 		'''
 		logger = logging.getLogger(__name__)
 
+	
 		'''
 		Create an instance of traning data loader
 		'''
@@ -140,7 +141,7 @@ class ImageTextModelManager:
 			mi_critic = dv_bound_loss
 		if args.mi_estimator == 'infonce':
 			mi_critic = infonce_bound_loss
-
+		
 		'''
 		Create three instances of optimizer 
 		(one for the image encoder, one for the MI estimator, and one for the text encoder)
@@ -443,30 +444,21 @@ class ImageModelManager:
 
 class ExplainableImageModelManager:
 	""" A manager class that creates image classifier with input from image embeddings
-			and heatmap generation with Grad-CAM
 			and metrics for classifier and heatmap generation
 	"""
 
-	def __init__(self, args, pre_trained_img_model,using_pre_trained_classifier, label):
+	def __init__(self, args, pre_trained_img_model,mlp_hidden_layers):
 				
 		self.args = args
 		
-		self.image_classifier_model = Basic_MLP(768,[256,128,64])
-
-		# if(using_pre_trained_classifier == True):
-		# 	output_model_file = os.path.join(args.save_directory, 'pytorch_image_classifier_model.bin')
-		# 	self.image_classifier_model = self.image_classifier_model.load_from_pretrained(output_model_file)
+		self.image_classifier_model = Basic_MLP(768,mlp_hidden_layers) #make_mlp(768, mlp_hidden_layers)
 
 		self.pre_trained_img_model = pre_trained_img_model
-		self.disease_label = label
-		data_loaders = self.construct_data_loader(label)
+		self.disease_label = args.disease_label
+		data_loaders = self.construct_data_loader(args.disease_label)
 		self.train_data_loader = data_loaders[0]
 		self.validate_data_loader =  data_loaders[1]
 		#self.class_weight = data_loaders[2]
-
-		# self.classifier_explanation = classifier_explanation_name
-		# self.classifier_metric_name = classifier_metric_name
-		# self.classifier_explanation_metric_name = classifier_explanation_metric_name
 
 	def construct_data_loader(self, label):
 
@@ -508,29 +500,26 @@ class ExplainableImageModelManager:
 		Train the model
 		'''		
 		
-		
 		self.image_classifier_model = self.image_classifier_model.to(device)
 		self.pre_trained_img_model = self.pre_trained_img_model.to(device)
 
 		'''
 		Define Loss function and optimizer
 		'''
-
 		
 		# class_weights =  torch.tensor([21198/14232], dtype=torch.float32) 
-		# if(self.disease_label == 'Enlarged Cardiomediastinum'):
-		# 	class_weights =  torch.tensor([6411/4667], dtype=torch.float32) 
-
+		
 		criterion = torch.nn.BCELoss().to(device) #nn.BCELoss(weight=class_weights).to(device)  #
 
-		optimizer = torch.optim.Adam(self.image_classifier_model.parameters(), lr=args.init_lr)
+		if(args.optimizer ==''):
+			optimizer = torch.optim.Adam(self.image_classifier_model.parameters(), lr=args.init_lr)
+		else:
+			optimizer = torch.optim.SGD(self.image_classifier_model.parameters(), lr=args.init_lr, weight_decay = 1e-08, momentum=0.0009, nesterov = True)
+
 		#optimizer = torch.optim.Adam(self.image_classifier_model.parameters(), lr=args.init_lr, weight_decay = 1e-08, amsgrad=True)
 		#optimizer = torch.optim.SGD(self.image_classifier_model.parameters(), lr=args.init_lr, weight_decay = 1e-08, momentum=0.0009, nesterov = True)
 		#optimizer = torch.optim.SGD(self.image_classifier_model.parameters(), lr=args.init_lr,  momentum=0.009)
 		scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer, gamma=0.9)
-
-
-		#optimizer_MI = torch.optim.Adam(self.pre_trained_img_model.parameters(), lr=args.init_lr, weight_decay = 1e-08, amsgrad=True) #torch.optim.SGD(self.pre_trained_img_model.parameters(), lr=1e-08,  momentum=0.009)
 
 		total_batch = len(self.train_data_loader)
 
@@ -554,7 +543,7 @@ class ExplainableImageModelManager:
 		# 	print(name, param.data)
 
 		print('-----------------')
-		#self.pre_trained_img_model.train()
+		
 		
 		show_log_threshold = 10
 
@@ -581,7 +570,7 @@ class ExplainableImageModelManager:
 				label = label.to(device)
 
 				optimizer.zero_grad()
-				#optimizer_MI.zero_grad()
+
 
 				expectedLabel = self.image_classifier_model(image_embeddings)
 				if(batch_id< show_log_threshold):
@@ -623,7 +612,7 @@ class ExplainableImageModelManager:
 				loss.backward()
 				
 				optimizer.step()
-				#optimizer_MI.step()
+				
 
 			scheduler.step()
 

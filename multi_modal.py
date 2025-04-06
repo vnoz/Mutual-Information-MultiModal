@@ -10,12 +10,12 @@ from mutual_info_img_txt import model_utils
 from mutual_info_img_txt.main_utils import ExplainableImageModelManager, ImageModelManager, ImageTextModelManager
 from mutual_info_img_txt.model import build_resnet_model
 
-args =  construct_training_parameters()
-args.save_directory = os.path.join(args.save_directory,
-                                 f'{args.mi_estimator}_total_epochs{args.num_train_epochs}')
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+# args =  construct_training_parameters()
+# args.save_directory = os.path.join(args.save_directory,
+#                                  f'{args.mi_estimator}_total_epochs{args.num_train_epochs}')
+# device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-def train_mutual_information(critic, training_epoch, batch_size):
+def train_mutual_information(args, device):
 
     '''
     Create a sub-directory under save_dir
@@ -69,15 +69,12 @@ def train_mutual_information(critic, training_epoch, batch_size):
 
     return model_manager.image_model
 
-#mi_image_model= train_image_text()
-
-
-def train_image_classifier(pre_trained_img_model, label, training_epoch, mlp_hidden_layers, optimizer, learning_rate):
+def train_image_classifier(pre_trained_img_model, mlp_hidden_layers, args, device):
     
     
     print(f"Train_image_classifier args: {args}")
 
-    log_path = os.path.join(args.save_directory, 'training_classifier_'+label+'.log')
+    log_path = os.path.join(args.save_directory, 'training_classifier_'+args.disease_label+'.log')
     logging.basicConfig(filename=log_path, level=logging.INFO, filemode='w',
                                         format='%(asctime)s - %(name)s %(message)s',
                                         datefmt='%m-%d %H:%M')
@@ -85,7 +82,7 @@ def train_image_classifier(pre_trained_img_model, label, training_epoch, mlp_hid
     logger = logging.getLogger(__name__)
     
 
-    model_manager = ExplainableImageModelManager( args,pre_trained_img_model, label)
+    model_manager = ExplainableImageModelManager( args,pre_trained_img_model, mlp_hidden_layers)
     model_manager.train(device=device)
     return model_manager
 
@@ -128,12 +125,3 @@ def train():
         
         print('Completed Image Classifier trainings for all diseases')
 
-# img_path = os.path.join(args.image_dir, 'p10000032_s50414267_02aa804e-bde0afdd-112c0b34-7bc16630-4e384014.jpg')
-# print('Start generate heatmap for image: ' + str(img_path))
-# image_classifider_model_manager.generate_heatmap(img_path=img_path, device=device, args=args)
-# print('Finish generate heatmap for image: ' + str(img_path))
-
-#accuracy= image_classifider_model_manager.validate(device=device, batch_size=args.batch_size)
-#print(' accuracy = {:>.9}'.format(accuracy))
-
-train()

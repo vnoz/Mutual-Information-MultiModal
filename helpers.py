@@ -113,7 +113,7 @@ def construct_training_parameters():
     parser.add_argument('--data_loader_workers', default=32, type=int,
                         help='Number of workers for DataLoader')
     
-    parser.add_argument('--num_train_epochs', default=10, type=int,
+    parser.add_argument('--num_train_epochs', default=20, type=int,
                         help='Number of training epochs for Mutual Information')
     
     parser.add_argument('--num_train_epochs_classifier', default=100, type=int,
@@ -136,6 +136,10 @@ def construct_training_parameters():
     
     parser.add_argument('--disease_label', default='Pneumonia', type=str,
                         help='Disease label for downstream classifier')
+    
+    parser.add_argument('--optimizer', default='Adam', type=str,
+                        help='Optimizer for classifier')
+    
     
 
     return parser.parse_args()

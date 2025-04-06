@@ -7,13 +7,13 @@ from uni_modal import train_auto_encoder
 
 
 args =  construct_training_parameters()
-args.save_directory = os.path.join(args.save_directory,
-                                 f'{args.mi_estimator}_total_epochs{args.num_train_epochs}')
+
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
-critics=['dv','infonce']
-training_epochs= [5,10,20]
+critics=['dv']     #['dv','infonce']
+training_epochs=[20]   #[5,10,20]
+batch_sizes=[64]      #[32,64,128]
 
 def train_MI_models():
 
@@ -21,12 +21,16 @@ def train_MI_models():
     #Note: around 3hrs for training 1 epoch for MI with batch_size=32 in 200k image-report pairs, 
     #        so time in total might be 2*(5+10+20)*2*3/24 = 17 days to complete, so might exclude batch_sizes varied steps and choose batch_size=128 to reduce running time to 8.5 days
 
-    #critics=['dv','infonce']
-    #training_epochs= [5,10,20] #Note: around 3hrs for training 1 epoch for MI with batch_size=32 in 200k image-report pairs
-    #batch_sizes=[32,128]
     for critic in critics:
         for epoch in training_epochs:
-            train_mutual_information(critic=critic, training_epoch=epoch, batch_size=128)
+            for batch_size in batch_sizes:
+                args.mi_estimator = critic
+                args.batch_size=batch_size
+                args.num_train_epochs= epoch
+
+                args.save_directory = os.path.join(args.save_directory,
+                                    f'{args.mi_estimator}_epoch{args.num_train_epochs}')
+                train_mutual_information(args=args, device=device)
 
 def train_VAE_models():
     #Settings for Variational Auto Encoder 
@@ -36,25 +40,40 @@ def train_VAE_models():
 
 def train_Classifier():
     #Classifier settings
-    diseases=['Pneumonia', 'Enlarged Cardiomediastinum', 'Cardiomegaly', 'Edema','Pleural Effusion']
+    diseases=['Cardiomegaly']        #['Pneumonia', 'Enlarged Cardiomediastinum', 'Cardiomegaly', 'Edema','Pleural Effusion']
     training_epochs_classifier=100
-    mlp_layers=[[[256,128,64],[256,128,64,32,16],[512,256,256,128,64,64,32]]]
-    optimizers=['Adam','SGD']
-    learning_rates=[1e-4,5e-4]
+    mlp_layers=[[512,256,256,128,64,64,32]]   #[[[256,128,64],[256,128,64,32,16],[512,256,256,128,64,64,32]]]
+    optimizers=['Adam']  #['Adam','SGD']
+    learning_rates= [5e-4]  #[1e-4,5e-4]
 
     #Load image model from MI or AutoEncoder
     for critic in critics:
         for epoch in training_epochs:
-            sub_folder = critic+'_epoch'+epoch
-            output_model_file = os.path.join(args.save_directory,sub_folder, 'pytorch_MI_image_model.bin')
+            for batch_size in batch_sizes:
+
+                args.mi_estimator = critic
+                args.batch_size=batch_size
+                args.num_train_epochs= epoch
+
+                args.save_directory = os.path.join(args.save_directory,
+                                    f'{args.mi_estimator}_epoch{args.num_train_epochs}')
             
-            mi_image_model = build_resnet_model(model_name=args.image_model_name, checkpoint_path=output_model_file,
-                                                            output_channels=args.output_channels)
+              
+                output_model_file = os.path.join(args.save_directory, 'pytorch_MI_image_model.bin')
+                
+                mi_image_model = build_resnet_model(model_name=args.image_model_name, checkpoint_path=output_model_file,
+                                                                output_channels=args.output_channels)
 
-            for label in diseases: 
-                for hidden_layer in mlp_layers:
-                    for optimizer in optimizers:
-                        for learning_rate in learning_rates:
-                            train_image_classifier(pre_trained_img_model = mi_image_model, label=label, training_epoch=training_epochs_classifier, mlp_hidden_layers=hidden_layer, optimizer=optimizer, learning_rate=learning_rate)
+                for label in diseases: 
+                    for hidden_layer in mlp_layers:
+                        for optimizer in optimizers:
+                            for learning_rate in learning_rates:
+                                args.init_lr = learning_rate
+                                args.num_train_epochs_classifier = training_epochs_classifier
+                                args.disease_label = label
+                                args.optimizer = optimizer
+                                train_image_classifier(pre_trained_img_model = mi_image_model, mlp_hidden_layers=hidden_layer, args=args, device=device)
 
+
+train_MI_models()
 

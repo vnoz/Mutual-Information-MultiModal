@@ -31,6 +31,23 @@ def make_mlp(input_dim, hidden_dims: list, output_dim=1, activation='relu'):
 
     return nn.Sequential(*seq)
 
+def make_mlp(input_dim, hidden_dims: list, output_dim=1, activation='relu'):
+    """Create a mlp from the configurations.
+    """
+    activation = {
+        'relu': nn.ReLU
+    }[activation]
+
+    num_hidden_layers = len(hidden_dims)
+
+    seq = [nn.Linear(input_dim, hidden_dims[0]), activation()]
+    for i in range(num_hidden_layers-1):
+        seq += [nn.Linear(hidden_dims[i], hidden_dims[i+1]), activation()]
+    seq += [nn.Linear(hidden_dims[-1], output_dim)]
+
+    return nn.Sequential(*seq)
+
+
 
 # Adapted from
 # https://medium.com/huggingface/multi-label-text-classification-using-bert-the-mighty-transformer-69714fa3fb3d
@@ -137,51 +154,34 @@ class BasicBlock(nn.Module):
 class Basic_MLP(nn.Module):
     def __init__(self, input_dim, hidden_dims: list, output_dim=1):
         super(Basic_MLP, self).__init__()
-        
-        hidden_dim = hidden_dims[0] # math.floor(input_dim*2/3)
-        hidden_dim1 = hidden_dims[1] #math.floor(math.sqrt(hidden_dim))
-        hidden_dim2 = hidden_dims[2] #math.ceil(math.sqrt(hidden_dim1))
 
-        self.layer1 = nn.Linear(input_dim, hidden_dim)
+        num_hidden_layers = len(hidden_dims)
+        layer_input = input_dim
+        layer_output = input_dim
+        self.layers=[]
+        for i in range(num_hidden_layers):
+            layer_output = hidden_dims[i]
+            self.layers.append(nn.Linear(layer_input, layer_output))
+            layer_input = layer_output
 
-        nn.init.kaiming_uniform_(self.layer1.weight, nonlinearity='relu')
+        self.layers[num_hidden_layers] = nn.Linear(hidden_dims[num_hidden_layers-1], output_dim)
 
-        self.act1 =nn.ReLU() #nn.Sigmoid() 
-        
-
-        self.layer2 = nn.Linear(hidden_dim, hidden_dim1)
-
-        nn.init.kaiming_uniform_(self.layer2.weight, nonlinearity='relu')
-
-        self.act2 =nn.ReLU() #nn.Sigmoid() 
-
-
-        self.layer3 = nn.Linear(hidden_dim1, hidden_dim2)
-
-        nn.init.kaiming_uniform_(self.layer3.weight, nonlinearity='relu')
-
-        self.act3 =nn.ReLU() #nn.Sigmoid() 
-
-
-        self.layer4 = nn.Linear(hidden_dim2, output_dim)
-        nn.init.kaiming_uniform_(self.layer4.weight, nonlinearity='relu')
-        #nn.init.xavier_uniform_(self.layer3.weight)
-        self.act4 = nn.Sigmoid()
+        self.act = nn.ReLU()
+        self.dropout= nn.Dropout(p=0.1)
+        self.sigmoid = nn.Sigmoid() 
 
        
     def forward(self, X):
-        X = self.layer1(X)
-        X = self.act1(X)
         
-        # Second hidden layer
-        X = self.layer2(X)
-        X = self.act2(X)
-        # # Third hidden layer
-        X = self.layer3(X)
-        X = self.act3(X)
-
-        X = self.layer4(X)
-        X = self.act4(X)
+        num_layers= len(self.layers)
+        for i in range(num_layers-1):
+            X= self.layer[i](X)
+            X= self.act(X)
+            X= self.dropout(X)
+        
+        X= self.layer[num_layers-1](X)
+        X= self.sigmoid(X)
+        
         return X
     
     def save_pretrained(self, save_directory,label): 
@@ -204,9 +204,9 @@ class Basic_MLP(nn.Module):
         return output_model_file
     
     @classmethod
-    def load_from_pretrained(self, pretrained_model_path):
+    def load_from_pretrained(cls, pretrained_model_path):
 
-        model = self
+        model = cls()
         state_dict = torch.load(pretrained_model_path, map_location='cpu')
 
         # Load from a PyTorch state_dict
