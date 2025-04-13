@@ -1,5 +1,7 @@
+import datetime
 from multi_modal import train_image_classifier, train_mutual_information
 from mutual_info_img_txt.model import build_resnet_model
+from mutual_info_img_txt.utils import PrintModel
 import torch 
 import os
 from helpers import construct_training_parameters
@@ -40,9 +42,9 @@ def train_VAE_models():
 
 def train_Classifier():
     #Classifier settings
-    diseases=['Cardiomegaly']        #['Pneumonia', 'Enlarged Cardiomediastinum', 'Cardiomegaly', 'Edema','Pleural Effusion']
+    diseases=['Cardiomegaly'] #['Pleural Effusion']        #['Pneumonia', 'Enlarged Cardiomediastinum', 'Cardiomegaly', 'Edema','Pleural Effusion']
     training_epochs_classifier=100
-    mlp_layers=[[512,256,256,128,64,64,32]]   #[[[256,128,64],[256,128,64,32,16],[512,256,256,128,64,64,32]]]
+    mlp_layers=[[1024,512,256,128,64,32,16]]   #[[[256,128,64],[256,128,64,32,16],[512,256,256,128,64,64,32]]]
     optimizers=['Adam']  #['Adam','SGD']
     learning_rates= [5e-4]  #[1e-4,5e-4]
 
@@ -58,11 +60,17 @@ def train_Classifier():
                 args.save_directory = os.path.join(args.save_directory,
                                     f'{args.mi_estimator}_epoch{args.num_train_epochs}')
             
-              
+
+                print(f'Args for Loading pre-trained MI Imag Model: {args}')  
                 output_model_file = os.path.join(args.save_directory, 'pytorch_MI_image_model.bin')
                 
                 mi_image_model = build_resnet_model(model_name=args.image_model_name, checkpoint_path=output_model_file,
                                                                 output_channels=args.output_channels)
+                
+                print(f'{datetime.datetime.now().strftime("%Y-%m-%d %H:%M")}: MI Image model loaded from {output_model_file}')
+                print(mi_image_model)
+                
+                PrintModel(model=mi_image_model)
 
                 for label in diseases: 
                     for hidden_layer in mlp_layers:
@@ -72,8 +80,11 @@ def train_Classifier():
                                 args.num_train_epochs_classifier = training_epochs_classifier
                                 args.disease_label = label
                                 args.optimizer = optimizer
+                                
+                                print(f"Args for Classifier training: hidden layers={hidden_layer}, args= {args}")
+                                
                                 train_image_classifier(pre_trained_img_model = mi_image_model, mlp_hidden_layers=hidden_layer, args=args, device=device)
 
-
-train_MI_models()
+train_Classifier()
+#train_MI_models()
 

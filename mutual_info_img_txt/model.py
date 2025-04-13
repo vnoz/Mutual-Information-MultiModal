@@ -158,28 +158,27 @@ class Basic_MLP(nn.Module):
         num_hidden_layers = len(hidden_dims)
         layer_input = input_dim
         layer_output = input_dim
-        self.layers=[]
+        self.layers = nn.ModuleList()
         for i in range(num_hidden_layers):
             layer_output = hidden_dims[i]
             self.layers.append(nn.Linear(layer_input, layer_output))
             layer_input = layer_output
 
-        self.layers[num_hidden_layers] = nn.Linear(hidden_dims[num_hidden_layers-1], output_dim)
+        self.layers.append(nn.Linear(hidden_dims[num_hidden_layers-1], output_dim))
 
         self.act = nn.ReLU()
-        self.dropout= nn.Dropout(p=0.1)
+        self.dropout= nn.Dropout(p=0.2)
         self.sigmoid = nn.Sigmoid() 
-
        
     def forward(self, X):
         
         num_layers= len(self.layers)
         for i in range(num_layers-1):
-            X= self.layer[i](X)
+            X= self.layers[i](X)
             X= self.act(X)
             X= self.dropout(X)
         
-        X= self.layer[num_layers-1](X)
+        X= self.layers[num_layers-1](X)
         X= self.sigmoid(X)
         
         return X
@@ -204,9 +203,9 @@ class Basic_MLP(nn.Module):
         return output_model_file
     
     @classmethod
-    def load_from_pretrained(cls, pretrained_model_path):
+    def load_from_pretrained(cls, input_dim, hidden_dims, pretrained_model_path):
 
-        model = cls()
+        model = cls(input_dim,hidden_dims)
         state_dict = torch.load(pretrained_model_path, map_location='cpu')
 
         # Load from a PyTorch state_dict
