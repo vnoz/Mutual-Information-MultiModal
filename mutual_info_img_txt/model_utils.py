@@ -38,6 +38,56 @@ def convert_to_onehot(severity):
     else:
         raise Exception("No other possibilities of ordinal labels are possible")
 
+class CXRImageDataset(torchvision.datasets.VisionDataset):
+    def __init__(self, img_dir, dataset_metadata,
+                 data_key='mimic_id', transform=None, cache_images=False):
+        super(CXRImageDiseaseDataset, self).__init__(root=None, transform=transform)
+        
+      
+        maxInt = sys.maxsize
+
+        
+        self.dataset_metadata = dataset_metadata 
+        self.dataset_metadata['study_id'] = \
+            self.dataset_metadata.apply(lambda row: \
+                MimicID.get_study_id(row.mimic_id), axis=1)
+
+        self.img_dir = img_dir
+        self.data_key = data_key
+        self.transform = transform
+        self.image_ids = self.dataset_metadata[data_key]
+        self.cache_images = cache_images
+        if self.cache_images:
+            self.cache_img_set() 
+        else:
+            self.images = None
+
+        print('CXRImageDataset dataset_metadata')
+        print(dataset_metadata)
+        
+    def __len__(self):
+        return len(self.image_ids)
+
+    def __getitem__(self, idx):
+        img_id, study_id = self.dataset_metadata.loc[idx, \
+            [self.data_key, 'study_id']]
+      
+        if self.cache_images:
+            img = self.images[str(idx)]
+        else:
+            jpg_path = os.path.join(self.img_dir, img_id)
+
+            img = cv2.imread(jpg_path, cv2.IMREAD_ANYDEPTH)
+
+        if(img is not None):
+            if self.transform is not None:
+                img = self.transform(img)
+
+            img = np.expand_dims(img, axis=0)
+        else:
+            print('Exception loading image, studyId='+str(study_id))
+        return img
+
 
 class CXRImageReportDataset(torchvision.datasets.VisionDataset):
     """A CXR iamge-report dataset class that loads png images and 
@@ -179,10 +229,10 @@ class CXRImageReportDataset(torchvision.datasets.VisionDataset):
                 self.images = {}
             self.images[str(idx)] = img
 
-class CXRImageDataset(torchvision.datasets.VisionDataset):
+class CXRImageDiseaseDataset(torchvision.datasets.VisionDataset):
     def __init__(self, img_dir, dataset_metadata, disease, disease_stats,
                  data_key='mimic_id', transform=None, cache_images=False):
-        super(CXRImageDataset, self).__init__(root=None, transform=transform)
+        super(CXRImageDiseaseDataset, self).__init__(root=None, transform=transform)
         
         filtered_df = pd.DataFrame(columns=[data_key, disease])
         maxInt = sys.maxsize
