@@ -31,18 +31,17 @@ def train_MI_models():
                 args.num_train_epochs= epoch
 
                 args.save_directory = os.path.join(args.save_directory,
-                                    f'{args.mi_estimator}_epoch{args.num_train_epochs}')
+                                    f'mm_{args.mi_estimator}_epoch{args.num_train_epochs}')
                 train_mutual_information(args=args, device=device)
 
 def train_VAE_models():
-    #Settings for Variational Auto Encoder 
-    critics=['ELBO','KL']
-    for critic in critics:
-        train_auto_encoder(critic=critic)
+    args.save_directory = os.path.join(args.save_directory,
+                                    f'um_ae_epoch{args.num_train_epochs}')
+    train_auto_encoder(args=args, device=device)
 
 def train_Classifier():
     #Classifier settings
-    diseases=['Cardiomegaly'] #['Pleural Effusion']        #['Pneumonia', 'Enlarged Cardiomediastinum', 'Cardiomegaly', 'Edema','Pleural Effusion']
+    diseases=['Pneumonia']  #['Cardiomegaly'] #['Pleural Effusion']        #['Pneumonia', 'Enlarged Cardiomediastinum', 'Cardiomegaly', 'Edema','Pleural Effusion']
     training_epochs_classifier=100
     mlp_layers=[[1024,512,256,128,64,32,16]]   #[[[256,128,64],[256,128,64,32,16],[512,256,256,128,64,64,32]]]
     optimizers=['Adam']  #['Adam','SGD']
@@ -85,6 +84,7 @@ def train_Classifier():
                                 
                                 train_image_classifier(pre_trained_img_model = mi_image_model, mlp_hidden_layers=hidden_layer, args=args, device=device)
 
-train_Classifier()
+#train_Classifier()
 #train_MI_models()
+train_VAE_models()
 

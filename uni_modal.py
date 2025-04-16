@@ -1,4 +1,12 @@
 
-def train_auto_encoder(critic):
-    #Note: setup parameters for Variational Autoencoder
-    i=0
+from mutual_info_img_txt.main_utils import UniModalManager
+
+
+def train_auto_encoder(args, device):
+    #Note: setup parameters for Autoencoder
+    model_manager = UniModalManager(
+                                        output_channels=args.output_channels,
+                                        image_model_name=args.image_model_name)
+    
+    model_manager.train(device=device, args=args)
+    

@@ -213,6 +213,61 @@ class Basic_MLP(nn.Module):
 
         return model
 
+class ResNet256_Decoder(nn.Module):
+    def __init__(self):
+        super(ResNet256_Decoder,self).__init__()
+        self.batchSize = 8
+        self.zsize = 48
+
+        self.dfc3 = nn.Linear(self.zsize, 4096)
+        self.bn3 = nn.BatchNorm2d(4096)
+        self.dfc2 = nn.Linear(4096, 4096)
+        self.bn2 = nn.BatchNorm2d(4096)
+        self.dfc1 = nn.Linear(4096,256 * 6 * 6)
+        self.bn1 = nn.BatchNorm2d(256*6*6)
+        self.upsample1=nn.Upsample(scale_factor=2)
+        self.dconv5 = nn.ConvTranspose2d(256, 256, 3, padding = 0)
+        self.dconv4 = nn.ConvTranspose2d(256, 384, 3, padding = 1)
+        self.dconv3 = nn.ConvTranspose2d(384, 192, 3, padding = 1)
+        self.dconv2 = nn.ConvTranspose2d(192, 64, 5, padding = 2)
+        self.dconv1 = nn.ConvTranspose2d(64, 3, 12, stride = 4, padding = 4)
+      
+    def forward(self,x):#,i1,i2,i3):
+        x = self.dfc3(x)
+        #x = F.relu(x)
+        x = F.relu(self.bn3(x))
+        
+        x = self.dfc2(x)
+        x = F.relu(self.bn2(x))
+        #x = F.relu(x)
+        x = self.dfc1(x)
+        x = F.relu(self.bn1(x))
+        #x = F.relu(x)
+        #print(x.size())
+        x = x.view(self.batchSize,256,6,6)
+        #print (x.size())
+        x=self.upsample1(x)
+        #print x.size()
+        x = self.dconv5(x)
+        #print x.size()
+        x = F.relu(x)
+        #print x.size()
+        x = F.relu(self.dconv4(x))
+        #print x.size()
+        x = F.relu(self.dconv3(x))
+        #print x.size()		
+        x=self.upsample1(x)
+        #print x.size()		
+        x = self.dconv2(x)
+        #print x.size()		
+        x = F.relu(x)
+        x=self.upsample1(x)
+        #print x.size()
+        x = self.dconv1(x)
+        #print x.size()
+        x = F.sigmoid(x)
+        #print x
+        return x
 
 class ResNet256_6_2_1(nn.Module):
     """ A residual network 6_2_1 
@@ -539,26 +594,16 @@ class ImageReportModel(nn.Module):
 
         return output_model_file
 
-class ImageCNNModel(nn.Module):
-    """ The image model 
-    """
-    def __init__(self):
-        super(ImageCNNModel, self).__init__()
-        self.layer1 = torch.nn.Sequential(
-            torch.nn.Conv2d(1, 3, kernel_size=3, stride=1, padding=1),
-            torch.nn.ReLU(),
-            torch.nn.MaxPool2d(kernel_size=2, stride=2))
-        self.layer2 = torch.nn.Sequential(
-            torch.nn.Conv2d(3, 3, kernel_size=3, stride=1, padding=1),
-            torch.nn.ReLU(),
-            torch.nn.MaxPool2d(kernel_size=2, stride=2))
-        self.fc = torch.nn.Linear(12 * 32 * 32, 2, bias=True)
-        torch.nn.init.xavier_uniform_(self.fc.weight)
+class AutoEncoder(nn.Module):
+	def __init__(self,image_model_name,output_channels):
+		super(AutoEncoder,self).__init__()
+		self.encoder = build_resnet_model(model_name=image_model_name, 
+											  output_channels=output_channels)
+		self.decoder = ResNet256_Decoder()
 
-    def forward(self, x):
-        out = self.layer1(x)
-        out = self.layer2(out)
-        out = out.view(out.size(0), -1)   
-        out = self.fc(out)
-        return out
-    
+	def forward(self,x):
+		x = self.encoder(x)
+		#print x
+		x = self.decoder(x)
+		return x
+

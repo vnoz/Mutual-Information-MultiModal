@@ -16,7 +16,7 @@ from matplotlib import pyplot as plt
 
 from helpers import get_transform_function
 
-from .model import Basic_MLP, BasicBlock, ResNet256_6_2_1, build_bert_model, build_resnet_model
+from .model import AutoEncoder, Basic_MLP, BasicBlock, ResNet256_6_2_1, build_bert_model, build_resnet_model
 from .model import ImageReportModel
 from .model import make_mlp
 from .utils import MimicID, Plot_Training
@@ -341,9 +341,6 @@ class ClassifierModelManager:
 		else:
 			optimizer = torch.optim.SGD(self.image_classifier_model.parameters(), lr=args.init_lr, weight_decay = 1e-08, momentum=0.0009, nesterov = True)
 
-		#optimizer = torch.optim.Adam(self.image_classifier_model.parameters(), lr=args.init_lr, weight_decay = 1e-08, amsgrad=True)
-		#optimizer = torch.optim.SGD(self.image_classifier_model.parameters(), lr=args.init_lr, weight_decay = 1e-08, momentum=0.0009, nesterov = True)
-		#optimizer = torch.optim.SGD(self.image_classifier_model.parameters(), lr=args.init_lr,  momentum=0.009)
 		scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer, gamma=0.9)
 
 		total_batch = len(self.train_data_loader)
@@ -353,6 +350,7 @@ class ClassifierModelManager:
 		start_time = time.time()
 
 		training_epoch_loss=[]
+		training_epoch_accuracy=[]
 		validation_epoch_loss=[]
 		validation_epoch_accuracy=[]
 		max_accuracy = 0
@@ -419,6 +417,26 @@ class ClassifierModelManager:
 			training_epoch_loss.append(np.array(step_loss).mean())
 			#Note: training completed for the current epoch
 
+			#Note: calculate accuracy for current epoch
+			accuracy_count=0
+			training_accuracy=0
+			total_training = len(self.train_data_loader)*args.batch_size
+			for batch_id, batch in enumerate(training_epoch_iterator, 0):
+				image, label = batch
+				image= image.to(device)
+				output_image_training = self.pre_trained_img_model.forward(image)
+				image_embeddings=output_image_training[1]
+				image_embeddings= image_embeddings.to(device)
+
+				output_result_training = self.image_classifier_model(image_embeddings)
+				predictedLabel = torch.flatten(output_result_training).cpu().detach().numpy().round()
+
+				label=label.to(torch.float32).cpu().detach().numpy()
+				
+				accuracy_count = accuracy_count + np.sum(predictedLabel == label).item()
+
+			training_accuracy = accuracy_count / total_training
+			training_epoch_accuracy.append(training_accuracy)
 
 			#Note: perform accuracy calculation for Validation
 			validate_data_iterators=tqdm(self.validate_data_loader, desc='Validation Accuracy calculation Iterations')
@@ -497,7 +515,7 @@ class ClassifierModelManager:
 
 				accuracy_title = 'Training stats for disease ' + self.disease_label+'\n batch_size= ' + str(args.batch_size)+', batch = ' + str(total_batch)+'\n accuracy mean= '+ str("{:.5f}".format(np.array(validation_epoch_accuracy).mean()))
 				accuracy_output_file= os.path.join(args.save_directory, 'image_classifier_training_accuracy_'+self.disease_label+'_epoch'+str(epoch+1)+'.png')
-				Plot_Training(xlabel='Epochs',ylabel='Value for Accuracy', title=accuracy_title,data=[validation_epoch_accuracy],dataLabel=['validation accuracy'],out_imgage_file=accuracy_output_file)
+				Plot_Training(xlabel='Epochs',ylabel='Value for Accuracy', title=accuracy_title,data=[training_epoch_accuracy,validation_epoch_accuracy],dataLabel=['training accuracy','validation accuracy'],out_imgage_file=accuracy_output_file)
 	
 		
 
@@ -528,7 +546,10 @@ class ClassifierModelManager:
 		logger.info('validation loss:')
 		logger.info(validation_epoch_loss)
 
-		logger.info('epoch training accuracy:')
+		logger.info('training accuracy:')
+		logger.info(training_epoch_accuracy)
+
+		logger.info('validation accuracy:')
 		logger.info(validation_epoch_accuracy)
 		logger.info(f"Training for {epoch+1} Epochs checkpoint saved in {checkpoint_path}")
 
@@ -540,9 +561,9 @@ class ClassifierModelManager:
 		Plot_Training(xlabel='Epochs',ylabel='Value for Loss', title=title,data=[training_epoch_loss,validation_epoch_loss],dataLabel=['Training loss','Validation loss'],out_imgage_file=loss_output_file)
 	
 
-		accuracy_title = 'Training stats for disease ' + self.disease_label+'\n batch_size= ' + str(args.batch_size)+', batch = ' + str(total_batch)+ ', time= '  + str("{:.2f}".format(interval))+'\n accuracy mean= '+ str("{:.5f}".format(np.array(validation_epoch_accuracy).mean()))
+		accuracy_title = 'Training stats for disease ' + self.disease_label+'\n batch_size= ' + str(args.batch_size)+', batch = ' + str(total_batch)+ ', time= '  + str("{:.2f}".format(interval))+'\n accuracy mean= '+ str("{:.5f}".format(np.array(validation_epoch_accuracy).mean()))+'\n accuracy max= '+ str("{:.5f}".format(max_accuracy))
 		accuracy_output_file= os.path.join(args.save_directory, 'image_classifier_training_accuracy_'+self.disease_label+'.png')
-		Plot_Training(xlabel='Epochs',ylabel='Value for Accuracy', title=accuracy_title,data=[validation_epoch_accuracy],dataLabel=['validation accuracy'],out_imgage_file=accuracy_output_file)
+		Plot_Training(xlabel='Epochs',ylabel='Value for Accuracy', title=accuracy_title,data=[training_epoch_accuracy ,validation_epoch_accuracy],dataLabel=['training accuracy','validation accuracy'],out_imgage_file=accuracy_output_file)
 	
 		return self.image_classifier_model
 
@@ -553,9 +574,8 @@ class UniModalManager:
 	"""
 
 	def __init__(self, output_channels, image_model_name):
-		self.encoder = build_resnet_model(model_name=image_model_name, 
-											  output_channels=output_channels)
-		self.decoder = None
+		
+		self.model = AutoEncoder(image_model_name=image_model_name, output_channels=output_channels)
 		self.logger = logging.getLogger(__name__)
 	
 	def train(self, device, args):
@@ -581,5 +601,63 @@ class UniModalManager:
 		'''
 		Move encoder and decoder to device
 		'''
-		self.encoder = self.encoder.to(device)
-		self.decoder = self.decoder.to(device)
+		self.model = self.model.to(device)
+		
+		autoencoder_criterion = nn.MSELoss()  #Note: need to double check MSE or BCE for loss
+		encoder_optimizer = optim.Adam(self.model.encoder.parameters(), lr = args.init_lr)
+		decoder_optimizer = optim.Adam(self.model.decoder.parameters(), lr = args.init_lr)
+
+		'''
+		Train the model
+		'''
+		print('***** Train the model *****')
+		self.model.train()
+		#total_steps = 0
+		train_iterator = trange(int(args.num_train_epochs), desc="Epoch")
+		training_loss = []
+
+		#dataset_defaultValue = False
+		for epoch in train_iterator:
+			start_time = time.time()
+			epoch_loss = 0
+			
+			epoch_iterator = tqdm(data_loader, desc="Iteration")
+			for i, batch in enumerate(epoch_iterator, 0):
+				# Parse the batch 
+				img = batch
+				img = img.to(device, non_blocking=True)
+				
+				# Zero out the parameter gradients
+				encoder_optimizer.zero_grad()
+				decoder_optimizer.zero_grad()
+
+				outputs = self.model(img)
+
+				loss = autoencoder_criterion(outputs, img)
+
+				loss.backward()
+				encoder_optimizer.step()
+				decoder_optimizer.step()
+				
+				epoch_loss += loss.item()
+
+			training_loss.append(epoch_loss)
+
+
+			decoder_path = os.path.join(args.save_directory, 'decoder_%d.bin' %(epoch+1))
+			encoder_path = os.path.join(args.save_directory, 'encoder_%d.bin' %(epoch+1))
+			autoencoder_path = os.path.join(args.save_directory, 'autoencoder_path_%d.bin' %(epoch+1))
+			
+			torch.save(self.model.decoder.state_dict(), decoder_path)
+			torch.save(self.model.encoder.state_dict(), encoder_path)
+			torch.save(self.model.state_dict(), autoencoder_path)
+
+			interval = time.time() - start_time
+
+			print(f'Epoch {epoch+1} finished! Epoch loss: {epoch_loss:.5f}')
+			print(f'Epoch checkpoint saved in {autoencoder_path}')
+
+			logger.info(f"  Epoch {epoch+1} loss = {epoch_loss:.5f}")
+			logger.info(f"  Epoch {epoch+1} took {interval:.3f} s")
+			logger.info(f"  Epoch {epoch+1} checkpoint saved in {autoencoder_path}")
+			
