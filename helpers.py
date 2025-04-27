@@ -107,14 +107,14 @@ def construct_training_parameters():
     parser.add_argument('--dataset_disease_stats', type=str,
                         default=os.path.join(current_dir, 'training_data/disease_stats.csv'),
                         help='The disease stats for balanced class label for model training ')
-    parser.add_argument('--batch_size', default=32, type=int,
+    parser.add_argument('--batch_size', default=64, type=int,
                         help='Mini-batch size')
     
     parser.add_argument('--data_loader_workers', default=32, type=int,
                         help='Number of workers for DataLoader')
     
     parser.add_argument('--num_train_epochs', default=20, type=int,
-                        help='Number of training epochs for Mutual Information')
+                        help='Number of training epochs for Mutual Information/AutoEncoder')
     
     parser.add_argument('--num_train_epochs_classifier', default=100, type=int,
                         help='Number of training epochs for classifier')
@@ -139,7 +139,6 @@ def construct_training_parameters():
     
     parser.add_argument('--optimizer', default='Adam', type=str,
                         help='Optimizer for classifier')
-    
     
 
     return parser.parse_args()

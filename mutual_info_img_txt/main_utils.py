@@ -5,6 +5,7 @@ import logging
 import numpy as np
 import time
 
+from mutual_info_img_txt.autoencoder_model import ResNetAE
 import torch
 import torchvision
 import torch.optim as optim
@@ -272,13 +273,14 @@ class ClassifierModelManager:
 			and metrics for classifier and heatmap generation
 	"""
 
-	def __init__(self, args, pre_trained_img_model,mlp_hidden_layers):
+	def __init__(self, args, pre_trained_img_model,isMultiModal, mlp_hidden_layers):
 				
 		self.args = args
 		
 		self.image_classifier_model = Basic_MLP(768,mlp_hidden_layers)
 
 		self.pre_trained_img_model = pre_trained_img_model
+		self.isMultiModal = isMultiModal
 		self.disease_label = args.disease_label
 		data_loaders = self.construct_data_loader(args.disease_label)
 		self.train_data_loader = data_loaders[0]
@@ -371,8 +373,12 @@ class ClassifierModelManager:
 
 				image, label = batch
 				image= image.to(device)
-				output_image = self.pre_trained_img_model.forward(image)
-				image_embeddings=output_image[1]
+				if(self.isMultiModal == True):
+					output_image = self.pre_trained_img_model.forward(image)
+					image_embeddings=output_image[1]
+				else:
+					image_embeddings = self.pre_trained_img_model.encode(image)
+
 				image_embeddings= image_embeddings.to(device)
 			
 
@@ -424,8 +430,18 @@ class ClassifierModelManager:
 			for batch_id, batch in enumerate(training_epoch_iterator, 0):
 				image, label = batch
 				image= image.to(device)
-				output_image_training = self.pre_trained_img_model.forward(image)
-				image_embeddings=output_image_training[1]
+				# output_image_training = self.pre_trained_img_model.forward(image)
+				# image_embeddings=output_image_training[1]
+
+				if(self.isMultiModal == True):
+					output_image_training = self.pre_trained_img_model.forward(image)
+					image_embeddings=output_image_training[1]
+				else:
+					image_embeddings = self.pre_trained_img_model.encode(image)
+
+				if(batch_id < 2):
+					print(f'image_embedding shape={image_embeddings.shape}')
+					
 				image_embeddings= image_embeddings.to(device)
 
 				output_result_training = self.image_classifier_model(image_embeddings)
@@ -453,8 +469,15 @@ class ClassifierModelManager:
 			for batch_id, batch in enumerate(validate_data_iterators, 0):
 				image, label = batch
 				image= image.to(device)
-				output_image = self.pre_trained_img_model.forward(image)
-				image_embeddings=output_image[1]
+				# output_image = self.pre_trained_img_model.forward(image)
+				# image_embeddings=output_image[1]
+				if(self.isMultiModal == True):
+					output_image = self.pre_trained_img_model.forward(image)
+					image_embeddings=output_image[1]
+				else:
+					image_embeddings = self.pre_trained_img_model.encode(image)
+
+
 				image_embeddings= image_embeddings.to(device)
 
 				output_result = self.image_classifier_model(image_embeddings)
@@ -574,8 +597,14 @@ class UniModalManager:
 	"""
 
 	def __init__(self, output_channels, image_model_name):
+		self.model = ResNetAE(input_shape=(256, 256, output_channels),
+                 n_ResidualBlock=2,
+                 n_levels=6,
+                 z_dim=192,
+                 bottleneck_dim=192*4,
+                 bUseMultiResSkips=True)
 		
-		self.model = AutoEncoder(image_model_name=image_model_name, output_channels=output_channels)
+		#self.model = AutoEncoder(image_model_name=image_model_name, output_channels=output_channels)
 		self.logger = logging.getLogger(__name__)
 	
 	def train(self, device, args):
@@ -588,10 +617,12 @@ class UniModalManager:
 		'''
 		Create an instance of traning data loader
 		'''
-		print('***** Instantiate a data loader *****')
+		print('***** Instantiate a data loader for UniModalManager*****')
+		print(args)
 		dataset = CXRImageDataset(img_dir=args.image_dir,
-								img_size=args.img_size,
-								dataset_metadata=args.dataset_metadata)
+								dataset_metadata=args.dataset_metadata,
+								transform=get_transform_function(args.img_size)
+								)
 		data_loader = DataLoader(dataset, batch_size=args.batch_size,
 								 shuffle=True, num_workers=args.data_loader_workers,
 								 pin_memory=True, drop_last=True)
@@ -604,8 +635,9 @@ class UniModalManager:
 		self.model = self.model.to(device)
 		
 		autoencoder_criterion = nn.MSELoss()  #Note: need to double check MSE or BCE for loss
-		encoder_optimizer = optim.Adam(self.model.encoder.parameters(), lr = args.init_lr)
-		decoder_optimizer = optim.Adam(self.model.decoder.parameters(), lr = args.init_lr)
+		optimizer = optim.Adam(self.model.parameters(),lr = args.init_lr)
+		# encoder_optimizer = optim.Adam(self.model.encoder.parameters(), lr = args.init_lr)
+		# decoder_optimizer = optim.Adam(self.model.decoder.parameters(), lr = args.init_lr)
 
 		'''
 		Train the model
@@ -628,17 +660,21 @@ class UniModalManager:
 				img = img.to(device, non_blocking=True)
 				
 				# Zero out the parameter gradients
-				encoder_optimizer.zero_grad()
-				decoder_optimizer.zero_grad()
+				optimizer.zero_grad()
+				# encoder_optimizer.zero_grad()
+				# decoder_optimizer.zero_grad()
 
 				outputs = self.model(img)
 
 				loss = autoencoder_criterion(outputs, img)
 
 				loss.backward()
-				encoder_optimizer.step()
-				decoder_optimizer.step()
-				
+				optimizer.step()
+				# encoder_optimizer.step()
+				# decoder_optimizer.step()
+				if((i+1)%10000 == 0):
+					print(f'Epoch {epoch}, batchId={i}, loss={loss.item()}')
+					
 				epoch_loss += loss.item()
 
 			training_loss.append(epoch_loss)
@@ -660,4 +696,9 @@ class UniModalManager:
 			logger.info(f"  Epoch {epoch+1} loss = {epoch_loss:.5f}")
 			logger.info(f"  Epoch {epoch+1} took {interval:.3f} s")
 			logger.info(f"  Epoch {epoch+1} checkpoint saved in {autoencoder_path}")
-			
+		
+
+		title = 'Training stats AutoEncoder'
+		loss_output_file= os.path.join(args.save_directory, 'autoencoder_training_loss.png')
+		Plot_Training(xlabel='Epochs',ylabel='Value for Loss', title=title,data=[training_loss],dataLabel=['Training loss'],out_imgage_file=loss_output_file)
+	

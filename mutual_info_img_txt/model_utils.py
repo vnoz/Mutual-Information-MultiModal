@@ -41,13 +41,13 @@ def convert_to_onehot(severity):
 class CXRImageDataset(torchvision.datasets.VisionDataset):
     def __init__(self, img_dir, dataset_metadata,
                  data_key='mimic_id', transform=None, cache_images=False):
-        super(CXRImageDiseaseDataset, self).__init__(root=None, transform=transform)
+        super(CXRImageDataset, self).__init__(root=None, transform=transform)
         
       
         maxInt = sys.maxsize
 
         
-        self.dataset_metadata = dataset_metadata 
+        self.dataset_metadata = pd.read_csv(dataset_metadata) 
         self.dataset_metadata['study_id'] = \
             self.dataset_metadata.apply(lambda row: \
                 MimicID.get_study_id(row.mimic_id), axis=1)

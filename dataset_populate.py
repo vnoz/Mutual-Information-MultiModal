@@ -114,7 +114,7 @@ def create_data_folder():
         os.makedirs(args.testing_image_dir)
     if not os.path.exists(args.testing_text_dir):
         os.makedirs(args.testing_text_dir)
-create_data_folder()
+#create_data_folder()
 def download_full_dataset(subfolder,download_from_mimic=True):
 
     create_data_folder()
@@ -803,4 +803,6 @@ def test_numpy_array():
     # print('precision= ' + str(precision))
     # print('recall= '+str(recall))
 
-test_numpy_array()
+#test_numpy_array()
+
+parsing_csv_meta_data_for_label_stats(args.testing_dataset_labeldata, args.testing_data_dir)
