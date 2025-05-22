@@ -1,0 +1,345 @@
+05-03 14:16 - mutual_info_img_txt.main_utils ExplainableImageModelManager training start, disease label= Edema, args = Namespace(batch_size=128, bert_config_name='bert_config.json', bert_pretrained_dir='/home/anhle/data/projects/Mutual-Information-MultiModal/bert_pretrain_all_notes_150000', data_loader_workers=32, dataset_disease_stats='/home/anhle/data/projects/Mutual-Information-MultiModal/training_data/disease_stats.csv', dataset_metadata='/home/anhle/data/projects/Mutual-Information-MultiModal/training_data/training_label_negbio.csv', disease_label='Edema', image_dir='/home/anhle/data/projects/Mutual-Information-MultiModal/full_data_set/images/', image_model_name='resnet256_6_2_1', img_size=256, init_lr=0.0005, max_seq_length=320, mi_estimator='dv', num_train_epochs=20, num_train_epochs_classifier=100, optimizer='Adam', output_channels=1, save_directory='/home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/um_ae_epoch20', text_data_dir='/home/anhle/data/projects/Mutual-Information-MultiModal/training_data/text/')
+05-03 14:16 - mutual_info_img_txt.main_utils total batch of train_data_loader:, total_batch = 355
+05-03 15:35 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 1 took 2419.442 s, training loss = 0.66328, validation_loss = 0.65899, validation accuracy=0.61849
+05-03 15:35 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1182, total negative=1122 ,tp_count=746, tn_count=679, fp_count=436, fn_count=443
+05-03 16:45 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 2 took 2120.351 s, training loss = 0.65325, validation_loss = 0.65049, validation accuracy=0.63976
+05-03 16:45 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1195, total negative=1109 ,tp_count=871, tn_count=603, fp_count=324, fn_count=506
+05-03 17:51 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 3 took 2016.239 s, training loss = 0.64842, validation_loss = 0.64313, validation accuracy=0.63802
+05-03 17:51 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1202, total negative=1102 ,tp_count=959, tn_count=511, fp_count=243, fn_count=591
+05-03 18:57 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 4 took 2011.611 s, training loss = 0.64381, validation_loss = 0.65067, validation accuracy=0.63672
+05-03 18:57 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1189, total negative=1115 ,tp_count=905, tn_count=562, fp_count=284, fn_count=553
+05-03 20:04 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 5 took 2021.678 s, training loss = 0.64357, validation_loss = 0.64461, validation accuracy=0.63672
+05-03 20:04 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1188, total negative=1116 ,tp_count=808, tn_count=659, fp_count=380, fn_count=457
+05-03 21:11 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 6 took 2031.789 s, training loss = 0.64148, validation_loss = 0.64977, validation accuracy=0.62196
+05-03 21:11 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1193, total negative=1111 ,tp_count=825, tn_count=608, fp_count=368, fn_count=503
+05-03 22:16 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 7 took 1984.384 s, training loss = 0.64131, validation_loss = 0.63665, validation accuracy=0.63976
+05-03 22:16 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1184, total negative=1120 ,tp_count=886, tn_count=588, fp_count=298, fn_count=532
+05-03 23:21 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 8 took 1991.460 s, training loss = 0.63898, validation_loss = 0.63309, validation accuracy=0.64019
+05-03 23:21 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1191, total negative=1113 ,tp_count=770, tn_count=705, fp_count=421, fn_count=408
+05-04 00:27 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 9 took 1992.639 s, training loss = 0.63857, validation_loss = 0.63712, validation accuracy=0.64627
+05-04 00:27 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1197, total negative=1107 ,tp_count=845, tn_count=644, fp_count=352, fn_count=463
+05-04 01:33 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 10 took 2013.422 s, training loss = 0.63751, validation_loss = 0.63137, validation accuracy=0.64887
+05-04 01:33 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1196, total negative=1108 ,tp_count=802, tn_count=693, fp_count=394, fn_count=415
+05-04 02:39 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 11 took 1987.621 s, training loss = 0.63676, validation_loss = 0.62657, validation accuracy=0.66059
+05-04 02:39 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1188, total negative=1116 ,tp_count=883, tn_count=639, fp_count=305, fn_count=477
+05-04 03:46 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 12 took 2046.512 s, training loss = 0.63637, validation_loss = 0.63309, validation accuracy=0.65799
+05-04 03:46 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1193, total negative=1111 ,tp_count=850, tn_count=666, fp_count=343, fn_count=445
+05-04 04:53 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 13 took 2049.206 s, training loss = 0.63459, validation_loss = 0.62556, validation accuracy=0.65668
+05-04 04:53 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1187, total negative=1117 ,tp_count=833, tn_count=680, fp_count=354, fn_count=437
+05-04 05:59 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 14 took 2000.528 s, training loss = 0.63275, validation_loss = 0.62617, validation accuracy=0.64583
+05-04 05:59 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1190, total negative=1114 ,tp_count=839, tn_count=649, fp_count=351, fn_count=465
+05-04 07:05 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 15 took 2017.126 s, training loss = 0.63281, validation_loss = 0.63013, validation accuracy=0.64410
+05-04 07:05 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1188, total negative=1116 ,tp_count=788, tn_count=696, fp_count=400, fn_count=420
+05-04 08:18 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 16 took 2006.215 s, training loss = 0.63262, validation_loss = 0.62378, validation accuracy=0.66536
+05-04 08:18 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1183, total negative=1121 ,tp_count=879, tn_count=654, fp_count=304, fn_count=467
+05-04 09:31 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 17 took 2234.554 s, training loss = 0.63282, validation_loss = 0.62551, validation accuracy=0.64366
+05-04 09:31 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1194, total negative=1110 ,tp_count=834, tn_count=649, fp_count=360, fn_count=461
+05-04 10:40 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 18 took 2141.765 s, training loss = 0.63112, validation_loss = 0.62365, validation accuracy=0.65972
+05-04 10:40 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1190, total negative=1114 ,tp_count=888, tn_count=632, fp_count=302, fn_count=482
+05-04 11:46 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 19 took 2008.069 s, training loss = 0.63054, validation_loss = 0.62963, validation accuracy=0.64757
+05-04 11:46 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1190, total negative=1114 ,tp_count=817, tn_count=675, fp_count=373, fn_count=439
+05-04 12:54 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 20 took 2044.903 s, training loss = 0.62872, validation_loss = 0.62961, validation accuracy=0.65408
+05-04 12:54 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1178, total negative=1126 ,tp_count=890, tn_count=617, fp_count=288, fn_count=509
+05-04 14:01 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 21 took 2078.764 s, training loss = 0.62994, validation_loss = 0.62711, validation accuracy=0.65408
+05-04 14:01 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1189, total negative=1115 ,tp_count=856, tn_count=651, fp_count=333, fn_count=464
+05-04 15:09 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 22 took 2055.920 s, training loss = 0.62874, validation_loss = 0.62830, validation accuracy=0.65451
+05-04 15:09 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1186, total negative=1118 ,tp_count=891, tn_count=617, fp_count=295, fn_count=501
+05-04 16:16 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 23 took 2040.717 s, training loss = 0.62860, validation_loss = 0.62466, validation accuracy=0.65755
+05-04 16:16 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1190, total negative=1114 ,tp_count=863, tn_count=652, fp_count=327, fn_count=462
+05-04 17:24 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 24 took 2038.454 s, training loss = 0.63051, validation_loss = 0.62939, validation accuracy=0.64844
+05-04 17:24 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1187, total negative=1117 ,tp_count=856, tn_count=638, fp_count=331, fn_count=479
+05-04 18:32 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 25 took 2069.120 s, training loss = 0.62557, validation_loss = 0.62587, validation accuracy=0.66233
+05-04 18:32 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1190, total negative=1114 ,tp_count=872, tn_count=654, fp_count=318, fn_count=460
+05-04 19:41 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 26 took 2073.699 s, training loss = 0.62982, validation_loss = 0.62897, validation accuracy=0.64887
+05-04 19:41 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1195, total negative=1109 ,tp_count=860, tn_count=635, fp_count=335, fn_count=474
+05-04 20:49 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 27 took 2073.105 s, training loss = 0.63026, validation_loss = 0.62197, validation accuracy=0.66102
+05-04 20:49 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1191, total negative=1113 ,tp_count=867, tn_count=656, fp_count=324, fn_count=457
+05-04 21:56 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 28 took 2025.197 s, training loss = 0.62615, validation_loss = 0.62642, validation accuracy=0.64931
+05-04 21:56 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1196, total negative=1108 ,tp_count=859, tn_count=637, fp_count=337, fn_count=471
+05-04 23:04 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 29 took 2055.413 s, training loss = 0.62721, validation_loss = 0.61710, validation accuracy=0.67491
+05-04 23:04 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1198, total negative=1106 ,tp_count=873, tn_count=682, fp_count=325, fn_count=424
+05-05 00:13 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 30 took 2094.505 s, training loss = 0.62543, validation_loss = 0.63656, validation accuracy=0.64974
+05-05 00:13 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1203, total negative=1101 ,tp_count=850, tn_count=647, fp_count=353, fn_count=454
+05-05 01:21 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 31 took 2061.959 s, training loss = 0.62649, validation_loss = 0.62121, validation accuracy=0.66927
+05-05 01:21 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1195, total negative=1109 ,tp_count=875, tn_count=667, fp_count=320, fn_count=442
+05-05 02:29 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 32 took 2044.579 s, training loss = 0.62744, validation_loss = 0.61965, validation accuracy=0.65408
+05-05 02:29 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1191, total negative=1113 ,tp_count=861, tn_count=646, fp_count=330, fn_count=467
+05-05 03:36 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 33 took 2053.200 s, training loss = 0.62801, validation_loss = 0.62471, validation accuracy=0.65929
+05-05 03:36 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1193, total negative=1111 ,tp_count=868, tn_count=651, fp_count=325, fn_count=460
+05-05 04:44 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 34 took 2055.927 s, training loss = 0.62704, validation_loss = 0.62192, validation accuracy=0.65321
+05-05 04:44 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1189, total negative=1115 ,tp_count=850, tn_count=655, fp_count=339, fn_count=460
+05-05 05:52 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 35 took 2071.317 s, training loss = 0.62736, validation_loss = 0.62231, validation accuracy=0.66493
+05-05 05:52 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1192, total negative=1112 ,tp_count=887, tn_count=645, fp_count=305, fn_count=467
+05-05 06:59 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 36 took 2051.365 s, training loss = 0.62846, validation_loss = 0.62157, validation accuracy=0.65451
+05-05 06:59 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1193, total negative=1111 ,tp_count=876, tn_count=632, fp_count=317, fn_count=479
+05-05 08:11 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 37 took 2059.571 s, training loss = 0.62633, validation_loss = 0.62115, validation accuracy=0.65972
+05-05 08:11 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1198, total negative=1106 ,tp_count=878, tn_count=642, fp_count=320, fn_count=464
+05-05 09:25 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 38 took 2273.739 s, training loss = 0.62631, validation_loss = 0.61815, validation accuracy=0.65582
+05-05 09:25 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1189, total negative=1115 ,tp_count=862, tn_count=649, fp_count=327, fn_count=466
+05-05 10:35 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 39 took 2120.398 s, training loss = 0.62629, validation_loss = 0.62080, validation accuracy=0.66536
+05-05 10:35 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1189, total negative=1115 ,tp_count=880, tn_count=653, fp_count=309, fn_count=462
+05-05 11:43 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 40 took 2104.986 s, training loss = 0.62683, validation_loss = 0.61260, validation accuracy=0.67405
+05-05 11:43 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1192, total negative=1112 ,tp_count=884, tn_count=669, fp_count=308, fn_count=443
+05-05 12:51 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 41 took 2065.237 s, training loss = 0.62645, validation_loss = 0.61966, validation accuracy=0.66580
+05-05 12:51 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1184, total negative=1120 ,tp_count=873, tn_count=661, fp_count=311, fn_count=459
+05-05 13:58 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 42 took 2054.325 s, training loss = 0.62582, validation_loss = 0.63447, validation accuracy=0.65104
+05-05 13:58 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1192, total negative=1112 ,tp_count=848, tn_count=652, fp_count=344, fn_count=460
+05-05 15:05 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 43 took 2050.031 s, training loss = 0.62566, validation_loss = 0.62348, validation accuracy=0.65625
+05-05 15:05 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1194, total negative=1110 ,tp_count=881, tn_count=631, fp_count=313, fn_count=479
+05-05 16:13 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 44 took 2051.525 s, training loss = 0.62580, validation_loss = 0.63196, validation accuracy=0.64974
+05-05 16:13 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1197, total negative=1107 ,tp_count=863, tn_count=634, fp_count=334, fn_count=473
+05-05 17:19 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 45 took 2018.549 s, training loss = 0.62686, validation_loss = 0.62210, validation accuracy=0.65755
+05-05 17:19 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1187, total negative=1117 ,tp_count=852, tn_count=663, fp_count=335, fn_count=454
+05-05 18:26 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 46 took 2030.916 s, training loss = 0.62593, validation_loss = 0.62811, validation accuracy=0.65625
+05-05 18:26 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1201, total negative=1103 ,tp_count=867, tn_count=645, fp_count=334, fn_count=458
+05-05 19:34 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 47 took 2039.558 s, training loss = 0.62660, validation_loss = 0.62061, validation accuracy=0.66667
+05-05 19:34 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1190, total negative=1114 ,tp_count=889, tn_count=647, fp_count=301, fn_count=467
+05-05 20:41 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 48 took 2044.608 s, training loss = 0.62569, validation_loss = 0.62773, validation accuracy=0.64844
+05-05 20:41 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1188, total negative=1116 ,tp_count=848, tn_count=646, fp_count=340, fn_count=470
+05-05 21:48 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 49 took 2045.627 s, training loss = 0.62610, validation_loss = 0.61650, validation accuracy=0.66536
+05-05 21:48 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1191, total negative=1113 ,tp_count=882, tn_count=651, fp_count=309, fn_count=462
+05-05 22:56 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 50 took 2059.204 s, training loss = 0.62492, validation_loss = 0.62213, validation accuracy=0.66580
+05-05 22:56 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1194, total negative=1110 ,tp_count=867, tn_count=667, fp_count=327, fn_count=443
+05-06 00:03 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 51 took 2060.303 s, training loss = 0.62675, validation_loss = 0.62129, validation accuracy=0.65365
+05-06 00:03 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1192, total negative=1112 ,tp_count=878, tn_count=628, fp_count=314, fn_count=484
+05-06 01:10 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 52 took 2030.914 s, training loss = 0.62685, validation_loss = 0.62145, validation accuracy=0.66016
+05-06 01:10 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1179, total negative=1125 ,tp_count=878, tn_count=643, fp_count=301, fn_count=482
+05-06 02:17 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 53 took 2041.954 s, training loss = 0.62606, validation_loss = 0.63305, validation accuracy=0.64714
+05-06 02:17 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1189, total negative=1115 ,tp_count=856, tn_count=635, fp_count=333, fn_count=480
+05-06 03:26 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 54 took 2101.482 s, training loss = 0.62550, validation_loss = 0.62445, validation accuracy=0.65668
+05-06 03:26 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1198, total negative=1106 ,tp_count=854, tn_count=659, fp_count=344, fn_count=447
+05-06 04:34 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 55 took 2054.656 s, training loss = 0.62739, validation_loss = 0.63086, validation accuracy=0.64497
+05-06 04:34 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1189, total negative=1115 ,tp_count=852, tn_count=634, fp_count=337, fn_count=481
+05-06 05:41 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 56 took 2057.223 s, training loss = 0.62503, validation_loss = 0.62217, validation accuracy=0.65495
+05-06 05:41 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1187, total negative=1117 ,tp_count=855, tn_count=654, fp_count=332, fn_count=463
+05-06 06:47 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 57 took 1993.895 s, training loss = 0.62656, validation_loss = 0.61709, validation accuracy=0.65972
+05-06 06:47 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1193, total negative=1111 ,tp_count=876, tn_count=644, fp_count=317, fn_count=467
+05-06 07:54 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 58 took 2002.096 s, training loss = 0.62739, validation_loss = 0.62945, validation accuracy=0.64583
+05-06 07:54 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1192, total negative=1112 ,tp_count=849, tn_count=639, fp_count=343, fn_count=473
+05-06 09:07 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 59 took 2253.360 s, training loss = 0.62581, validation_loss = 0.62520, validation accuracy=0.65842
+05-06 09:07 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1193, total negative=1111 ,tp_count=864, tn_count=653, fp_count=329, fn_count=458
+05-06 10:18 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 60 took 2194.771 s, training loss = 0.62641, validation_loss = 0.61486, validation accuracy=0.66363
+05-06 10:18 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1186, total negative=1118 ,tp_count=863, tn_count=666, fp_count=323, fn_count=452
+05-06 11:26 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 61 took 2085.391 s, training loss = 0.62399, validation_loss = 0.62642, validation accuracy=0.65321
+05-06 11:26 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1196, total negative=1108 ,tp_count=877, tn_count=628, fp_count=319, fn_count=480
+05-06 12:34 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 62 took 2063.407 s, training loss = 0.62660, validation_loss = 0.62675, validation accuracy=0.63845
+05-06 12:34 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1207, total negative=1097 ,tp_count=857, tn_count=614, fp_count=350, fn_count=483
+05-06 13:40 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 63 took 2003.498 s, training loss = 0.62738, validation_loss = 0.61910, validation accuracy=0.66276
+05-06 13:40 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1193, total negative=1111 ,tp_count=880, tn_count=647, fp_count=313, fn_count=464
+05-06 14:47 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 64 took 2005.369 s, training loss = 0.62496, validation_loss = 0.61769, validation accuracy=0.67622
+05-06 14:47 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1193, total negative=1111 ,tp_count=896, tn_count=662, fp_count=297, fn_count=449
+05-06 15:54 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 65 took 2060.757 s, training loss = 0.62811, validation_loss = 0.61434, validation accuracy=0.66710
+05-06 15:54 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1194, total negative=1110 ,tp_count=888, tn_count=649, fp_count=306, fn_count=461
+05-06 17:01 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 66 took 2023.648 s, training loss = 0.62465, validation_loss = 0.62150, validation accuracy=0.66927
+05-06 17:01 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1188, total negative=1116 ,tp_count=877, tn_count=665, fp_count=311, fn_count=451
+05-06 18:08 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 67 took 2035.937 s, training loss = 0.62575, validation_loss = 0.62582, validation accuracy=0.65017
+05-06 18:08 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1188, total negative=1116 ,tp_count=861, tn_count=637, fp_count=327, fn_count=479
+05-06 19:15 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 68 took 2037.755 s, training loss = 0.62885, validation_loss = 0.62015, validation accuracy=0.66710
+05-06 19:15 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1190, total negative=1114 ,tp_count=876, tn_count=661, fp_count=314, fn_count=453
+05-06 20:22 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 69 took 2037.036 s, training loss = 0.62564, validation_loss = 0.62333, validation accuracy=0.64366
+05-06 20:22 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1191, total negative=1113 ,tp_count=855, tn_count=628, fp_count=336, fn_count=485
+05-06 21:29 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 70 took 2000.340 s, training loss = 0.62711, validation_loss = 0.61692, validation accuracy=0.67578
+05-06 21:29 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1190, total negative=1114 ,tp_count=895, tn_count=662, fp_count=295, fn_count=452
+05-06 22:36 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 71 took 2029.793 s, training loss = 0.62584, validation_loss = 0.62420, validation accuracy=0.66276
+05-06 22:36 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1183, total negative=1121 ,tp_count=863, tn_count=664, fp_count=320, fn_count=457
+05-06 23:43 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 72 took 2043.680 s, training loss = 0.62556, validation_loss = 0.61847, validation accuracy=0.66927
+05-06 23:43 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1192, total negative=1112 ,tp_count=878, tn_count=664, fp_count=314, fn_count=448
+05-07 00:50 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 73 took 2032.091 s, training loss = 0.62466, validation_loss = 0.61949, validation accuracy=0.65625
+05-07 00:50 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1194, total negative=1110 ,tp_count=867, tn_count=645, fp_count=327, fn_count=465
+05-07 01:59 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 74 took 2089.679 s, training loss = 0.62652, validation_loss = 0.62954, validation accuracy=0.65408
+05-07 01:59 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1197, total negative=1107 ,tp_count=868, tn_count=639, fp_count=329, fn_count=468
+05-07 03:08 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 75 took 2102.318 s, training loss = 0.62398, validation_loss = 0.61980, validation accuracy=0.65191
+05-07 03:08 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1197, total negative=1107 ,tp_count=860, tn_count=642, fp_count=337, fn_count=465
+05-07 04:15 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 76 took 2031.580 s, training loss = 0.62745, validation_loss = 0.62985, validation accuracy=0.63976
+05-07 04:15 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1189, total negative=1115 ,tp_count=845, tn_count=629, fp_count=344, fn_count=486
+05-07 05:22 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 77 took 2031.712 s, training loss = 0.62795, validation_loss = 0.62165, validation accuracy=0.65408
+05-07 05:22 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1191, total negative=1113 ,tp_count=867, tn_count=640, fp_count=324, fn_count=473
+05-07 06:30 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 78 took 2025.996 s, training loss = 0.62639, validation_loss = 0.62239, validation accuracy=0.66450
+05-07 06:30 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1195, total negative=1109 ,tp_count=877, tn_count=654, fp_count=318, fn_count=455
+05-07 07:37 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 79 took 2047.668 s, training loss = 0.62531, validation_loss = 0.62348, validation accuracy=0.66059
+05-07 07:37 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1196, total negative=1108 ,tp_count=878, tn_count=644, fp_count=318, fn_count=464
+05-07 08:52 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 80 took 2299.658 s, training loss = 0.62639, validation_loss = 0.62113, validation accuracy=0.65712
+05-07 08:52 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1192, total negative=1112 ,tp_count=870, tn_count=644, fp_count=322, fn_count=468
+05-07 10:03 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 81 took 2189.527 s, training loss = 0.62471, validation_loss = 0.61516, validation accuracy=0.66970
+05-07 10:03 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1194, total negative=1110 ,tp_count=872, tn_count=671, fp_count=322, fn_count=439
+05-07 11:12 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 82 took 2080.270 s, training loss = 0.62627, validation_loss = 0.62083, validation accuracy=0.64887
+05-07 11:12 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1194, total negative=1110 ,tp_count=856, tn_count=639, fp_count=338, fn_count=471
+05-07 12:20 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 83 took 2065.473 s, training loss = 0.62607, validation_loss = 0.62473, validation accuracy=0.66059
+05-07 12:20 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1192, total negative=1112 ,tp_count=857, tn_count=665, fp_count=335, fn_count=447
+05-07 13:28 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 84 took 2033.313 s, training loss = 0.62740, validation_loss = 0.62460, validation accuracy=0.65017
+05-07 13:28 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1189, total negative=1115 ,tp_count=862, tn_count=636, fp_count=327, fn_count=479
+05-07 14:36 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 85 took 2087.082 s, training loss = 0.62718, validation_loss = 0.63101, validation accuracy=0.64757
+05-07 14:36 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1182, total negative=1122 ,tp_count=849, tn_count=643, fp_count=333, fn_count=479
+05-07 15:45 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 86 took 2086.049 s, training loss = 0.62761, validation_loss = 0.62093, validation accuracy=0.65755
+05-07 15:45 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1185, total negative=1119 ,tp_count=870, tn_count=645, fp_count=315, fn_count=474
+05-07 16:55 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 87 took 2132.756 s, training loss = 0.62593, validation_loss = 0.62683, validation accuracy=0.65104
+05-07 16:55 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1193, total negative=1111 ,tp_count=864, tn_count=636, fp_count=329, fn_count=475
+05-07 18:04 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 88 took 2120.061 s, training loss = 0.62670, validation_loss = 0.62405, validation accuracy=0.66623
+05-07 18:04 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1194, total negative=1110 ,tp_count=877, tn_count=658, fp_count=317, fn_count=452
+05-07 19:12 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 89 took 2110.080 s, training loss = 0.62747, validation_loss = 0.63058, validation accuracy=0.65755
+05-07 19:12 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1195, total negative=1109 ,tp_count=856, tn_count=659, fp_count=339, fn_count=450
+05-07 20:19 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 90 took 2050.995 s, training loss = 0.62343, validation_loss = 0.61174, validation accuracy=0.67361
+05-07 20:19 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1196, total negative=1108 ,tp_count=892, tn_count=660, fp_count=304, fn_count=448
+05-07 21:27 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 91 took 2083.423 s, training loss = 0.62391, validation_loss = 0.61330, validation accuracy=0.67708
+05-07 21:27 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1190, total negative=1114 ,tp_count=876, tn_count=684, fp_count=314, fn_count=430
+05-07 22:36 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 92 took 2108.180 s, training loss = 0.62582, validation_loss = 0.62827, validation accuracy=0.65365
+05-07 22:36 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1188, total negative=1116 ,tp_count=861, tn_count=645, fp_count=327, fn_count=471
+05-07 23:43 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 93 took 2063.455 s, training loss = 0.62571, validation_loss = 0.62528, validation accuracy=0.66016
+05-07 23:43 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1194, total negative=1110 ,tp_count=869, tn_count=652, fp_count=325, fn_count=458
+05-08 00:50 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 94 took 2037.464 s, training loss = 0.62620, validation_loss = 0.61964, validation accuracy=0.67014
+05-08 00:50 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1192, total negative=1112 ,tp_count=891, tn_count=653, fp_count=301, fn_count=459
+05-08 01:59 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 95 took 2084.659 s, training loss = 0.62610, validation_loss = 0.62658, validation accuracy=0.64627
+05-08 01:59 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1186, total negative=1118 ,tp_count=845, tn_count=644, fp_count=341, fn_count=474
+05-08 03:08 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 96 took 2094.940 s, training loss = 0.62695, validation_loss = 0.62233, validation accuracy=0.66233
+05-08 03:08 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1198, total negative=1106 ,tp_count=892, tn_count=634, fp_count=306, fn_count=472
+05-08 04:18 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 97 took 2163.165 s, training loss = 0.62646, validation_loss = 0.62466, validation accuracy=0.65755
+05-08 04:18 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1198, total negative=1106 ,tp_count=859, tn_count=656, fp_count=339, fn_count=450
+05-08 05:26 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 98 took 2053.926 s, training loss = 0.62553, validation_loss = 0.62614, validation accuracy=0.66016
+05-08 05:26 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1190, total negative=1114 ,tp_count=868, tn_count=653, fp_count=322, fn_count=461
+05-08 06:34 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 99 took 2057.173 s, training loss = 0.62779, validation_loss = 0.62566, validation accuracy=0.65625
+05-08 06:34 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1197, total negative=1107 ,tp_count=860, tn_count=652, fp_count=337, fn_count=455
+05-08 07:43 - mutual_info_img_txt.main_utils Label: Edema,  Epoch 100 took 2079.310 s, training loss = 0.62699, validation_loss = 0.61771, validation accuracy=0.64670
+05-08 07:43 - mutual_info_img_txt.main_utils   Total validation samples = 2304, total positive=1197, total negative=1107 ,tp_count=865, tn_count=625, fp_count=332, fn_count=482
+05-08 07:43 - mutual_info_img_txt.main_utils training loss:
+05-08 07:43 - mutual_info_img_txt.main_utils [0.6632754079053099, 0.6532544856340112, 0.6484221722038699, 0.6438070134377816, 0.6435725010616679, 0.6414797034062131, 0.6413109663506629, 0.6389794960827895, 0.638574827221078, 0.6375124830595205, 0.6367564120762784, 0.6363710457170514, 0.6345861735478253, 0.6327519005453083, 0.6328053185637568, 0.6326161250262193, 0.6328211938831169, 0.6311180202054306, 0.6305373933953299, 0.6287200140281463, 0.6299427964317966, 0.6287427875357614, 0.6285988322446044, 0.6305131717466972, 0.6255690828175612, 0.6298242558895703, 0.6302596498543108, 0.626152641000882, 0.627206839809955, 0.6254257865355048, 0.6264887301015182, 0.6274412512779236, 0.6280105260056509, 0.6270444663477616, 0.6273606055219408, 0.6284576590632049, 0.6263295662235207, 0.6263074060560951, 0.6262919812135294, 0.6268341778029858, 0.6264492034912109, 0.6258153908689257, 0.6256555560608985, 0.6258005335297383, 0.6268565548977382, 0.6259253684903534, 0.6266019806055956, 0.6256944290349181, 0.6261037683822739, 0.6249151483388015, 0.6267465623331742, 0.6268517986149855, 0.626059056503672, 0.6255037455491617, 0.627392127312405, 0.6250320644445823, 0.6265611893694166, 0.6273884068072682, 0.6258118768812905, 0.6264112679051681, 0.6239948647122987, 0.6266046582812994, 0.6273767565337705, 0.6249601085421065, 0.6281133435141872, 0.6246539973876846, 0.6257501338569211, 0.6288463288629559, 0.6256365321051907, 0.6271072349078218, 0.6258420569795958, 0.625559035489257, 0.6246637856456595, 0.6265239631625968, 0.623979077204852, 0.6274516859524687, 0.6279476306807827, 0.6263942802456063, 0.6253082270353613, 0.6263889682125038, 0.6247118367275721, 0.6262743766878692, 0.62606652807182, 0.6274036274829381, 0.6271835068581809, 0.6276070833206177, 0.6259349151396416, 0.6266969774810361, 0.627466692723019, 0.623432280815823, 0.6239070598508271, 0.6258172987212598, 0.6257076169403506, 0.626195308356218, 0.6261046310545693, 0.6269476464096929, 0.6264562311306806, 0.62553144844485, 0.6277879130672401, 0.6269903518784214]
+05-08 07:43 - mutual_info_img_txt.main_utils validation loss:
+05-08 07:43 - mutual_info_img_txt.main_utils [0.6589868366718292, 0.6504867706033919, 0.6431253552436829, 0.650669750240114, 0.6446079777346717, 0.6497744984096951, 0.6366452309820387, 0.6330896384186215, 0.6371211608250936, 0.6313714186350504, 0.6265729897552066, 0.6330914994080862, 0.6255558331807455, 0.6261678900983598, 0.630134661992391, 0.6237761411401961, 0.625507480568356, 0.6236510243680742, 0.6296259462833405, 0.6296103464232551, 0.6271145972940657, 0.6282953653070662, 0.6246567434734769, 0.6293940941492716, 0.625872959693273, 0.6289676560295953, 0.6219683720005883, 0.6264197064770592, 0.6170996427536011, 0.636560383770201, 0.6212058133549161, 0.6196469929483202, 0.6247127188576592, 0.621922900279363, 0.6223056846194797, 0.6215727859073215, 0.6211544639534421, 0.6181497673193613, 0.6208024852805667, 0.612601273589664, 0.61965830789672, 0.6344745192262862, 0.6234798497623868, 0.6319638987382253, 0.6220984955628713, 0.6281123128202226, 0.6206118000878228, 0.6277279489570193, 0.6165039903587766, 0.62213424510426, 0.6212911241584353, 0.6214499672253927, 0.6330474019050598, 0.6244508988327451, 0.6308573120170169, 0.6221692893240187, 0.6170907252364688, 0.6294519702593485, 0.6252030266655816, 0.6148597134484185, 0.6264215674665239, 0.6267515354686313, 0.6191019813219706, 0.6176880697409312, 0.614340258969201, 0.621501796775394, 0.6258246534400516, 0.6201476454734802, 0.6233288215266334, 0.6169207162327237, 0.6241954267024994, 0.6184681753317515, 0.6194859113958147, 0.6295361684428321, 0.6198042697376676, 0.6298477086755965, 0.6216484407583872, 0.6223896741867065, 0.6234772072898017, 0.6211268968052335, 0.6151610612869263, 0.6208257774511973, 0.6247305836942461, 0.6245951983663771, 0.6310092111428579, 0.6209341055817075, 0.6268312467469109, 0.62404774957233, 0.6305806338787079, 0.611738082435396, 0.6132965452141232, 0.6282748745547401, 0.625282754500707, 0.6196436186631521, 0.6265833907657199, 0.6223303741878934, 0.624663253625234, 0.6261363393730588, 0.625656975640191, 0.6177114678753747]
+05-08 07:43 - mutual_info_img_txt.main_utils training accuracy:
+05-08 07:43 - mutual_info_img_txt.main_utils [0.6264524647887324, 0.6308978873239437, 0.6327024647887324, 0.6350132042253521, 0.640625, 0.6421875, 0.6391505281690141, 0.6373239436619719, 0.6462588028169014, 0.6424295774647887, 0.6462147887323944, 0.6455105633802817, 0.6441901408450704, 0.6465228873239437, 0.6474471830985915, 0.6504401408450704, 0.6524207746478873, 0.648987676056338, 0.649405809859155, 0.6507482394366197, 0.6480193661971831, 0.6561179577464789, 0.6503521126760563, 0.6562279929577465, 0.6532570422535211, 0.6530589788732394, 0.6529929577464789, 0.6518485915492958, 0.6519586267605634, 0.652112676056338, 0.6530809859154929, 0.6532350352112676, 0.6505941901408451, 0.653036971830986, 0.6531470070422535, 0.656756161971831, 0.6550836267605634, 0.6566461267605633, 0.6546875, 0.6576584507042254, 0.6528609154929578, 0.6511663732394366, 0.6536971830985916, 0.6558318661971831, 0.6537191901408451, 0.6556338028169014, 0.6566241197183098, 0.6527068661971831, 0.6541593309859155, 0.654731514084507, 0.6545994718309859, 0.6523547535211267, 0.6555017605633803, 0.6580105633802817, 0.6547755281690141, 0.6546875, 0.655105633802817, 0.6555237676056338, 0.6544454225352113, 0.6580765845070422, 0.6555677816901408, 0.6560959507042253, 0.6569322183098592, 0.6532790492957746, 0.6552596830985915, 0.6554577464788732, 0.6557218309859155, 0.6550396126760564, 0.6524647887323943, 0.6536091549295775, 0.6538072183098591, 0.6528389084507042, 0.6549515845070423, 0.6547535211267606, 0.6533450704225352, 0.6571963028169014, 0.6537632042253522, 0.6545334507042253, 0.653213028169014, 0.655655809859155, 0.6545994718309859, 0.6513864436619718, 0.6580765845070422, 0.6544674295774648, 0.6550836267605634, 0.6534771126760563, 0.6578125, 0.6539172535211267, 0.6564920774647888, 0.653036971830986, 0.6524427816901408, 0.6565360915492958, 0.6525088028169014, 0.6518265845070422, 0.6552156690140845, 0.6540492957746479, 0.6543133802816902, 0.6533890845070423, 0.655743838028169, 0.6534551056338028]
+05-08 07:43 - mutual_info_img_txt.main_utils validation accuracy:
+05-08 07:43 - mutual_info_img_txt.main_utils [0.6184895833333334, 0.6397569444444444, 0.6380208333333334, 0.63671875, 0.63671875, 0.6219618055555556, 0.6397569444444444, 0.6401909722222222, 0.6462673611111112, 0.6488715277777778, 0.6605902777777778, 0.6579861111111112, 0.6566840277777778, 0.6458333333333334, 0.6440972222222222, 0.6653645833333334, 0.6436631944444444, 0.6597222222222222, 0.6475694444444444, 0.6540798611111112, 0.6540798611111112, 0.6545138888888888, 0.6575520833333334, 0.6484375, 0.6623263888888888, 0.6488715277777778, 0.6610243055555556, 0.6493055555555556, 0.6749131944444444, 0.6497395833333334, 0.6692708333333334, 0.6540798611111112, 0.6592881944444444, 0.6532118055555556, 0.6649305555555556, 0.6545138888888888, 0.6597222222222222, 0.6558159722222222, 0.6653645833333334, 0.6740451388888888, 0.6657986111111112, 0.6510416666666666, 0.65625, 0.6497395833333334, 0.6575520833333334, 0.65625, 0.6666666666666666, 0.6484375, 0.6653645833333334, 0.6657986111111112, 0.6536458333333334, 0.66015625, 0.6471354166666666, 0.6566840277777778, 0.6449652777777778, 0.6549479166666666, 0.6597222222222222, 0.6458333333333334, 0.6584201388888888, 0.6636284722222222, 0.6532118055555556, 0.6384548611111112, 0.6627604166666666, 0.6762152777777778, 0.6671006944444444, 0.6692708333333334, 0.6501736111111112, 0.6671006944444444, 0.6436631944444444, 0.67578125, 0.6627604166666666, 0.6692708333333334, 0.65625, 0.6540798611111112, 0.6519097222222222, 0.6397569444444444, 0.6540798611111112, 0.6644965277777778, 0.6605902777777778, 0.6571180555555556, 0.6697048611111112, 0.6488715277777778, 0.6605902777777778, 0.6501736111111112, 0.6475694444444444, 0.6575520833333334, 0.6510416666666666, 0.6662326388888888, 0.6575520833333334, 0.6736111111111112, 0.6770833333333334, 0.6536458333333334, 0.66015625, 0.6701388888888888, 0.6462673611111112, 0.6623263888888888, 0.6575520833333334, 0.66015625, 0.65625, 0.6467013888888888]
+05-08 07:43 - mutual_info_img_txt.main_utils Training for 100 Epochs checkpoint saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/um_ae_epoch20/pytorch_image_classifier_Edema_epoch91.bin
+05-08 07:48 - mutual_info_img_txt.main_utils ExplainableImageModelManager training start, disease label= Pleural Effusion, args = Namespace(batch_size=128, bert_config_name='bert_config.json', bert_pretrained_dir='/home/anhle/data/projects/Mutual-Information-MultiModal/bert_pretrain_all_notes_150000', data_loader_workers=32, dataset_disease_stats='/home/anhle/data/projects/Mutual-Information-MultiModal/training_data/disease_stats.csv', dataset_metadata='/home/anhle/data/projects/Mutual-Information-MultiModal/training_data/training_label_negbio.csv', disease_label='Pleural Effusion', image_dir='/home/anhle/data/projects/Mutual-Information-MultiModal/full_data_set/images/', image_model_name='resnet256_6_2_1', img_size=256, init_lr=0.0005, max_seq_length=320, mi_estimator='dv', num_train_epochs=20, num_train_epochs_classifier=100, optimizer='Adam', output_channels=1, save_directory='/home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/um_ae_epoch20', text_data_dir='/home/anhle/data/projects/Mutual-Information-MultiModal/training_data/text/')
+05-08 07:48 - mutual_info_img_txt.main_utils total batch of train_data_loader:, total_batch = 539
+05-08 09:52 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 1 took 3707.437 s, training loss = 0.62439, validation_loss = 0.62142, validation accuracy=0.67104
+05-08 09:52 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2387, total negative=1197 ,tp_count=2132, tn_count=273, fp_count=255, fn_count=924
+05-08 11:47 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 2 took 3434.665 s, training loss = 0.61207, validation_loss = 0.60922, validation accuracy=0.67383
+05-08 11:47 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2387, total negative=1197 ,tp_count=2152, tn_count=263, fp_count=235, fn_count=934
+05-08 13:41 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 3 took 3404.246 s, training loss = 0.60835, validation_loss = 0.60807, validation accuracy=0.67829
+05-08 13:41 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2384, total negative=1200 ,tp_count=2268, tn_count=163, fp_count=116, fn_count=1037
+05-08 15:35 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 4 took 3362.371 s, training loss = 0.60514, validation_loss = 0.60643, validation accuracy=0.67997
+05-08 15:35 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2390, total negative=1194 ,tp_count=2231, tn_count=206, fp_count=159, fn_count=988
+05-08 17:28 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 5 took 3380.395 s, training loss = 0.60267, validation_loss = 0.60996, validation accuracy=0.68025
+05-08 17:28 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2385, total negative=1199 ,tp_count=2224, tn_count=214, fp_count=161, fn_count=985
+05-08 19:22 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 6 took 3378.122 s, training loss = 0.60065, validation_loss = 0.60156, validation accuracy=0.68359
+05-08 19:22 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2384, total negative=1200 ,tp_count=2297, tn_count=153, fp_count=87, fn_count=1047
+05-08 21:15 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 7 took 3382.725 s, training loss = 0.59869, validation_loss = 0.60203, validation accuracy=0.68248
+05-08 21:15 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2387, total negative=1197 ,tp_count=2259, tn_count=187, fp_count=128, fn_count=1010
+05-08 23:08 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 8 took 3361.981 s, training loss = 0.59844, validation_loss = 0.58930, validation accuracy=0.69029
+05-08 23:08 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2396, total negative=1188 ,tp_count=2294, tn_count=180, fp_count=102, fn_count=1008
+05-09 01:00 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 9 took 3327.552 s, training loss = 0.59672, validation_loss = 0.59883, validation accuracy=0.68778
+05-09 01:00 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2391, total negative=1193 ,tp_count=2225, tn_count=240, fp_count=166, fn_count=953
+05-09 02:54 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 10 took 3368.221 s, training loss = 0.59743, validation_loss = 0.59512, validation accuracy=0.68666
+05-09 02:54 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2391, total negative=1193 ,tp_count=2264, tn_count=197, fp_count=127, fn_count=996
+05-09 04:47 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 11 took 3387.365 s, training loss = 0.59459, validation_loss = 0.60452, validation accuracy=0.68331
+05-09 04:47 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2390, total negative=1194 ,tp_count=2204, tn_count=245, fp_count=186, fn_count=949
+05-09 06:40 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 12 took 3367.043 s, training loss = 0.59508, validation_loss = 0.59532, validation accuracy=0.69308
+05-09 06:40 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2393, total negative=1191 ,tp_count=2258, tn_count=226, fp_count=135, fn_count=965
+05-09 08:39 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 13 took 3362.684 s, training loss = 0.59366, validation_loss = 0.59910, validation accuracy=0.68806
+05-09 08:39 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2388, total negative=1196 ,tp_count=2233, tn_count=233, fp_count=155, fn_count=963
+05-09 10:36 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 14 took 3534.705 s, training loss = 0.59311, validation_loss = 0.59969, validation accuracy=0.68778
+05-09 10:36 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2389, total negative=1195 ,tp_count=2235, tn_count=230, fp_count=154, fn_count=965
+05-09 12:28 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 15 took 3350.947 s, training loss = 0.59250, validation_loss = 0.59197, validation accuracy=0.69001
+05-09 12:28 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2393, total negative=1191 ,tp_count=2211, tn_count=262, fp_count=182, fn_count=929
+05-09 14:22 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 16 took 3357.511 s, training loss = 0.59084, validation_loss = 0.59622, validation accuracy=0.68583
+05-09 14:22 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2392, total negative=1192 ,tp_count=2257, tn_count=201, fp_count=135, fn_count=991
+05-09 16:16 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 17 took 3369.365 s, training loss = 0.59185, validation_loss = 0.59741, validation accuracy=0.69252
+05-09 16:16 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2384, total negative=1200 ,tp_count=2211, tn_count=271, fp_count=173, fn_count=929
+05-09 18:10 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 18 took 3398.720 s, training loss = 0.59004, validation_loss = 0.59010, validation accuracy=0.69420
+05-09 18:10 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2389, total negative=1195 ,tp_count=2185, tn_count=303, fp_count=204, fn_count=892
+05-09 20:04 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 19 took 3376.550 s, training loss = 0.59043, validation_loss = 0.59448, validation accuracy=0.69336
+05-09 20:04 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2389, total negative=1195 ,tp_count=2227, tn_count=258, fp_count=162, fn_count=937
+05-09 21:57 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 20 took 3350.845 s, training loss = 0.58901, validation_loss = 0.59712, validation accuracy=0.68778
+05-09 21:57 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2390, total negative=1194 ,tp_count=2214, tn_count=251, fp_count=176, fn_count=943
+05-09 23:50 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 21 took 3355.799 s, training loss = 0.59041, validation_loss = 0.58378, validation accuracy=0.69782
+05-09 23:50 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2390, total negative=1194 ,tp_count=2232, tn_count=269, fp_count=158, fn_count=925
+05-10 01:43 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 22 took 3364.171 s, training loss = 0.59076, validation_loss = 0.58844, validation accuracy=0.70340
+05-10 01:43 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2393, total negative=1191 ,tp_count=2277, tn_count=244, fp_count=116, fn_count=947
+05-10 03:36 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 23 took 3370.297 s, training loss = 0.59019, validation_loss = 0.58846, validation accuracy=0.68722
+05-10 03:36 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2385, total negative=1199 ,tp_count=2216, tn_count=247, fp_count=169, fn_count=952
+05-10 05:29 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 24 took 3337.368 s, training loss = 0.58845, validation_loss = 0.59720, validation accuracy=0.69141
+05-10 05:29 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2392, total negative=1192 ,tp_count=2208, tn_count=270, fp_count=184, fn_count=922
+05-10 07:22 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 25 took 3354.896 s, training loss = 0.58778, validation_loss = 0.59308, validation accuracy=0.69001
+05-10 07:22 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2392, total negative=1192 ,tp_count=2201, tn_count=272, fp_count=191, fn_count=920
+05-10 09:18 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 26 took 3411.642 s, training loss = 0.58689, validation_loss = 0.59292, validation accuracy=0.69085
+05-10 09:18 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2385, total negative=1199 ,tp_count=2251, tn_count=225, fp_count=134, fn_count=974
+05-10 11:13 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 27 took 3438.026 s, training loss = 0.58804, validation_loss = 0.58811, validation accuracy=0.69280
+05-10 11:13 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2384, total negative=1200 ,tp_count=2243, tn_count=240, fp_count=141, fn_count=960
+05-10 13:10 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 28 took 3358.244 s, training loss = 0.58816, validation_loss = 0.58872, validation accuracy=0.69029
+05-10 13:10 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2388, total negative=1196 ,tp_count=2217, tn_count=257, fp_count=171, fn_count=939
+05-10 15:07 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 29 took 3510.519 s, training loss = 0.58684, validation_loss = 0.59211, validation accuracy=0.68750
+05-10 15:07 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2385, total negative=1199 ,tp_count=2216, tn_count=248, fp_count=169, fn_count=951
+05-10 17:00 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 30 took 3373.456 s, training loss = 0.58612, validation_loss = 0.59334, validation accuracy=0.68945
+05-10 17:00 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2392, total negative=1192 ,tp_count=2221, tn_count=250, fp_count=171, fn_count=942
+05-10 18:54 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 31 took 3400.696 s, training loss = 0.58709, validation_loss = 0.59066, validation accuracy=0.69810
+05-10 18:54 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2387, total negative=1197 ,tp_count=2250, tn_count=252, fp_count=137, fn_count=945
+05-10 20:48 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 32 took 3406.029 s, training loss = 0.58737, validation_loss = 0.58322, validation accuracy=0.69727
+05-10 20:48 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2390, total negative=1194 ,tp_count=2235, tn_count=264, fp_count=155, fn_count=930
+05-10 22:42 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 33 took 3391.843 s, training loss = 0.58689, validation_loss = 0.58507, validation accuracy=0.69169
+05-10 22:42 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2392, total negative=1192 ,tp_count=2221, tn_count=258, fp_count=171, fn_count=934
+05-11 00:35 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 34 took 3347.258 s, training loss = 0.58764, validation_loss = 0.59084, validation accuracy=0.68862
+05-11 00:35 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2391, total negative=1193 ,tp_count=2219, tn_count=249, fp_count=172, fn_count=944
+05-11 02:28 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 35 took 3314.867 s, training loss = 0.58670, validation_loss = 0.59152, validation accuracy=0.69196
+05-11 02:28 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2389, total negative=1195 ,tp_count=2223, tn_count=257, fp_count=166, fn_count=938
+05-11 04:21 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 36 took 3392.840 s, training loss = 0.58709, validation_loss = 0.59193, validation accuracy=0.68471
+05-11 04:21 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2390, total negative=1194 ,tp_count=2227, tn_count=227, fp_count=163, fn_count=967
+05-11 06:14 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 37 took 3337.210 s, training loss = 0.58783, validation_loss = 0.58630, validation accuracy=0.69978
+05-11 06:14 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2389, total negative=1195 ,tp_count=2241, tn_count=267, fp_count=148, fn_count=928
+05-11 08:08 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 38 took 3378.221 s, training loss = 0.58681, validation_loss = 0.58780, validation accuracy=0.69252
+05-11 08:08 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2386, total negative=1198 ,tp_count=2229, tn_count=253, fp_count=157, fn_count=945
+05-11 10:05 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 39 took 3489.394 s, training loss = 0.58667, validation_loss = 0.58832, validation accuracy=0.69782
+05-11 10:05 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2394, total negative=1190 ,tp_count=2228, tn_count=273, fp_count=166, fn_count=917
+05-11 12:00 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 40 took 3432.682 s, training loss = 0.58619, validation_loss = 0.58392, validation accuracy=0.69782
+05-11 12:00 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2395, total negative=1189 ,tp_count=2263, tn_count=238, fp_count=132, fn_count=951
+05-11 13:53 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 41 took 3368.762 s, training loss = 0.58711, validation_loss = 0.59075, validation accuracy=0.69169
+05-11 13:53 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2384, total negative=1200 ,tp_count=2233, tn_count=246, fp_count=151, fn_count=954
+05-11 15:45 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 42 took 3324.787 s, training loss = 0.58759, validation_loss = 0.59248, validation accuracy=0.69699
+05-11 15:45 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2390, total negative=1194 ,tp_count=2219, tn_count=279, fp_count=171, fn_count=915
+05-11 17:38 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 43 took 3320.163 s, training loss = 0.58867, validation_loss = 0.58888, validation accuracy=0.69057
+05-11 17:38 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2390, total negative=1194 ,tp_count=2206, tn_count=269, fp_count=184, fn_count=925
+05-11 19:31 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 44 took 3367.820 s, training loss = 0.58675, validation_loss = 0.58733, validation accuracy=0.69085
+05-11 19:31 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2390, total negative=1194 ,tp_count=2223, tn_count=253, fp_count=167, fn_count=941
+05-11 21:24 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 45 took 3370.821 s, training loss = 0.58592, validation_loss = 0.59164, validation accuracy=0.69420
+05-11 21:24 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2379, total negative=1205 ,tp_count=2203, tn_count=285, fp_count=176, fn_count=920
+05-11 23:17 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 46 took 3367.832 s, training loss = 0.58611, validation_loss = 0.58470, validation accuracy=0.69754
+05-11 23:17 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2386, total negative=1198 ,tp_count=2215, tn_count=285, fp_count=171, fn_count=913
+05-12 01:10 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 47 took 3372.461 s, training loss = 0.58734, validation_loss = 0.58598, validation accuracy=0.69280
+05-12 01:10 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2388, total negative=1196 ,tp_count=2221, tn_count=262, fp_count=167, fn_count=934
+05-12 03:04 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 48 took 3360.458 s, training loss = 0.58643, validation_loss = 0.59438, validation accuracy=0.69810
+05-12 03:04 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2391, total negative=1193 ,tp_count=2232, tn_count=270, fp_count=159, fn_count=923
+05-12 04:57 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 49 took 3355.137 s, training loss = 0.58699, validation_loss = 0.58519, validation accuracy=0.70033
+05-12 04:57 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2389, total negative=1195 ,tp_count=2220, tn_count=290, fp_count=169, fn_count=905
+05-12 06:50 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 50 took 3370.566 s, training loss = 0.58791, validation_loss = 0.58989, validation accuracy=0.69671
+05-12 06:50 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2385, total negative=1199 ,tp_count=2219, tn_count=278, fp_count=166, fn_count=921
+05-12 08:50 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 51 took 3391.470 s, training loss = 0.58597, validation_loss = 0.58483, validation accuracy=0.70006
+05-12 08:50 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2390, total negative=1194 ,tp_count=2234, tn_count=275, fp_count=156, fn_count=919
+05-12 10:48 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 52 took 3533.124 s, training loss = 0.58713, validation_loss = 0.58688, validation accuracy=0.70787
+05-12 10:48 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2386, total negative=1198 ,tp_count=2250, tn_count=287, fp_count=136, fn_count=911
+05-12 12:43 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 53 took 3440.711 s, training loss = 0.58663, validation_loss = 0.58786, validation accuracy=0.69029
+05-12 12:43 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2391, total negative=1193 ,tp_count=2220, tn_count=254, fp_count=171, fn_count=939
+05-12 14:37 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 54 took 3379.847 s, training loss = 0.58669, validation_loss = 0.58929, validation accuracy=0.69587
+05-12 14:37 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2384, total negative=1200 ,tp_count=2244, tn_count=250, fp_count=140, fn_count=950
+05-12 16:31 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 55 took 3395.613 s, training loss = 0.58639, validation_loss = 0.58724, validation accuracy=0.69531
+05-12 16:31 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2393, total negative=1191 ,tp_count=2225, tn_count=267, fp_count=168, fn_count=924
+05-12 18:25 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 56 took 3390.267 s, training loss = 0.58668, validation_loss = 0.58883, validation accuracy=0.70089
+05-12 18:25 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2392, total negative=1192 ,tp_count=2231, tn_count=281, fp_count=161, fn_count=911
+05-12 20:19 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 57 took 3405.681 s, training loss = 0.58672, validation_loss = 0.58012, validation accuracy=0.70564
+05-12 20:19 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2387, total negative=1197 ,tp_count=2236, tn_count=293, fp_count=151, fn_count=904
+05-12 22:12 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 58 took 3339.388 s, training loss = 0.58757, validation_loss = 0.58160, validation accuracy=0.70396
+05-12 22:12 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2388, total negative=1196 ,tp_count=2233, tn_count=290, fp_count=155, fn_count=906
+05-13 00:04 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 59 took 3336.063 s, training loss = 0.58714, validation_loss = 0.58696, validation accuracy=0.69559
+05-13 00:04 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2383, total negative=1201 ,tp_count=2223, tn_count=270, fp_count=160, fn_count=931
+05-13 01:57 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 60 took 3334.325 s, training loss = 0.58734, validation_loss = 0.58778, validation accuracy=0.69001
+05-13 01:57 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2389, total negative=1195 ,tp_count=2226, tn_count=247, fp_count=163, fn_count=948
+05-13 03:50 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 61 took 3372.277 s, training loss = 0.58531, validation_loss = 0.58915, validation accuracy=0.69894
+05-13 03:50 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2390, total negative=1194 ,tp_count=2240, tn_count=265, fp_count=150, fn_count=929
+05-13 05:43 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 62 took 3337.904 s, training loss = 0.58688, validation_loss = 0.58422, validation accuracy=0.69559
+05-13 05:43 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2396, total negative=1188 ,tp_count=2228, tn_count=265, fp_count=168, fn_count=923
+05-13 07:36 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 63 took 3367.862 s, training loss = 0.58670, validation_loss = 0.58293, validation accuracy=0.69922
+05-13 07:36 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2390, total negative=1194 ,tp_count=2231, tn_count=275, fp_count=159, fn_count=919
+05-13 09:34 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 64 took 3501.757 s, training loss = 0.58634, validation_loss = 0.59027, validation accuracy=0.68945
+05-13 09:34 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2388, total negative=1196 ,tp_count=2210, tn_count=261, fp_count=178, fn_count=935
+05-13 11:30 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 65 took 3425.334 s, training loss = 0.58611, validation_loss = 0.58446, validation accuracy=0.69559
+05-13 11:30 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2390, total negative=1194 ,tp_count=2221, tn_count=272, fp_count=169, fn_count=922
+05-13 13:24 - mutual_info_img_txt.main_utils Label: Pleural Effusion,  Epoch 66 took 3400.131 s, training loss = 0.58563, validation_loss = 0.59163, validation accuracy=0.69699
+05-13 13:24 - mutual_info_img_txt.main_utils   Total validation samples = 3584, total positive=2390, total negative=1194 ,tp_count=2234, tn_count=264, fp_count=156, fn_count=930

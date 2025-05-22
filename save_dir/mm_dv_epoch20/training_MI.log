@@ -1,0 +1,111 @@
+04-05 15:22 - multi_modal args: Namespace(batch_size=64, bert_config_name='bert_config.json', bert_pretrained_dir='/home/anhle/data/projects/Mutual-Information-MultiModal/bert_pretrain_all_notes_150000', data_loader_workers=32, dataset_disease_stats='/home/anhle/data/projects/Mutual-Information-MultiModal/training_data/disease_stats.csv', dataset_metadata='/home/anhle/data/projects/Mutual-Information-MultiModal/training_data/training_label_negbio.csv', disease_label='Pneumonia', image_dir='/home/anhle/data/projects/Mutual-Information-MultiModal/full_data_set/images/', image_model_name='resnet256_6_2_1', img_size=256, init_lr=0.0001, max_seq_length=320, mi_estimator='dv', num_train_epochs=20, num_train_epochs_classifier=100, output_channels=1, save_directory='/home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20', text_data_dir='/home/anhle/data/projects/Mutual-Information-MultiModal/training_data/text/')
+04-05 15:22 - pytorch_transformers.tokenization_utils Model name '/home/anhle/data/projects/Mutual-Information-MultiModal/bert_pretrain_all_notes_150000' not found in model shortcut name list (bert-base-uncased, bert-large-uncased, bert-base-cased, bert-large-cased, bert-base-multilingual-uncased, bert-base-multilingual-cased, bert-base-chinese, bert-base-german-cased, bert-large-uncased-whole-word-masking, bert-large-cased-whole-word-masking, bert-large-uncased-whole-word-masking-finetuned-squad, bert-large-cased-whole-word-masking-finetuned-squad, bert-base-cased-finetuned-mrpc). Assuming '/home/anhle/data/projects/Mutual-Information-MultiModal/bert_pretrain_all_notes_150000' is a path or url to a directory containing tokenizer files.
+04-05 15:22 - pytorch_transformers.tokenization_utils Didn't find file /home/anhle/data/projects/Mutual-Information-MultiModal/bert_pretrain_all_notes_150000/added_tokens.json. We won't load it.
+04-05 15:22 - pytorch_transformers.tokenization_utils Didn't find file /home/anhle/data/projects/Mutual-Information-MultiModal/bert_pretrain_all_notes_150000/special_tokens_map.json. We won't load it.
+04-05 15:22 - pytorch_transformers.tokenization_utils loading file None
+04-05 15:22 - pytorch_transformers.tokenization_utils loading file None
+04-05 15:22 - pytorch_transformers.tokenization_utils loading file /home/anhle/data/projects/Mutual-Information-MultiModal/bert_pretrain_all_notes_150000/vocab.txt
+04-05 15:22 - mutual_info_img_txt.model_utils Loading features from cached file /home/anhle/data/projects/Mutual-Information-MultiModal/training_data/text/cachedfeatures_train_seqlen-320
+04-05 15:23 - pytorch_transformers.modeling_utils loading weights file /home/anhle/data/projects/Mutual-Information-MultiModal/bert_pretrain_all_notes_150000/pytorch_model.bin
+04-05 15:23 - pytorch_transformers.modeling_utils Weights of TextBert not initialized from pretrained model: ['classifier.weight', 'classifier.bias']
+04-05 15:23 - pytorch_transformers.modeling_utils Weights from pretrained model not used in TextBert: ['cls.predictions.bias', 'cls.predictions.transform.dense.weight', 'cls.predictions.transform.dense.bias', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.decoder.weight', 'cls.seq_relationship.weight', 'cls.seq_relationship.bias']
+04-05 18:29 - mutual_info_img_txt.main_utils   Epoch 1 loss = -449.97904
+04-05 18:29 - mutual_info_img_txt.main_utils   Epoch 1 took 11174.329 s
+04-05 18:29 - mutual_info_img_txt.main_utils   Epoch 1 checkpoint saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_model_epoch1.bin
+04-05 18:29 - mutual_info_img_txt.main_utils   Image model saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_MI_image_model.bin
+04-05 18:29 - mutual_info_img_txt.main_utils   Text model saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_MI_text_model.bin
+04-05 21:31 - mutual_info_img_txt.main_utils   Epoch 2 loss = -1103.97169
+04-05 21:31 - mutual_info_img_txt.main_utils   Epoch 2 took 10888.131 s
+04-05 21:31 - mutual_info_img_txt.main_utils   Epoch 2 checkpoint saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_model_epoch2.bin
+04-05 21:31 - mutual_info_img_txt.main_utils   Image model saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_MI_image_model.bin
+04-05 21:31 - mutual_info_img_txt.main_utils   Text model saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_MI_text_model.bin
+04-06 00:32 - mutual_info_img_txt.main_utils   Epoch 3 loss = -1698.72009
+04-06 00:32 - mutual_info_img_txt.main_utils   Epoch 3 took 10865.005 s
+04-06 00:32 - mutual_info_img_txt.main_utils   Epoch 3 checkpoint saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_model_epoch3.bin
+04-06 00:32 - mutual_info_img_txt.main_utils   Image model saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_MI_image_model.bin
+04-06 00:32 - mutual_info_img_txt.main_utils   Text model saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_MI_text_model.bin
+04-06 03:33 - mutual_info_img_txt.main_utils   Epoch 4 loss = -2189.48115
+04-06 03:33 - mutual_info_img_txt.main_utils   Epoch 4 took 10865.242 s
+04-06 03:33 - mutual_info_img_txt.main_utils   Epoch 4 checkpoint saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_model_epoch4.bin
+04-06 03:33 - mutual_info_img_txt.main_utils   Image model saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_MI_image_model.bin
+04-06 03:33 - mutual_info_img_txt.main_utils   Text model saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_MI_text_model.bin
+04-06 06:33 - mutual_info_img_txt.main_utils   Epoch 5 loss = -2551.30444
+04-06 06:33 - mutual_info_img_txt.main_utils   Epoch 5 took 10833.352 s
+04-06 06:33 - mutual_info_img_txt.main_utils   Epoch 5 checkpoint saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_model_epoch5.bin
+04-06 06:33 - mutual_info_img_txt.main_utils   Image model saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_MI_image_model.bin
+04-06 06:33 - mutual_info_img_txt.main_utils   Text model saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_MI_text_model.bin
+04-06 09:34 - mutual_info_img_txt.main_utils   Epoch 6 loss = -2841.18171
+04-06 09:34 - mutual_info_img_txt.main_utils   Epoch 6 took 10864.247 s
+04-06 09:34 - mutual_info_img_txt.main_utils   Epoch 6 checkpoint saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_model_epoch6.bin
+04-06 09:34 - mutual_info_img_txt.main_utils   Image model saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_MI_image_model.bin
+04-06 09:34 - mutual_info_img_txt.main_utils   Text model saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_MI_text_model.bin
+04-06 12:36 - mutual_info_img_txt.main_utils   Epoch 7 loss = -3094.75950
+04-06 12:36 - mutual_info_img_txt.main_utils   Epoch 7 took 10880.127 s
+04-06 12:36 - mutual_info_img_txt.main_utils   Epoch 7 checkpoint saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_model_epoch7.bin
+04-06 12:36 - mutual_info_img_txt.main_utils   Image model saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_MI_image_model.bin
+04-06 12:36 - mutual_info_img_txt.main_utils   Text model saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_MI_text_model.bin
+04-06 15:38 - mutual_info_img_txt.main_utils   Epoch 8 loss = -3342.40324
+04-06 15:38 - mutual_info_img_txt.main_utils   Epoch 8 took 10932.048 s
+04-06 15:38 - mutual_info_img_txt.main_utils   Epoch 8 checkpoint saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_model_epoch8.bin
+04-06 15:38 - mutual_info_img_txt.main_utils   Image model saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_MI_image_model.bin
+04-06 15:38 - mutual_info_img_txt.main_utils   Text model saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_MI_text_model.bin
+04-06 18:43 - mutual_info_img_txt.main_utils   Epoch 9 loss = -3568.97026
+04-06 18:43 - mutual_info_img_txt.main_utils   Epoch 9 took 11079.786 s
+04-06 18:43 - mutual_info_img_txt.main_utils   Epoch 9 checkpoint saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_model_epoch9.bin
+04-06 18:43 - mutual_info_img_txt.main_utils   Image model saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_MI_image_model.bin
+04-06 18:43 - mutual_info_img_txt.main_utils   Text model saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_MI_text_model.bin
+04-06 21:46 - mutual_info_img_txt.main_utils   Epoch 10 loss = -3791.00379
+04-06 21:46 - mutual_info_img_txt.main_utils   Epoch 10 took 10983.703 s
+04-06 21:46 - mutual_info_img_txt.main_utils   Epoch 10 checkpoint saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_model_epoch10.bin
+04-06 21:46 - mutual_info_img_txt.main_utils   Image model saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_MI_image_model.bin
+04-06 21:46 - mutual_info_img_txt.main_utils   Text model saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_MI_text_model.bin
+04-07 00:48 - mutual_info_img_txt.main_utils   Epoch 11 loss = -4011.25748
+04-07 00:48 - mutual_info_img_txt.main_utils   Epoch 11 took 10950.638 s
+04-07 00:48 - mutual_info_img_txt.main_utils   Epoch 11 checkpoint saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_model_epoch11.bin
+04-07 00:48 - mutual_info_img_txt.main_utils   Image model saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_MI_image_model.bin
+04-07 00:48 - mutual_info_img_txt.main_utils   Text model saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_MI_text_model.bin
+04-07 03:50 - mutual_info_img_txt.main_utils   Epoch 12 loss = -4216.11292
+04-07 03:50 - mutual_info_img_txt.main_utils   Epoch 12 took 10879.941 s
+04-07 03:50 - mutual_info_img_txt.main_utils   Epoch 12 checkpoint saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_model_epoch12.bin
+04-07 03:50 - mutual_info_img_txt.main_utils   Image model saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_MI_image_model.bin
+04-07 03:50 - mutual_info_img_txt.main_utils   Text model saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_MI_text_model.bin
+04-07 06:51 - mutual_info_img_txt.main_utils   Epoch 13 loss = -4400.02968
+04-07 06:51 - mutual_info_img_txt.main_utils   Epoch 13 took 10892.363 s
+04-07 06:51 - mutual_info_img_txt.main_utils   Epoch 13 checkpoint saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_model_epoch13.bin
+04-07 06:51 - mutual_info_img_txt.main_utils   Image model saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_MI_image_model.bin
+04-07 06:51 - mutual_info_img_txt.main_utils   Text model saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_MI_text_model.bin
+04-07 09:53 - mutual_info_img_txt.main_utils   Epoch 14 loss = -4592.63105
+04-07 09:53 - mutual_info_img_txt.main_utils   Epoch 14 took 10900.108 s
+04-07 09:53 - mutual_info_img_txt.main_utils   Epoch 14 checkpoint saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_model_epoch14.bin
+04-07 09:53 - mutual_info_img_txt.main_utils   Image model saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_MI_image_model.bin
+04-07 09:53 - mutual_info_img_txt.main_utils   Text model saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_MI_text_model.bin
+04-07 12:54 - mutual_info_img_txt.main_utils   Epoch 15 loss = -4760.00138
+04-07 12:54 - mutual_info_img_txt.main_utils   Epoch 15 took 10878.253 s
+04-07 12:54 - mutual_info_img_txt.main_utils   Epoch 15 checkpoint saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_model_epoch15.bin
+04-07 12:54 - mutual_info_img_txt.main_utils   Image model saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_MI_image_model.bin
+04-07 12:54 - mutual_info_img_txt.main_utils   Text model saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_MI_text_model.bin
+04-07 15:56 - mutual_info_img_txt.main_utils   Epoch 16 loss = -4923.45639
+04-07 15:56 - mutual_info_img_txt.main_utils   Epoch 16 took 10905.559 s
+04-07 15:56 - mutual_info_img_txt.main_utils   Epoch 16 checkpoint saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_model_epoch16.bin
+04-07 15:56 - mutual_info_img_txt.main_utils   Image model saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_MI_image_model.bin
+04-07 15:56 - mutual_info_img_txt.main_utils   Text model saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_MI_text_model.bin
+04-07 18:59 - mutual_info_img_txt.main_utils   Epoch 17 loss = -5092.29459
+04-07 18:59 - mutual_info_img_txt.main_utils   Epoch 17 took 10992.594 s
+04-07 18:59 - mutual_info_img_txt.main_utils   Epoch 17 checkpoint saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_model_epoch17.bin
+04-07 18:59 - mutual_info_img_txt.main_utils   Image model saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_MI_image_model.bin
+04-07 18:59 - mutual_info_img_txt.main_utils   Text model saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_MI_text_model.bin
+04-07 22:03 - mutual_info_img_txt.main_utils   Epoch 18 loss = -5212.09606
+04-07 22:03 - mutual_info_img_txt.main_utils   Epoch 18 took 11064.875 s
+04-07 22:03 - mutual_info_img_txt.main_utils   Epoch 18 checkpoint saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_model_epoch18.bin
+04-07 22:03 - mutual_info_img_txt.main_utils   Image model saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_MI_image_model.bin
+04-07 22:03 - mutual_info_img_txt.main_utils   Text model saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_MI_text_model.bin
+04-08 01:36 - mutual_info_img_txt.main_utils   Epoch 19 loss = -5340.33130
+04-08 01:36 - mutual_info_img_txt.main_utils   Epoch 19 took 12766.385 s
+04-08 01:36 - mutual_info_img_txt.main_utils   Epoch 19 checkpoint saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_model_epoch19.bin
+04-08 01:36 - mutual_info_img_txt.main_utils   Image model saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_MI_image_model.bin
+04-08 01:36 - mutual_info_img_txt.main_utils   Text model saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_MI_text_model.bin
+04-08 04:38 - mutual_info_img_txt.main_utils   Epoch 20 loss = -5447.45191
+04-08 04:38 - mutual_info_img_txt.main_utils   Epoch 20 took 10899.404 s
+04-08 04:38 - mutual_info_img_txt.main_utils   Epoch 20 checkpoint saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_model_epoch20.bin
+04-08 04:38 - mutual_info_img_txt.main_utils   Image model saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_MI_image_model.bin
+04-08 04:38 - mutual_info_img_txt.main_utils   Text model saved in /home/anhle/data/projects/Mutual-Information-MultiModal/save_dir/dv_epoch20/pytorch_MI_text_model.bin
