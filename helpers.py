@@ -15,7 +15,7 @@ def construct_dataset_parameters():
                         help='The user to download MIMIC dataset')
 
     parser.add_argument('--download_password', type=str,
-                        default='A1thebest',
+                        default='...',
                         help='The password to download MIMIC dataset')
 
 
